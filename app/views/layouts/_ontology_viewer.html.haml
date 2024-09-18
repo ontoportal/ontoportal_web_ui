@@ -37,7 +37,7 @@
     jQuery(document).data().bp.ont_viewer.concept_name_title = (jQuery(document).data().bp.ont_viewer.concept_name == "") ?
         "" : " - " + jQuery(document).data().bp.ont_viewer.concept_name;
     jQuery(document).data().bp.ont_viewer.lang = "#{request_lang(sub)}";
-    jQuery(document).data().bp.ont_viewer.submission_lang = #{submission_languages(sub)};
+    jQuery(document).data().bp.ont_viewer.submission_lang = #{submission_languages(sub).to_json.html_safe};
     jQuery(document).data().bp.ont_viewer.lang_sections = #{ontology_data_sections.to_json.html_safe};
 
   -# Modal dialog for creating a new mapping (must reside in a top-level position in the document to display properly).
