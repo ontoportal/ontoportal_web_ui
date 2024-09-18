@@ -121,14 +121,14 @@
     }
 
   %h4{class: 'pb-2 mt-5 mb-4 border-bottom'} Custom ontology set
-  #custom_ontologies.enable-lists
+  #custom_ontologies
     - if at_slice?
       = custom_ontology_set_slice_text
     - else
       = custom_ontology_set_intro_text
       = button_tag('Select ontologies', type: 'button', id: 'edit_custom_ontologies', class: 'btn btn-primary')
       - if @user_ontologies.present?
-        %ul
+        %ul{class: 'list-unstyled mt-3 mb-5'}
           - @user_ontologies.each do |ont|
             - ont = LinkedData::Client::Models::Ontology.get(ont, include: 'name,acronym')
             %li
