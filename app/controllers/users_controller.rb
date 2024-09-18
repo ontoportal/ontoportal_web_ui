@@ -121,7 +121,7 @@ class UsersController < ApplicationController
                          'Custom Ontologies were saved'
                        end
     else
-      flash[:notice] = 'Error saving Custom Ontologies, please try again'
+      flash[:error] = 'Error saving Custom Ontologies, please try again'
     end
     redirect_to user_path(@user.username)
   end
