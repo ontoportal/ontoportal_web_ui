@@ -130,7 +130,7 @@
       - if @user_ontologies.present?
         %ul
           - @user_ontologies.each do |ont|
-            - ont = LinkedData::Client::Models::Ontology.get(ont)
+            - ont = LinkedData::Client::Models::Ontology.get(ont, include: 'name,acronym')
             %li
               #{ont.name} (#{ont.acronym})
       - else
