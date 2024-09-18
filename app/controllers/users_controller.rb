@@ -110,18 +110,18 @@ class UsersController < ApplicationController
     custom_ontologies = params[:ontology] ? params[:ontology][:ontologyId] : []
     custom_ontologies.reject!(&:blank?)
     @user.update_from_params(customOntology: custom_ontologies)
-    error_response = @user.update
+    response = @user.update
 
-    if error_response
-      flash[:notice] = 'Error saving Custom Ontologies, please try again'
-    else
-      updated_user = LinkedData::Client::Models::User.get(@user.id)
+    if response.success?
+      updated_user = LinkedData::Client::Models::User.get(@user.id, include: 'customOntology')
       session[:user].update_from_params(customOntology: updated_user.customOntology)
       flash[:notice] = if updated_user.customOntology.empty?
                          'Custom Ontologies were cleared'
                        else
                          'Custom Ontologies were saved'
                        end
+    else
+      flash[:notice] = 'Error saving Custom Ontologies, please try again'
     end
     redirect_to user_path(@user.username)
   end
