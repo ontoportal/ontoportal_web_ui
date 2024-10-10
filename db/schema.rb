@@ -28,20 +28,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_30_210229) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "margin_notes", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.integer "parent_id"
-    t.integer "mapping_id"
-    t.integer "note_type"
-    t.integer "user_id"
-    t.integer "ontology_id"
-    t.integer "ontology_version_id"
-    t.string "concept_id"
-    t.string "subject"
-    t.text "comment"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
-  end
-
   create_table "ontologies", charset: "utf8", force: :cascade do |t|
     t.string "acronym", null: false
     t.text "new_term_instructions"

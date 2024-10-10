@@ -19,16 +19,19 @@
  *= require thickbox
  *= require select2
  *= require trumbowyg
+ *= require flag-icon
  *
  */
 
 /* BioPortal */
 @import "admin";
+@import "account";
 @import "annotator";
 @import "bioportal";
 @import "concepts";
 @import "footer";
 @import "home";
+@import "login";
 @import "mappings";
 @import "notes";
 @import "notice";

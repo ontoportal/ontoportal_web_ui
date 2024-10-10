@@ -53,12 +53,11 @@ gem 'graphql', '~> 2.0.27'
 gem 'graphql-client'
 gem 'haml', '~> 5.1'
 gem 'i18n'
-gem 'iconv'
 gem 'iso-639', '~> 0.3.6'
 gem 'multi_json'
 gem 'mysql2', '0.5.5'
 gem 'oj'
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.2.5'
+gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.4.0'
 gem 'open_uri_redirections'
 gem 'pry'
 gem 'psych', '< 4'
@@ -69,9 +68,16 @@ gem 'recaptcha', '~> 5.9.0'
 gem 'rest-client'
 gem 'rexml', '~> 3'
 gem 'stackprof', require: false
+
+# pinning strscan to v 3.0.1 to deal with deployment issue.  Remove line below when issue is fixed
+gem 'strscan', '3.0.1'
+
 gem 'terser'
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
+gem 'net-ftp'
+gem 'flag-icons-rails', '~> 3.4'
+gem 'inline_svg'
 
 group :staging, :production do
   # Application monitoring

@@ -86,7 +86,7 @@ function initClassTree() {
   });
 };
 
-function nodeClicked(node_id) {
+function nodeClicked(node_id, lang = "en") {
   // Get current html and store data in cache (to account for changes since the cache was retrieved)
   setCacheCurrent();
 
@@ -128,12 +128,12 @@ function nodeClicked(node_id) {
 
     // Insert notes table
     insertNotesTable(tabData["notes_table_data"]);
-
     wrapupTabChange(selectedTab);
   } else {
     jQuery.blockUI({ message: '<h1>' + '<%= image_tag src="jquery.simple.tree/spinner.gif" %>' + ' Loading Class...</h1>', showOverlay: false });
-    jQuery.get('/ajax_concepts/'+jQuery(document).data().bp.ont_viewer.ontology_id+'/?conceptid='+node_id+'&callback=load',
-      function(data){
+    var ajaxUrl = '/ajax_concepts/'+jQuery(document).data().bp.ont_viewer.ontology_id+'/?conceptid='+node_id+'&lang=' + lang + '&callback=load'
+    jQuery.get(ajaxUrl,
+      function(data) {
         var tabData = data.split("|||");
 
         // the tabs
@@ -181,14 +181,16 @@ function placeTreeView(treeHTML) {
 }
 
 // Retrieve the tree view using ajax
-function getTreeView() {
+function getTreeView(lang = "en") {
+  var url = "/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&lang=" + lang + "&conceptid="+encodeURIComponent(jQuery(document).data().bp.ont_viewer.concept_id);
   jQuery.ajax({
-    url: "/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&conceptid="+encodeURIComponent(jQuery(document).data().bp.ont_viewer.concept_id),
+    url: url,
     success: function(data) {
       placeTreeView(data);
     },
     error: function(data) {
-      jQuery.get("/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&conceptid=root", function(data){
+        var url = "/ajax/classes/treeview?ontology="+jQuery(document).data().bp.ont_viewer.ontology_id+"&lang=" + lang + "&conceptid=root";
+        jQuery.get(url, function(data) {
         var rootTree = "<div class='tree_error'>Displaying the path to this class has taken too long. You can browse classes below.</div>" + data;
         placeTreeView(rootTree);
       });
@@ -201,6 +203,7 @@ function getTreeView() {
 // We do this right after writing #sd_content to the dom to make sure it loads before other async portions of the page
 jQuery(document).ready(function(){
   if (pageUsesTreeView()) {
-    getTreeView();
+    var lang = jQuery(document).data().bp.ont_viewer.lang;
+    getTreeView(lang);
   }
 });
