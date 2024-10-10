@@ -2,93 +2,135 @@
 
 source 'https://rubygems.org'
 
+# Main Rails gem
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.0.8'
+gem 'rails', '7.0.3'
 
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem 'sprockets-rails', require: 'sprockets/railtie'
+# JavaScript bundling for Rails
+gem 'jsbundling-rails'
 
-# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem 'jsbundling-rails', '~> 1.3'
+# Chart.js integration for Rails
+gem 'chart-js-rails'
 
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
+gem 'select2-rails'
+
+# SassC as a replacement for sass-rails
+gem 'sassc-rails' # sass-rails replacement
+
+# Terser JavaScript minifier as a replacement for Uglifier
+gem 'terser' # uglifier replacement
+
+# Bootstrap front-end framework
+gem 'bootstrap',  '~> 5.2.3'
+
+# jQuery integration for Rails
+gem 'jquery-rails'
+
+# jQuery UI integration for Rails
+gem 'jquery-ui-rails'
+
+# The original asset pipeline for Rails
+# [https://github.com/rails/sprockets-rails]
+gem 'sprockets-rails'
+
+# Use the Puma web server
+# [https://github.com/puma/puma]
+gem 'puma', '~> 5.0'
+
+# Use JavaScript with ESM import maps
+# [https://github.com/rails/importmap-rails]
+gem 'importmap-rails'
+
+# Hotwire's SPA-like page accelerator
+# [https://turbo.hotwired.dev]
 gem 'turbo-rails'
 
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
+# Hotwire's modest JavaScript framework
+# [https://stimulus.hotwired.dev]
 gem 'stimulus-rails'
 
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-# gem 'jbuilder'
+# Debugging tool
+# See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem  gem 'pry'
+gem 'pry'
 
-# Use Redis for Action Cable
-gem 'redis', '~> 4.0'
-
-# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-# gem 'kredis'
-
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+# Time zone info for Windows platforms
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
-# Use Sass to process CSS
-gem 'sassc-rails'
-
-gem 'bootstrap', '~> 5.2.3'
-gem 'chart-js-rails'
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
-gem 'select2-rails'
-
-gem 'base64', '0.1.0'
-gem 'cube-ruby', require: 'cube'
+# Memcached client for Ruby
 gem 'dalli'
-gem 'flamegraph'
-# Version 2.1 breaks graphql-client. See: https://github.com/github/graphql-client/issues/310.
-gem 'graphql', '~> 2.0.27'
+
+# GraphQL client for Ruby
 gem 'graphql-client'
+
+# Haml template engine for Ruby on Rails
 gem 'haml', '~> 5.1'
+
+# Internationalization (i18n)
 gem 'i18n'
-gem 'iso-639', '~> 0.3.6'
+gem 'rails-i18n', '~> 7.0.0'
+
+# MySQL database adapter
+gem 'mysql2'
+
+# JSON parsing libraries
 gem 'multi_json'
-gem 'mysql2', '0.5.5'
 gem 'oj'
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.4.0'
-gem 'open_uri_redirections'
-gem 'pry'
-gem 'psych', '< 4'
-gem 'rack-mini-profiler'
-gem 'rails_autolink'
-gem 'rdoc'
+
+# Google reCAPTCHA integration
 gem 'recaptcha', '~> 5.9.0'
+
+# Simple HTTP and REST client for Ruby
 gem 'rest-client'
-gem 'rexml', '~> 3'
-gem 'stackprof', require: false
 
-# pinning strscan to v 3.0.1 to deal with deployment issue.  Remove line below when issue is fixed
-gem 'strscan', '3.0.1'
+# View components framework for Rails
+gem 'lookbook', '~> 1.5.5'
+gem 'view_component', '~> 2.72'
 
-gem 'terser'
-gem 'thin'
+# Pagination library for Rails
 gem 'will_paginate', '~> 3.0'
-gem 'net-ftp'
 gem 'flag-icons-rails', '~> 3.4'
 gem 'inline_svg'
 
-group :staging, :production do
-  # Application monitoring
+# Render SVG files in Rails views
+gem 'inline_svg'
+
+# ISO language codes and flags
+gem 'flag-icons-rails', '~> 3.4'
+gem 'iso-639', '~> 0.3.6'
+
+# Custom API client
+gem 'ontologies_api_client', git: 'https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git', branch: 'development'
+
+# Ruby 2.7.8 pinned gems (to remove when migrating to Ruby >= 3.0)
+gem 'ffi', '~> 1.16.3'
+gem 'net-ftp', '~> 0.2.0', require: false
+gem 'net-http', '~> 0.3.2'
+
+# Multi-Provider Authentication
+gem 'omniauth'
+gem 'omniauth-rails_csrf_protection'
+gem 'omniauth-github'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-keycloak'
+gem 'omniauth-orcid'
+
+group :staging, :production, :appliance do
+  # Application performance monitoring
   gem 'newrelic_rpm'
-  # Logs in json format, useful for shipping logs to logstash
+
+  # Error monitoring
+  gem 'bugsnag', '~> 6.26'
+
+  # Logs in JSON format, useful for shipping logs to logstash
   # gem 'rackstash', git: 'https://github.com/planio-gmbh/rackstash.git'
   # gem 'logstash-logger'
 end
 
 group :development do
-  # Capistrano deployment
+  # Capistrano Deployment
   gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
   gem 'capistrano', '~> 3.17', require: false
   gem 'capistrano-bundler', require: false
@@ -98,22 +140,47 @@ group :development do
   gem 'capistrano-rbenv', require: false
   gem 'capistrano-yarn', require: false
   gem 'ed25519', '>= 1.2', '< 2.0', require: false # https://github.com/miloserdow/capistrano-deploy/issues/42
-  gem 'html2haml'
-  gem 'listen'
 
   # Static code analysis
   gem 'brakeman', require: false
   gem 'rubocop', require: false
 
-  # gem 'i18n-debug'
-end
+  # Haml support for Rails
+  gem 'haml-rails'
+  gem 'html2haml'
 
-group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  # Debugging tools
   gem 'debug', platforms: %i[mri mingw x64_mingw]
-  gem 'rspec-rails'
+
+  # Use console on exceptions pages
+  # [https://github.com/rails/web-console]
+  gem 'web-console'
+
+  # Internationalization tasks
+  # gem 'i18n-debug'
+  gem 'i18n-tasks'
+  gem 'i18n-tasks-csv', '~> 1.1'
+  gem 'deepl-rb'
+
+  # Email preview in the browser
+  gem 'letter_opener_web', '~> 2.0'
 end
 
 group :test do
+  # System testing
+  # [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'capybara'
+
+  # WebDriver for system testing
+  gem 'selenium-webdriver'
+
+  # Code coverage generation
+  gem 'simplecov', require: false
+  gem 'simplecov-cobertura' # for codecov.io
+
+  # Mock HTTP requests in tests
+  gem 'webmock'
+
+  # Testing framework for Rails
+  gem 'rspec-rails'
 end

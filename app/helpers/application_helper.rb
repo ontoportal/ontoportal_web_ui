@@ -285,7 +285,7 @@ module ApplicationHelper
       data_ont = " data-ont='#{ont_acronym}' "
       "<a class='cls4ajax' #{data_ont} #{data_cls} #{href_cls} #{target}>#{cls_id}</a>"
     else
-      auto_link(cls_id, :all, target: '_blank')
+      content_tag(:div, cls_id)
     end
   end
 
