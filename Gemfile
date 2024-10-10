@@ -63,7 +63,10 @@ gem 'bootsnap', require: false
 gem 'dalli'
 
 # GraphQL client for Ruby
+# Version 2.1 breaks graphql-client. See: https://github.com/github/graphql-client/issues/310.
+gem 'graphql', '~> 2.0.27'
 gem 'graphql-client'
+
 
 # Haml template engine for Ruby on Rails
 gem 'haml', '~> 5.1'
