@@ -156,6 +156,25 @@ module OntologiesHelper
   def acronyms(ontologies)
     ontologies.present? ? ontologies.map { |ont| ont.acronym } : []
   end
+  def visits_chart_dataset(visits_data)
+    visits_chart_dataset_array({'Visits': visits_data})
+  end
+
+  def visits_chart_dataset_array(visits_data, fill: true)
+    visits_data = visits_data.map do |label , x|
+      {
+        label: label,
+        data: x,
+        borderWidth: 2,
+        borderRadius: 5,
+        borderSkipped: false,
+        cubicInterpolationMode: 'monotone',
+        tension: 0.4,
+        fill: fill
+      }
+    end
+    visits_data.to_json
+  end
 
   def change_requests_enabled?(ontology_acronym)
     return false unless Rails.configuration.change_request[:ontologies].present?
