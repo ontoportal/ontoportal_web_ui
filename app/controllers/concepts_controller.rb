@@ -6,6 +6,23 @@ class ConceptsController < ApplicationController
 
   layout 'ontology'
 
+  def show_concept
+    params[:id] = params[:id] ? params[:id] : params[:conceptid]
+
+    if params[:id].nil? || params[:id].empty?
+      render :text => "Error: You must provide a valid concept id"
+      return
+    end
+
+    # Note that find_by_acronym includes views by default
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
+    @concept = @ontology.explore.single_class({full: true}, params[:id])
+
+    not_found if @concept.nil?
+    gather_details
+    render :partial => 'show'
+  end
+
   def show
     params[:id] = params[:id] || params[:conceptid]
 
@@ -17,7 +34,6 @@ class ConceptsController < ApplicationController
     # find_by_acronym includes views by default
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
     @submission = get_ontology_submission_ready(@ontology)
-    @ob_instructions = helpers.ontolobridge_instructions_template(@ontology)
 
     if request.xhr?
       display = params[:callback].eql?('load') ? { full: true } : { display: 'prefLabel' }
