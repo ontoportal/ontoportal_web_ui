@@ -266,8 +266,6 @@ class OntologiesController < ApplicationController
       end
     end
 
-    @ob_instructions = helpers.ontolobridge_instructions_template(@ontology)
-
     # Retrieve submissions in descending submissionId order (should be reverse chronological order)
     @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
