@@ -5,9 +5,7 @@ Rails.application.routes.draw do
 
   resources :notes, constraints: { id: /.+/ }
 
-  resources :ontolobridge do
-    post :save_new_term_instructions, on: :collection
-  end
+
 
   resources :projects, constraints: { id: /[^\/]+/ }
 
@@ -130,6 +128,4 @@ Rails.application.routes.draw do
   get '/admin/update_info', to: 'admin#update_info'
   get '/admin/update_check_enabled', to: 'admin#update_check_enabled'
 
-  # Ontolobridge
-  # post '/ontolobridge/:save_new_term_instructions' => 'ontolobridge#save_new_term_instructions'
 end
