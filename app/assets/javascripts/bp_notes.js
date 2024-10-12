@@ -1,25 +1,6 @@
 var ontNotesTable;
 var ont_columns = { archived: 3, date: 7, subjectSort: 2 };
 
-jQuery(".ontologies.show").ready(function(){
-  setupNotesFaceboxSizing();
-  bindAddCommentClick();
-  bindAddProposalClick();
-  bindProposalChange();
-  bindReplyClick();
-  bindReplyCancelClick();
-  bindReplySaveClick();
-
-  jQuery("a.subscribe_to_notes").live("click", function(){
-    subscribeToNotes(this);
-  });
-
-  jQuery("#hide_archived_ont").click(function(){
-    hideOrUnhideArchivedOntNotes();
-  });
-
-  wireOntTable(jQuery("#ontology_notes_list"));
-});
 
 NOTES_PROPOSAL_TYPES = {
   "ProposalNewClass": "New Class Proposal",
