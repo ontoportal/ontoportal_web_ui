@@ -38,7 +38,7 @@ function setupNotesFacebox() {
       jQuery(this).facebox();
       jQuery(this).data().faceboxInit = true;
     }
-  });;
+  })
 }
 
 function setupNotesFaceboxSizing() {
@@ -118,17 +118,6 @@ function bindReplySaveClick() {
   });
 }
 
-function validateReply(button) {
-
-}
-
-function validateNote(button) {
-
-}
-
-function validateProposal(button) {
-
-}
 
 var displayError = function(button) {
   jQuery(button).parent().children(".reply_status").html("Error, please try again");
