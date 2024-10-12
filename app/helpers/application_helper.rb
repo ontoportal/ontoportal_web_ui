@@ -11,6 +11,21 @@ module ApplicationHelper
     end
   end
 
+  def escape(url)
+    CGI.escape(url) if url
+  end
+
+
+  def section_name(section)
+    section = concept_label_to_show(submission: @submission_latest || @submission) if section.eql?('classes')
+    t("ontology_details.sections.#{section}")
+  end
+
+  def skos?
+    submission = @submission || @submission_latest
+    submission&.hasOntologyLanguage === 'SKOS'
+  end
+
   def clean(string)
     string = string.gsub("\"", '\'')
     string.gsub("\n", '')
@@ -290,4 +305,10 @@ module ApplicationHelper
     data_ont = " data-ont='#{ont_acronym}' "
     "<a class='ont4ajax' #{data_ont} #{href_ont}>#{ont_acronym}</a>"
   end
+
+  ###END ruby equivalent of JS code in bp_ajax_controller.
+  def ontology_viewer_page_name(ontology_name, concept_name_title, page)
+    ontology_name + concept_name_title + " - #{page.capitalize}"
+  end
+
 end

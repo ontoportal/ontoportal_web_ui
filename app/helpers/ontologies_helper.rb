@@ -156,6 +156,57 @@ module OntologiesHelper
   def acronyms(ontologies)
     ontologies.present? ? ontologies.map { |ont| ont.acronym } : []
   end
+
+  def selected_section?(section_title)
+    current_section.eql?(section_title)
+  end
+
+  def submission_ready?(submission)
+    Array(submission&.submissionStatus).include?('RDF')
+  end
+
+  def concept_label_to_show(submission: @submission_latest)
+    submission&.hasOntologyLanguage == 'SKOS' ? 'concepts' : 'classes'
+  end
+
+  def sections_to_show
+    sections = ['summary']
+    if !@ontology.summaryOnly && (submission_ready?(@submission_latest) || @old_submission_ready)
+      sections += ['classes']
+      sections += %w[properties]
+      #sections += %w[schemes collections] if skos?
+      #sections += %w[instances] unless skos?
+      #sections += %w[notes mappings widgets sparql]
+      sections += %w[notes mappings widgets]
+    end
+    sections
+  end
+
+  def lazy_load_section(section_title, &block)
+    if current_section.eql?(section_title)
+      block.call
+    else
+      render TurboFrameComponent.new(id: section_title, src: "/ontologies/#{@ontology.acronym}?p=#{section_title}",
+                                     loading: Rails.env.development? ? "lazy" : "eager",
+                                     target: '_top', data: { "turbo-frame-target": "frame" })
+    end
+  end
+  def language_selector_hidden_tag(section)
+    hidden_field_tag "language_selector_hidden_#{section}", '',
+                     data: { controller: "language-change", 'language-change-section-value': section, action: "change->language-change#dispatchLangChangeEvent" }
+  end
+
+  def section_data(section_title)
+    if ontology_data_section?(section_title)
+      url_value = selected_section?(section_title) ? request.fullpath : "/ontologies/#{@ontology.acronym}?p=#{section_title}"
+      { controller: "history turbo-frame", 'turbo-frame-url-value': url_value, action: "lang_changed->history#updateURL lang_changed->turbo-frame#updateFrame" }
+    else
+      {}
+    end
+  end
+
+
+
   def visits_chart_dataset(visits_data)
     visits_chart_dataset_array({'Visits': visits_data})
   end
