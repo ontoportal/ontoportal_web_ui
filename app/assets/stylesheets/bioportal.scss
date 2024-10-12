@@ -1,3 +1,19 @@
+.turbo-progress-bar {
+  height: 5px;
+  background-color: var(--admin-color);
+}
+
+a{
+  text-decoration: none !important;
+}
+p {
+  margin-bottom: 0;
+}
+
+body{
+  position: relative;
+}
+
 .alignright {
   float:right;
 }
@@ -518,7 +534,7 @@ tr.mainresource td {
 }
 
 .obsolete_class {
-  color: rgb(100,100,100);
+  color: rgb(100,100,100)!important;
   cursor: help;
   font-style: oblique;
 }
@@ -912,13 +928,16 @@ button.fg-button-menu, button.fg-button {
 /************************************
  * Top navigation bar
  ************************************/
-div#topNavigationToggler a.btn.btn-login {
-  color: #C58612;
-  border-color: #C58612;
+div#topNavigationToggler {
+  justify-content: space-between;
+  a.btn.btn-login {
+    color: #C58612;
+    border-color: #C58612;
 
-  &:hover {
-    color: #234979;
-    background-color: #C58612;
+    &:hover {
+      color: #234979;
+      background-color: #C58612;
+    }
   }
 }
 
@@ -960,6 +979,8 @@ div#topNavigationToggler a.btn.btn-login {
 #ontology_picker_container div.chzn-drop {
   display: none;
 }
+
+
 
 .no_right_border {
   border-right: none !important;
@@ -1115,5 +1136,24 @@ a.truncated_less, a.truncated_more {
 
 .highlighted .search_ontology_acronym {
   color: white;
+}
+.hide {
+  display: none !important;
+}
+
+.empty-state {
+  display: none;
+
+  &:only-child {
+    display: revert;
+  }
+
+}
+
+turbo-frame[busy] > .hide-if-loading, .show-if-loading {
+  display: none;
+}
+turbo-frame[busy] ~ .show-if-loading {
+  display: inline-block;
 }
 
