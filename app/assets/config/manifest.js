@@ -5,3 +5,4 @@
 //= link bp_annotatorplus.js
 //= link vendor.js
 //= link_directory ../stylesheets .css
+//= link application-esbuild.js
