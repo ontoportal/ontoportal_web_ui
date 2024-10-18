@@ -90,7 +90,7 @@ GEM
     ast (2.4.2)
     autoprefixer-rails (10.4.19.0)
       execjs (~> 2)
-    base64 (0.2.0)
+    base64 (0.1.0)
     bcrypt_pbkdf (1.1.1)
     bcrypt_pbkdf (1.1.1-arm64-darwin)
     bigdecimal (3.1.8)
@@ -558,6 +558,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  base64 (= 0.1.0)
   bcrypt_pbkdf (>= 1.0, < 2.0)
   bootsnap
   bootstrap (~> 5.2.3)
@@ -576,7 +577,7 @@ DEPENDENCIES
   debug
   deepl-rb
   ed25519 (>= 1.2, < 2.0)
-  ffi (~> 1.16.3)
+  ffi
   flag-icons-rails (~> 3.4)
   graphql (~> 2.0.27)
   graphql-client
@@ -596,8 +597,8 @@ DEPENDENCIES
   lookbook (~> 1.5.5)
   multi_json
   mysql2
-  net-ftp (~> 0.2.0)
-  net-http (~> 0.3.2)
+  net-ftp
+  net-http
   newrelic_rpm
   oj
   omniauth
@@ -613,6 +614,7 @@ DEPENDENCIES
   rails-i18n (~> 7.0.0)
   recaptcha (~> 5.9.0)
   rest-client
+  rexml (~> 3)
   rspec-rails
   rubocop
   sassc-rails
