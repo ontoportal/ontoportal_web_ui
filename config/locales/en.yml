@@ -86,25 +86,6 @@ en:
   ontologies:
     intro: Browse the library of ontologies
 
-  concepts:
-    request_term:
-      new_term_instructions: >
-        <p>This ontology integrates with OntoloBridge, allowing community users to suggest additions to the public ontology. Complete the template below to submit a term request directly to the ontology maintainer.</p>
-        <blockquote>
-          <p>Term Label (required)<br>Suggested term name. If a term can be described with multiple synonyms, only list the preferred name here.</p>
-        </blockquote>
-        <blockquote>
-          <p>Term description (required)<br>A brief definition, description, or usage of your suggested term.   Additional term synonyms may be listed in this section.</p>
-        </blockquote>
-        <blockquote>
-          <p>Superclass (required)<br>The parent term of the suggested term. The parent term should be an existing entry of the current ontology. The superclass can be selected directly from Bioportal's Classes tree viewer.</p>
-        </blockquote>
-        <blockquote>
-          <p>References (optional)<br>Provide evidence for the existence of the requested term such as Pubmed IDs of papers or links to other resources that describe the term.</p>
-        </blockquote>
-        <blockquote>
-          <p>Justification (optional)<br>Provide any additional information about the requested term here.</p>
-        </blockquote>
   mappings:
     intro: Browse mappings between classes in different ontologies
 

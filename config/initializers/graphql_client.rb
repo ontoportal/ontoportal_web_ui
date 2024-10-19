@@ -1,5 +1,4 @@
 #frozen_string_literal: true
-#Disable as no used in ontoportal-lirmm branch and causing problems with docker image build
 require 'graphql/client'
 require 'graphql/client/http'
 
