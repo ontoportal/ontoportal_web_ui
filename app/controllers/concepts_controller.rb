@@ -16,7 +16,8 @@ class ConceptsController < ApplicationController
 
     # Note that find_by_acronym includes views by default
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
-    @concept = @ontology.explore.single_class({full: true}, params[:id])
+    @submission = get_ontology_submission_ready(@ontology)
+    @concept = @ontology.explore.single_class({full: true, lang: helpers.request_lang(@submission)}, params[:id])
 
     not_found if @concept.nil?
     gather_details

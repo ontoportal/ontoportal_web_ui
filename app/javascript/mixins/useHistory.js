@@ -61,7 +61,7 @@ export class HistoryService {
 
     #updateURLFromState(urlParams, state) {
         Object.entries(state).forEach(([key, val]) => {
-            if (key !== 'p'){
+            if (key !== 'p'  && !urlParams.has(key)){
                 urlParams.set(key, val)
             }
         })

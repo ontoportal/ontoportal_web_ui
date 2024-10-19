@@ -7,11 +7,14 @@
         %div#qsearch.input-group.pb-2.pe-1
           %span.input-group-text Jump to:
           = text_field_tag("search_box", nil, class: "form-control rounded-end", aria: {label: "Jump to:"},
-          data: {controller: 'class-search-auto-complete', 'class-search-auto-complete-ontology-acronym-value': @ontology.acronym,
+          data: {controller: 'class-search-auto-complete',
+                 'class-search-auto-complete-ontology-acronym-value': @ontology.acronym,
+                 'class-search-auto-complete-lang-value': request_lang(@submission),
+                 'class-search-auto-complete-submission-lang-value': submission_languages(@submission),
                  'class-search-auto-complete-spinner-src-value': asset_path("jquery.simple.tree/spinner.gif")})
           = hidden_field_tag("jump_to_concept_id")
         %div#sd_content.p-1
-          = render TurboFrameComponent.new(id: 'concepts_tree_view' , src: "/ajax/classes/treeview?ontology=#{@ontology.acronym}&conceptid=#{escape(@concept.id)}")
+          = render TurboFrameComponent.new(id: 'concepts_tree_view' , src: "/ajax/classes/treeview?ontology=#{@ontology.acronym}&conceptid=#{escape(@concept.id)}&lang=#{request_lang(@submission)}")
       %div#concept_content.d-flex.flex-column.card.p-1.ml-2{data:{'container-splitter-target': 'container'}}
         = render partial: 'concepts/show'
 
@@ -21,7 +24,3 @@
       = hidden_field :search, :keyword, :value=>"",:id=>"search_keyword"
   - else # found an error
     = "<div id=\"error\"><h2>#{@error}</h2></div>"
-
-
-
-

@@ -3,7 +3,7 @@ require 'iso-639'
 
 module OntologiesHelper
 
-  LANGUAGE_FILTERABLE_SECTIONS = %w[classes properties].freeze
+  LANGUAGE_FILTERABLE_SECTIONS = %w[classes].freeze
 
   def additional_details
     return '' if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym].nil?

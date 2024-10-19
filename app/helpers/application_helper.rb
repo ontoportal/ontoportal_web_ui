@@ -48,15 +48,15 @@ module ApplicationHelper
     string
   end
 
-  def draw_tree(root, id = nil, type = "Menu")
+  def draw_tree(root, id = nil, submission = @submission || @submission_latest)
     if id.nil?
       id = root.children.first.id
     end
     # TODO: handle tree view for obsolete classes, e.g. 'http://purl.obolibrary.org/obo/GO_0030400'
-    raw build_tree(root, "", id)  # returns a string, representing nested list items
+    raw build_tree(root, "", id, submission)  # returns a string, representing nested list items
   end
 
-  def build_tree(node, string, id)
+  def build_tree(node, string, id, submission)
     if node.children.nil? || node.children.length < 1
       return string # unchanged
     end
@@ -70,19 +70,20 @@ module ApplicationHelper
 
       # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
       li_id = child.id.eql?('bp_fake_root') ? 'bp_fake_root' : short_uuid
-
+      lang = request_lang(submission)
+      ontology_acronym = submission.ontology.acronym
       if child.id.eql?('bp_fake_root')
         string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: '',
-                                       active_style: active_style)
+                                       active_style: active_style, lang: lang)
       else
-        string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: child.explore.ontology.acronym,
-                                       active_style: active_style)
+        string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: ontology_acronym,
+                                       active_style: active_style, lang: lang)
 
         if child.hasChildren && !child.expanded?
-          string << tree_link_to_children(li_id: li_id, child: child)
+          string << tree_link_to_children(li_id: li_id, child: child, ontology_acronym: ontology_acronym, lang: lang)
         elsif child.expanded?
           string << '<ul>'
-          build_tree(child, string, id)
+          build_tree(child, string, id, submission)
           string << '</ul>'
         end
         string << '</li>'
@@ -92,15 +93,15 @@ module ApplicationHelper
     string
   end
 
-  def tree_link_to_concept(li_id:, child:, ontology_acronym:, active_style:)
+  def tree_link_to_concept(li_id:, child:, ontology_acronym:, active_style:, lang: )
     page_name = ontology_viewer_page_name(ontology_acronym, child.prefLabel, 'Classes')
     open = child.expanded? ? "class='open'" : ''
-    href = ontology_acronym.blank? ? '#' :  "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}"
+    href = ontology_acronym.blank? ? '#' :  "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}&lang=#{lang}"
     "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' data-bp-ont-page-name='#{page_name}' data-turbo=true data-turbo-frame='concept_show' href='#{href}' #{active_style}> #{child.prefLabel({ use_html: true })}</a>"
   end
 
-  def tree_link_to_children(li_id:, child:)
-    "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children'>ajax_class</a></li></ul>"
+  def tree_link_to_children(li_id:, child:, ontology_acronym:, lang: )
+    "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{ontology_acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&lang=#{lang}'>ajax_class</a></li></ul>"
   end
 
   def loading_spinner(padding = false, include_text = true)

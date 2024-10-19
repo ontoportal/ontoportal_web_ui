@@ -4,13 +4,15 @@ import {useBioportalAutoComplete} from "../mixins/useBioportalAutoComplete";
 export default class extends Controller {
     static  values = {
         objectTypes: String, default: 'class',
-        ontologyAcronym: String
+        ontologyAcronym: String,
+        lang: String,
+        submissionLang: Array
     }
 
     connect() {
         jQuery(document).ready(() => {
             useBioportalAutoComplete(this.element, "/search/json_search/" + this.ontologyAcronymValue,{
-                extraParams: {objecttypes: this.objectTypesValue},
+                extraParams: this.extraParams(),
                 selectFirst: true,
                 lineSeparator: "~!~",
                 matchSubset: 0,
@@ -66,5 +68,18 @@ export default class extends Controller {
         return obsolete_prefix + row0_markup + matchType + obsolete_suffix;
     }
 
+    extraParams() {
+        let extraParams = {
+            objecttypes: this.objectTypesValue
+        };
+        if (this.#isNotEmpty(this.submissionLangValue)) {
+            extraParams["lang"] = this.langValue
+        }
+        return extraParams
+    }
+
+    #isNotEmpty(arr) {
+        return Array.isArray(arr) && arr.length > 0;
+    }
 
 }
