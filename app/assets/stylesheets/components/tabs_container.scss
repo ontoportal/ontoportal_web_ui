@@ -54,7 +54,7 @@
 
 .tabs-container .tab-items .active hr {
   display: block;
-  border: 1px solid var(--primary-color);
+  border: 1px solid var(--primary-color) !important;
   opacity: 100%;
 }
 .container{

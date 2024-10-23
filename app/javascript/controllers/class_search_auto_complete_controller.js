@@ -3,7 +3,9 @@ import OntoportalAutocompleteController from "./ontoportal_autocomplete_controll
 // Connects to data-controller="class-search"
 export default class extends OntoportalAutocompleteController {
     static values = {
-        spinnerSrc: String
+        spinnerSrc: String,
+        ontologyAcronym: String,
+        lang: String,
     }
     connect() {
         super.connect()
@@ -24,7 +26,7 @@ export default class extends OntoportalAutocompleteController {
         // Appropriate value selected
         if (li.extra) {
             let sValue = jQuery("#jump_to_concept_id").val()
-            Turbo.visit("/ontologies/" + jQuery(document).data().bp.ontology.acronym + "/?p=classes&conceptid=" + encodeURIComponent(sValue) + "&jump_to_nav=true")
+            Turbo.visit("/ontologies/" + this.ontologyAcronymValue + "/?p=classes&lang=" + this.langValue + "&conceptid=" + encodeURIComponent(sValue) + "&jump_to_nav=true")
         }
     }
 
