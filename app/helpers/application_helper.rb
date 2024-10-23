@@ -11,6 +11,21 @@ module ApplicationHelper
     end
   end
 
+  def escape(url)
+    CGI.escape(url) if url
+  end
+
+
+  def section_name(section)
+    section = concept_label_to_show(submission: @submission_latest || @submission) if section.eql?('classes')
+    t("ontology_details.sections.#{section}")
+  end
+
+  def skos?
+    submission = @submission || @submission_latest
+    submission&.hasOntologyLanguage === 'SKOS'
+  end
+
   def clean(string)
     string = string.gsub("\"", '\'')
     string.gsub("\n", '')
@@ -33,35 +48,39 @@ module ApplicationHelper
     string
   end
 
-  def draw_tree(root, id = nil, type = 'Menu', submission)
+  def draw_tree(root, id = nil, submission = @submission || @submission_latest)
     if id.nil?
       id = root.children.first.id
     end
     # TODO: handle tree view for obsolete classes, e.g. 'http://purl.obolibrary.org/obo/GO_0030400'
-    raw build_tree(root, '', id, submission) # returns a string, representing nested list items
+    raw build_tree(root, "", id, submission)  # returns a string, representing nested list items
   end
 
   def build_tree(node, string, id, submission)
-    if node.children.nil? || node.children.empty?
-      return string
+    if node.children.nil? || node.children.length < 1
+      return string # unchanged
     end
-
     node.children.sort! { |a, b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase }
-    node.children.each do |child|
-      active_style = child.id.eql?(id) ? "class='active'" : ''
-      open = child.expanded? ? "class='open'" : ''
+    for child in node.children
+      if child.id.eql?(id)
+        active_style = "class='active'"
+      else
+        active_style = ""
+      end
 
       # This fake root will be present at the root of "flat" ontologies, we need to keep the id intact
       li_id = child.id.eql?('bp_fake_root') ? 'bp_fake_root' : short_uuid
-
+      lang = request_lang(submission)
+      ontology_acronym = submission.ontology.acronym
       if child.id.eql?('bp_fake_root')
-        string << "<li class='active' id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='#' #{active_style}>#{child.prefLabel}</a></li>"
+        string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: '',
+                                       active_style: active_style, lang: lang)
       else
-        icons = child.relation_icon(node)
-        string << "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ontologies/#{child.explore.ontology.acronym}/?p=classes&conceptid=#{CGI.escape(child.id)}&lang=#{request_lang(submission)}' #{active_style}> #{child.prefLabel({use_html: true})}</a> #{icons}"
+        string << tree_link_to_concept(li_id: li_id, child: child, ontology_acronym: ontology_acronym,
+                                       active_style: active_style, lang: lang)
 
         if child.hasChildren && !child.expanded?
-          string << "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{child.explore.ontology.acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&lang=#{request_lang(submission)}'>ajax_class</a></li></ul>"
+          string << tree_link_to_children(li_id: li_id, child: child, ontology_acronym: ontology_acronym, lang: lang)
         elsif child.expanded?
           string << '<ul>'
           build_tree(child, string, id, submission)
@@ -72,6 +91,17 @@ module ApplicationHelper
     end
 
     string
+  end
+
+  def tree_link_to_concept(li_id:, child:, ontology_acronym:, active_style:, lang: )
+    page_name = ontology_viewer_page_name(ontology_acronym, child.prefLabel, 'Classes')
+    open = child.expanded? ? "class='open'" : ''
+    href = ontology_acronym.blank? ? '#' :  "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}&lang=#{lang}"
+    "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' data-bp-ont-page-name='#{page_name}' data-turbo=true data-turbo-frame='concept_show' href='#{href}' #{active_style}> #{child.prefLabel({ use_html: true })}</a>"
+  end
+
+  def tree_link_to_children(li_id:, child:, ontology_acronym:, lang: )
+    "<ul class='ajax'><li id='#{li_id}'><a id='#{CGI.escape(child.id)}' href='/ajax_concepts/#{ontology_acronym}/?conceptid=#{CGI.escape(child.id)}&callback=children&lang=#{lang}'>ajax_class</a></li></ul>"
   end
 
   def loading_spinner(padding = false, include_text = true)
@@ -224,11 +254,6 @@ module ApplicationHelper
     sub.length.positive? ? 'true' : 'false'
   end
 
-  def ontolobridge_instructions_template(ontology)
-    ont_data = Ontology.find_by(acronym: ontology.acronym)
-    ont_data.nil? || ont_data.new_term_instructions.empty? ? t('concepts.request_term.new_term_instructions') : ont_data.new_term_instructions
-  end
-
   # http://stackoverflow.com/questions/1293573/rails-smart-text-truncation
   def smart_truncate(s, opts = {})
     opts = { words: 20 }.merge(opts)
@@ -295,4 +320,10 @@ module ApplicationHelper
     data_ont = " data-ont='#{ont_acronym}' "
     "<a class='ont4ajax' #{data_ont} #{href_ont}>#{ont_acronym}</a>"
   end
+
+  ###END ruby equivalent of JS code in bp_ajax_controller.
+  def ontology_viewer_page_name(ontology_name, concept_name_title, page)
+    ontology_name + concept_name_title + " - #{page.capitalize}"
+  end
+
 end
