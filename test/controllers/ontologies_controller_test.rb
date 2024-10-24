@@ -3,9 +3,16 @@
 require 'test_helper'
 
 class OntologiesControllerTest < ActionDispatch::IntegrationTest
-  ONTOLOGIES = LinkedData::Client::Models::Ontology.all(include: 'acronym')
-  # ONTOLOGIES = LinkedData::Client::Models::Ontology.find_by_acronym('NCIT', include: 'acronym')
-  #
+  ONTOLOGIES = []
+  if ENV['ONTOLOGIES_TO_TEST'].nil?
+    ONTOLOGIES.concat(LinkedData::Client::Models::Ontology.all(include: 'acronym'))
+  else
+    ontologies_to_test = ENV['ONTOLOGIES_TO_TEST']&.split(',')&.map(&:strip)
+    ontologies_to_test.each do | ont |
+      ONTOLOGIES << LinkedData::Client::Models::Ontology.find(ont, include: 'acronym')
+    end
+  end
+
   # PAGES: schemes, collections are not yet implemented
   #PAGES = %w[summary classes properties notes mappings schemes collections widgets].freeze
   PAGES = %w[summary classes properties notes mappings widgets].freeze
