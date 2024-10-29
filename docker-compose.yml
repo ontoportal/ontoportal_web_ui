@@ -1,25 +1,22 @@
 x-app: &default-app
-  image: agroportal/ontoportal_web_ui:master
+  image: bioportal/ontoportal_web_ui:0.0.7
   env_file:
     - ".env"
   tty: true
   volumes:
-    - bundle:/srv/ontoportal/bundle
+    - bundle:/usr/local/bundle
     - node:/node_modules
     - rails_cache:/app/tmp/cache
     - assets:/app/public/assets
-    - /var/run/docker.sock:/var/run/docker.sock
     - .:/app
   depends_on:
     db:
       condition: service_healthy
     cache:
       condition: service_started
-    node:
-      condition: service_started
   environment: &env
     BUNDLE_WITHOUT: ""
-    BUNDLE_PATH: /srv/ontoportal/bundle
+    BUNDLE_PATH: /usr/local/bundle
     DB_HOST: db
     CACHE_HOST: cache
   tmpfs:
@@ -30,11 +27,11 @@ services:
   db:
     image: "mysql:8.0"
     networks:
-      - default
+      - internal
     volumes:
       - mysql-data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+    # ports:
+      # - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
     healthcheck:
@@ -47,27 +44,28 @@ services:
     restart: unless-stopped
     command: ["-m", "1024"]
     networks:
-      - default
-    ports:
-      - "11211:11211"
+      - internal
+    # ports:
+      # - "11211:11211"
+
   node:
     <<: *default-app
     command: "yarn build --watch"
-    depends_on:
-      - cache
-      - db
 
   dev:
     <<: *default-app
+    networks:
+      - internal
+      - external
     ports:
       - "3000:3000"
-    links:
-      - db
-      - cache
 
   production:
     <<: *default-app
     command: "bundle exec puma -C config/puma.rb"
+    networks:
+      - internal
+      - external
     environment:
       <<: *env
       RAILS_ENV: "production"
@@ -79,14 +77,11 @@ services:
       MEMCACHE_SERVERS: "cache:11211"
     ports:
       - "3000:3000"
-    links:
-      - db
-      - cache
-    depends_on:
-      db:
-        condition: service_healthy
-      cache:
-        condition: service_started
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    #   cache:
+    #     condition: service_started
     volumes:
       - node:/node_modules
       - rails_cache:/app/tmp/cache
@@ -95,15 +90,18 @@ services:
 
   test:
     <<: *default-app
-    depends_on:
-      - db
-      - cache
-      - chrome-server
-    network_mode: "host"
     environment:
-      BUNDLE_WITHOUT: ""
-      DB_HOST: 127.0.0.1
-      CACHE_HOST: 127.0.0.1
+      <<: *env
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_started
+      chrome-server:
+        condition: service_started
+    networks:
+      - internal
+      - external
 
   chrome-server:
     image: selenium/standalone-chrome:112.0-chromedriver-112.0-grid-4.9.0-20230421
@@ -112,6 +110,10 @@ services:
 #    ports:
 #      - "4444:4444"
 #      - "7900:7900"
+
+networks:
+  internal:
+  external:
 
 volumes:
   mysql-data:
