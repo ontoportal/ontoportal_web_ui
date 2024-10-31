@@ -43,6 +43,14 @@ module KGCL
         binding
       end
 
+      def github_id
+        @params[:github_id]
+      end
+
+      def orcid_id
+        @params[:orcid_id]
+      end
+
       def synonym_label
         @params[:remove_synonym][:synonym]
       end

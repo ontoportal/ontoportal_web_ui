@@ -41,6 +41,14 @@ module KGCL
         binding
       end
 
+      def github_id
+        @params[:github_id]
+      end
+
+      def orcid_id
+        @params[:orcid_id]
+      end
+
       def new_concept_label
         @params[:node_rename][:new_preferred_name]
       end

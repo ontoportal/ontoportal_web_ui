@@ -2,8 +2,10 @@
 = form_with scope: :node_rename, url: change_requests_path, local: false, class: 'mb-5' do |f|
   = hidden_field_tag 'concept_id', @concept_id
   = hidden_field_tag 'concept_label', @concept_label
+  = hidden_field_tag 'github_id', @user.githubId
   = hidden_field_tag 'ont_acronym', @ont_acronym
-  = hidden_field_tag 'username', @username
+  = hidden_field_tag 'orcid_id', @user.orcidId
+  = hidden_field_tag 'username', @user.username
   = hidden_field_tag 'operation', KGCL::Operations::NODE_RENAME
   %div.mb-3
     = f.label :new_preferred_name, 'Preferred name', class: 'form-label'

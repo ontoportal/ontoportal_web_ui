@@ -48,6 +48,14 @@ module KGCL
         binding
       end
 
+      def github_id
+        @params[:github_id]
+      end
+
+      def orcid_id
+        @params[:orcid_id]
+      end
+
       def qualifier
         @params[:create_synonym][:qualifier]
       end
