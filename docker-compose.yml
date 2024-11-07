@@ -1,5 +1,5 @@
 x-app: &default-app
-  image: bioportal/ontoportal_web_ui:0.0.7
+  image: bioportal/ontoportal_web_ui
   env_file:
     - ".env"
   tty: true

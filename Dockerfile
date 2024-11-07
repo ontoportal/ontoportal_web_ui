@@ -41,9 +41,10 @@ RUN yarn install
 
 COPY . .
 
-RUN cp config/bioportal_config_env.rb.sample config/bioportal_config_production.rb
-RUN cp config/bioportal_config_env.rb.sample config/bioportal_config_development.rb
-RUN cp config/database.yml.sample config/database.yml
+RUN cp config/bioportal_config_env.rb.sample config/bioportal_config_production.rb \
+ && cp config/bioportal_config_env.rb.sample config/bioportal_config_development.rb \
+ && cp config/bioportal_config_env.rb.sample config/bioportal_config_test.rb \
+ && cp config/database.yml.sample config/database.yml
 
 RUN if [ "${RAILS_ENV}" != "development" ]; then \
   bundle exec bootsnap precompile --gemfile app/ lib/ && \
