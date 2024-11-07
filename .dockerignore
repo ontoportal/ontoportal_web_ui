@@ -27,4 +27,4 @@ yarn-debug.log*
 
 config/credentials/*
 config/credentials.yml.enc
-
+config/deploy/*
