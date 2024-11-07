@@ -68,9 +68,16 @@ gem 'recaptcha', '~> 5.9.0'
 gem 'rest-client'
 gem 'rexml', '~> 3'
 gem 'stackprof', require: false
+
+# pinning strscan to v 3.0.1 to deal with deployment issue.  Remove line below when issue is fixed
+gem 'strscan', '3.0.1'
+
 gem 'terser'
 gem 'thin'
 gem 'will_paginate', '~> 3.0'
+gem 'net-ftp'
+gem 'flag-icons-rails', '~> 3.4'
+gem 'inline_svg'
 
 group :staging, :production do
   # Application monitoring

@@ -49,6 +49,10 @@
         %tr
           %td Groups
           %td= groups.map {|g| groups_hash[g].name}.sort.join(", ")
+      - unless @submission_latest.naturalLanguage.empty?
+        %tr
+          %td Language
+          %td= abbreviations_to_languages(@submission_latest.naturalLanguage).join(", ")
       = raw additional_details
 
   -# Submissions pane

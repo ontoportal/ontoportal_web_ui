@@ -26,7 +26,11 @@
     %tr
       %td Preferred Name
       %td
-        %p= @concept.prefLabel({:use_html => true}).html_safe
+        %p
+        - if @concept.prefLabel({:use_html => false}).to_s.empty?
+          %div.alert.alert-warning= 'No preferred name provided for selected language'
+        - else
+          = @concept.prefLabel({:use_html => true}).html_safe
       %td
     %tr
       %td Synonyms

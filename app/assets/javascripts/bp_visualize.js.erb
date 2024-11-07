@@ -88,6 +88,10 @@
     jQuery(document).trigger("visualize_tab_change", [{tabType: tabId}]);
   }
 
+  function isNotEmpty(arr) {
+    return Array.isArray(arr) && arr.length > 0;
+  }
+
   // Only show BioMixer when tab is clicked
   jQuery(document).live("visualize_tab_change", function(event, data){
     if (data.tabType == "visualization") {
@@ -97,8 +101,16 @@
 
   jQuery(document).data().bp.classesTab.search_box_init = function(){
     if (jQuery("#search_box").bioportal_autocomplete) {
+      let extraParams = {
+        objecttypes: 'class'
+      };
+
+      if (isNotEmpty(jQuery(document).data().bp.ont_viewer.submission_lang)) {
+        extraParams["lang"] = jQuery(document).data().bp.ont_viewer.lang;
+      }
+
       jQuery("#search_box").bioportal_autocomplete("/search/json_search/"+jQuery(document).data().bp.ontology.acronym, {
-        extraParams: { objecttypes: "class" },
+        extraParams: extraParams,
         selectFirst: true,
         lineSeparator: "~!~",
         matchSubset: 0,
