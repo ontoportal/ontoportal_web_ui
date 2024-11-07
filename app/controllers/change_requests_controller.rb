@@ -5,11 +5,11 @@ class ChangeRequestsController < ApplicationController
   before_action :set_common_instance_variables, except: [:create]
 
   def node_obsoletion
-    respond_to :js
+    respond_to :turbo_stream
   end
 
   def node_rename
-    respond_to :js
+    respond_to :turbo_stream
   end
 
   def create_synonym
@@ -27,7 +27,7 @@ class ChangeRequestsController < ApplicationController
     @issue = IssueCreatorService.call(params)
     flash.now.notice = helpers.change_request_success_message if @issue['id'].present?
 
-    respond_to :js
+    respond_to :turbo_stream
   end
 
   private

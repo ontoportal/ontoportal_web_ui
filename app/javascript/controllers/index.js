@@ -4,5 +4,8 @@
 
 import { application } from "./application"
 
+import ChangeRequestsController from "./change_requests_controller"
+application.register("change-requests", ChangeRequestsController)
+
 import ClipboardController from "./clipboard_controller"
 application.register("clipboard", ClipboardController)
