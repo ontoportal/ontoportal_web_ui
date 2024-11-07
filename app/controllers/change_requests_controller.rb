@@ -49,11 +49,12 @@ class ChangeRequestsController < ApplicationController
   def require_login
     return unless session[:user].blank?
 
-    # TODO: Can this implementation be improved? For discussion:
-    #   https://stackoverflow.com/a/18681807
-    #   https://stackoverflow.com/a/10607511
-    #   https://stackoverflow.com/a/51275445
-    render js: "window.location.href='#{login_index_path}'"
+    # TODO: remove format.js handling after the create_synonym and remove_synonym actions are converted
+    #   from Rails UJS to Turbo Streams.
+    respond_to do |format|
+      format.turbo_stream { redirect_to login_index_path }
+      format.js { render js: "window.location.href='#{login_index_path}'", status: :found }
+    end
   end
 
   def set_common_instance_variables
