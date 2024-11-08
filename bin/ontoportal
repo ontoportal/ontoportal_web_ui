@@ -176,6 +176,9 @@ test() {
       bin/run_api
   fi
 
+  # create bioportal config file for test env if its not there.
+  [ -f config/bioportal_config_test.rb ] || cp config/bioportal_config_env.rb.sample config/bioportal_config_test.rb
+
   echo "Running tests..."
   echo "Run: API_URL=$api_url bundle exec rails test -v $test_options"
 
