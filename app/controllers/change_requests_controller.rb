@@ -27,7 +27,12 @@ class ChangeRequestsController < ApplicationController
     @issue = IssueCreatorService.call(params)
     flash.now.notice = helpers.change_request_success_message if @issue['id'].present?
 
-    respond_to :turbo_stream
+    # TODO: remove format.js from this block, and the create.js.erb file after the create_synonym and
+    #   remove_synonym actions are converted from Rails UJS to Turbo Streams.
+    respond_to do |format|
+      format.js
+      format.turbo_stream
+    end
   end
 
   private
