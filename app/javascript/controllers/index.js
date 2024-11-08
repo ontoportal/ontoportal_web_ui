@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import ChangeRequestsController from "./change_requests_controller"
+application.register("change-requests", ChangeRequestsController)
+
 import LanguageChangeController from "./language_change_controller"
 application.register("language-change", LanguageChangeController)
 
