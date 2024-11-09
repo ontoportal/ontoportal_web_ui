@@ -319,6 +319,8 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (9.14.0)
     nio4r (2.7.3)
+    nokogiri (1.15.6-aarch64-linux)
+      racc (~> 1.4)
     nokogiri (1.15.6-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.15.6-x86_64-linux)
@@ -553,6 +555,7 @@ GEM
     zeitwerk (2.6.18)
 
 PLATFORMS
+  aarch64-linux
   arm64-darwin-22
   x86_64-linux
   x86_64-linux-musl
