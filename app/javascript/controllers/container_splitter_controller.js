@@ -5,7 +5,11 @@ export default class extends Controller {
   static targets = ['container']
 
   connect() {
-    this.element.style.display= 'flex'
+    this.element.style.display = 'flex';
+    if (this.element.getAttribute('splitter-data-initial') == 0) {
+      return;
+    }
+
     Split(this.containerTargets, {
       elementStyle: function (dimension, size, gutterSize) {
         return {
@@ -21,6 +25,7 @@ export default class extends Controller {
       direction: "horizontal",
       sizes: [30, 70],
       cursor: "col-resize"
-    })
+    });
+    this.element.setAttribute('splitter-data-initial', 0);
   }
 }
