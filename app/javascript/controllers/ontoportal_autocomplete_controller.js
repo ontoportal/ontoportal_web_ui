@@ -72,13 +72,13 @@ export default class extends Controller {
         let extraParams = {
             objecttypes: this.objectTypesValue
         };
-        if (this.#isNotEmpty(this.submissionLangValue)) {
+        if (this.#isMultiple(this.submissionLangValue)) {
             extraParams["lang"] = this.langValue
         }
         return extraParams
     }
 
-    #isNotEmpty(arr) {
+    #isMultiple(arr) {
         return Array.isArray(arr) && arr.length > 0;
     }
 
