@@ -63,7 +63,7 @@ module ApplicationHelper
     node.children.sort! { |a, b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase }
     for child in node.children
       if child.id.eql?(id)
-        active_style = "class='active'"
+        active_style = "class='tree-link active'"
       else
         active_style = ""
       end

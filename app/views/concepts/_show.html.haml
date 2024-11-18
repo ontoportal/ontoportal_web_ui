@@ -21,8 +21,10 @@
             Class Mappings (
             %span#mapping_count= @mappings.size
             )
-        - if $PURL_ENABLED
-          = link_to("#classPermalinkModal", class: "class-permalink nav-link", title: "Get a permanent link to this class", aria: {label: "Get a permanent link to this class"}, data: {toggle: "modal", current_purl: "#{@current_purl}"}) do
+        - if Rails.configuration.settings.purl[:enabled]
+          = link_to("#classPermalinkModal", class: "class-permalink py-1", title: "Get a link to this page",
+                      aria: {label: "Get a link to this page"},
+                      data: {"bs-toggle": "modal", current_purl: "#{@current_purl}"}) do
             %i{class: "fas fa-link", aria: {hidden: "true"}}
       #contents.tab-content
         #details_content.tab-pane.active.show
