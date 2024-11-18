@@ -3,6 +3,10 @@
   background-color: var(--admin-color);
 }
 
+.tabs-container .tab-items > div button{
+  color: var(--primary-color) !important
+}
+
 a{
   text-decoration: none !important;
 }

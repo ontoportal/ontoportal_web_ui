@@ -79,6 +79,18 @@ en:
         A class that the authors of the ontology have flagged as being obsolete and which they recommend that people not use. These classes 
         are often left in ontologies (rather than removing them entirely) so that existing systems that depend on them will continue to function.
 
+  ontology_details:
+    sections:
+      classes: Classes
+      summary: Summary
+      properties: Properties
+      instances: Instances
+      notes: Notes
+      mappings: Mappings
+      widgets: Widgets
+      sparql: Sparql
+      concepts: Concepts
+
   projects:
     index:
       intro: Browse a selection of projects that use %{site} resources
@@ -88,4 +100,3 @@ en:
 
   mappings:
     intro: Browse mappings between classes in different ontologies
-
