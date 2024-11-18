@@ -21,7 +21,7 @@ gem 'sassc-rails' # sass-rails replacement
 gem 'terser' # uglifier replacement
 
 # Bootstrap front-end framework
-gem 'bootstrap',  '~> 5.2.3'
+gem 'bootstrap', '~> 5.2.3'
 
 # jQuery integration for Rails
 gem 'jquery-rails'
@@ -67,7 +67,6 @@ gem 'dalli'
 gem 'graphql', '~> 2.0.27'
 gem 'graphql-client'
 
-
 # Haml template engine for Ruby on Rails
 gem 'haml', '~> 5.1'
 
@@ -104,12 +103,21 @@ gem 'flag-icons-rails', '~> 3.4'
 gem 'iso-639', '~> 0.3.6'
 
 # Custom API client
-gem 'ontologies_api_client', git: 'https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git', branch: 'master'
+gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.4.0'
+
+# compatibilty pin https://github.com/ncbo/bioportal_web_ui/issues/293
+gem 'base64', '0.1.0'
+gem 'rexml', '~> 3'
 
 # Ruby 2.7.8 pinned gems (to remove when migrating to Ruby >= 3.0)
-gem 'ffi', '~> 1.16.3'
-gem 'net-ftp', '~> 0.2.0', require: false
-gem 'net-http', '~> 0.3.2'
+# gem 'ffi', '~> 1.16.3'
+# gem 'net-ftp', '~> 0.2.0', require: false
+# gem 'net-http', '~> 0.3.2'
+
+gem 'ffi'
+gem 'net-ftp', require: false
+gem 'net-http'
+
 
 # Multi-Provider Authentication
 gem 'omniauth'
@@ -125,10 +133,6 @@ group :staging, :production, :appliance do
 
   # Error monitoring
   gem 'bugsnag', '~> 6.26'
-
-  # Logs in JSON format, useful for shipping logs to logstash
-  # gem 'rackstash', git: 'https://github.com/planio-gmbh/rackstash.git'
-  # gem 'logstash-logger'
 end
 
 group :development do

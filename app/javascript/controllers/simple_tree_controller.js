@@ -3,13 +3,16 @@ import {useSimpleTree} from "../mixins/useSimpleTree";
 
 export default class extends Controller {
   connect() {
+    if (this.element.getAttribute('simple-tree-data-initial') == 0) {
+      return;
+    }
     this.simpleTreeCollection = useSimpleTree(this.element,
         this.#afterClick.bind(this),
         this.#afterAjaxError.bind(this),
         this.#beforeAjax.bind(this)
-    )
-
-    this.#onClickTooManyChildrenInit()
+    );
+    this.#onClickTooManyChildrenInit();
+    this.element.setAttribute('simple-tree-data-initial', 0);
   }
 
   #onClickTooManyChildrenInit(){

@@ -4,7 +4,6 @@
 
 import { application } from "./application"
 
-
 import ClassSearchAutoCompleteController from "./class_search_auto_complete_controller"
 application.register("class-search-auto-complete", ClassSearchAutoCompleteController)
 
@@ -14,8 +13,14 @@ application.register("container-splitter", ContainerSplitterController)
 import HistoryController from "./history_controller"
 application.register("history", HistoryController)
 
+import ChangeRequestsController from "./change_requests_controller"
+application.register("change-requests", ChangeRequestsController)
+
 import LanguageChangeController from "./language_change_controller"
 application.register("language-change", LanguageChangeController)
+
+import ClipboardController from "./clipboard_controller"
+application.register("clipboard", ClipboardController)
 
 import LoadChartController from "./load_chart_controller"
 application.register("load-chart", LoadChartController)

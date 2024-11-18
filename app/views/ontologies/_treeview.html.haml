@@ -1,10 +1,9 @@
 = turbo_frame_tag 'concepts_tree_view' do
-  - unless @ontology.flat?
-    #tree_wrapper.card.p-1
-      %ul.simpleTree{data:{controller: 'simple-tree'}}
-        %li.root
-          %ul
-            = draw_tree(@root, @concept.id)
+  #tree_wrapper.p-1
+    %ul.simpleTree{data:{controller: 'simple-tree'}}
+      %li.root
+        %ul
+          = draw_tree(@root, @concept.id)
 
   :javascript
     jQuery(document).ready(function () {
