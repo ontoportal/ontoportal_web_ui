@@ -1,4 +1,4 @@
-= render TurboFrameComponent.new(id: 'concept_show', data: {controller:'labels-ajax-container', 'action': 'turbo:before-fetch-request->labels-ajax-container#abortAll', 'labels-ajax-container-label-ajax-outlet': '#concept_show a[data-controller="label-ajax"]'}) do
+= render TurboFrameComponent.new(id: 'concept_show') do
   - if @concept.id.eql?("bp_fake_root")
     = render Display::AlertComponent.new do
       = t('concepts.use_jump_to')
@@ -9,12 +9,6 @@
         - baseClassUrl = "#{@ontology.id}/classes/#{escape(@concept.id)}"
         - tab_item_component(container_tabs: c, title: t('concepts.details'), path: '#details', selected: true, json_link: "#{baseClassUrl}?#{apikey}&display=all") do
           = render :partial =>'/concepts/details'
-
-        - unless skos?
-          - count_span = content_tag(:span, "#{t('concepts.instances')} (#{content_tag(:span, "", id: 'concept_instances_sorted_list_count')})".html_safe)
-          - tab_item_component(container_tabs: c, title: count_span, path: '#instances', json_link: "#{baseClassUrl}/instances?#{apikey}") do
-            = render :partial =>'instances/instances' , locals: {id: "class-instances-data-table"}
-
 
         - tab_item_component(container_tabs: c, title: t('concepts.visualization'), path: '#visualization') do
           = render :partial =>'/concepts/biomixer'

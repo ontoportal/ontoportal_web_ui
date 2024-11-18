@@ -3,6 +3,20 @@ require 'cgi'
 require 'digest/sha1'
 
 module ApplicationHelper
+  include ModalHelper
+
+  RESOLVE_NAMESPACE = {:omv => "http://omv.ontoware.org/2005/05/ontology#", :skos => "http://www.w3.org/2004/02/skos/core#", :owl => "http://www.w3.org/2002/07/owl#",
+                       :rdf => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", :rdfs => "http://www.w3.org/2000/01/rdf-schema#", :metadata => "http://data.bioontology.org/metadata/",
+                       :metadata_def => "http://data.bioontology.org/metadata/def/", :dc => "http://purl.org/dc/elements/1.1/", :xsd => "http://www.w3.org/2001/XMLSchema#",
+                       :oboinowl_gen => "http://www.geneontology.org/formats/oboInOwl#", :obo_purl => "http://purl.obolibrary.org/obo/",
+                       :umls => "http://bioportal.bioontology.org/ontologies/umls/", :door => "http://kannel.open.ac.uk/ontology#", :dct => "http://purl.org/dc/terms/",
+                       :void => "http://rdfs.org/ns/void#", :foaf => "http://xmlns.com/foaf/0.1/", :vann => "http://purl.org/vocab/vann/", :adms => "http://www.w3.org/ns/adms#",
+                       :voaf => "http://purl.org/vocommons/voaf#", :dcat => "http://www.w3.org/ns/dcat#", :mod => "http://www.isibang.ac.in/ns/mod#", :prov => "http://www.w3.org/ns/prov#",
+                       :cc => "http://creativecommons.org/ns#", :schema => "http://schema.org/", :doap => "http://usefulinc.com/ns/doap#", :bibo => "http://purl.org/ontology/bibo/",
+                       :wdrs => "http://www.w3.org/2007/05/powder-s#", :cito => "http://purl.org/spar/cito/", :pav => "http://purl.org/pav/", :nkos => "http://w3id.org/nkos/nkostype#",
+                       :oboInOwl => "http://www.geneontology.org/formats/oboInOwl#", :idot => "http://identifiers.org/idot/", :sd => "http://www.w3.org/ns/sparql-service-description#",
+                       :cclicense => "http://creativecommons.org/licenses/",
+                       'skos-xl' => "http://www.w3.org/2008/05/skos-xl#"}
   def get_apikey
     unless session[:user].nil?
       session[:user].apikey
@@ -56,6 +70,39 @@ module ApplicationHelper
     cleaned_path = path.chomp('/')
     # Reconstruct the cleaned URL
     "#{protocol}://#{cleaned_path}"
+  end
+  def prefix_property_url(key_string, key = nil)
+    namespace_key, _ = RESOLVE_NAMESPACE.find { |_, value| key_string.include?(value) }
+
+    if key && namespace_key
+      "#{namespace_key}:#{key}"
+    elsif key.nil? && namespace_key
+      namespace_key
+    else # we don't try to guess the prefix
+      nil
+    end
+  end
+
+  def prefix_properties(concept_properties)
+    modified_properties = {}
+
+    concept_properties&.each do |key, value|
+      if value.is_a?(Hash) && value.key?(:key)
+        key_string = value[:key].to_s
+        next if key_string.include?('metadata')
+
+        modified_key = prefix_property_url(key_string, key)
+
+        if modified_key
+          modified_properties[modified_key] = value
+        else
+          modified_properties[link_last_part(key_string)] = value
+        end
+
+      end
+    end
+
+    modified_properties
   end
 
   def draw_tree(root, id = nil, submission = @submission || @submission_latest)

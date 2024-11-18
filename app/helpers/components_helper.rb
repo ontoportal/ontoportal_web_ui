@@ -15,6 +15,17 @@ module ComponentsHelper
     end
   end
 
+  def link_to_with_actions(link_to_tag, acronym: nil, url: nil, copy: true, check_resolvability: true, generate_link: true, generate_htaccess: false)
+    tag = link_to_tag
+    url = link_to_tag if url.nil?
+
+    tag += content_tag(:span, class: 'mx-1') do
+      concat copy_link_to_clipboard(url) if copy
+    end
+
+    tag.html_safe
+  end
+
 
   def paginated_list_component(id:, results:, next_page_url:, child_url:, child_turbo_frame:, child_param:, open_in_modal: false , selected: nil, auto_click: false, submission: nil)
     render(TreeInfiniteScrollComponent.new(

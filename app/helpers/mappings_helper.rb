@@ -6,6 +6,19 @@ module MappingsHelper
     "http://www.w3.org/2002/07/owl" => "owl:",
     "http://www.w3.org/1999/02/22-rdf-syntax-ns" => "rdf:"
   }
+  def concept_mappings_loader(ontology_acronym:, concept_id:)
+    content_tag(:span, id: 'mapping_count_container') do
+      concat(content_tag(:div, class: 'concepts-mapping-count ml-1 mr-1') do
+        render(TurboFrameComponent.new(
+          id: 'mapping_count',
+          src: "/ajax/mappings/get_concept_table?ontologyid=#{ontology_acronym}&conceptid=#{CGI.escape(concept_id)}",
+          loading: 'lazy'
+        )) do |t|
+          concat(t.loader { render(LoaderComponent.new(small: true)) })
+        end
+      end)
+    end
+  end
 
   def get_short_id(uri)
     split = uri.split("#")
