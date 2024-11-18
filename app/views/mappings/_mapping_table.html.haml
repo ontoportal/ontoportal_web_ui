@@ -14,7 +14,7 @@
 %table#concept_mappings_table.zebra
   %thead
     %tr
-      - if session[:user] && (session[:user].id.to_i == map.creator || session[:user].admin?)
+      - if session[:user]
         %th.delete_mappings_column Delete
       %th Mapping To
       %th Ontology
