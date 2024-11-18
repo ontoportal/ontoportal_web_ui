@@ -48,6 +48,16 @@ module ApplicationHelper
     string
   end
 
+  def rest_url
+    # Split the URL into protocol and path parts
+    protocol, path = $REST_URL.split("://", 2)
+
+    # Remove the last '/' in the path part
+    cleaned_path = path.chomp('/')
+    # Reconstruct the cleaned URL
+    "#{protocol}://#{cleaned_path}"
+  end
+
   def draw_tree(root, id = nil, submission = @submission || @submission_latest)
     if id.nil?
       id = root.children.first.id
@@ -92,6 +102,7 @@ module ApplicationHelper
 
     string
   end
+
 
   def tree_link_to_concept(li_id:, child:, ontology_acronym:, active_style:, lang: )
     page_name = ontology_viewer_page_name(ontology_acronym, child.prefLabel, 'Classes')

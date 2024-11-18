@@ -41,6 +41,11 @@ class ApplicationController < ActionController::Base
 
   before_action :set_global_thread_values, :domain_ontology_set, :clean_empty_strings_from_params_arrays, :init_trial_license
 
+
+  def rest_url
+    helpers.rest_url
+  end
+
   def set_global_thread_values
     Thread.current[:session] = session
     Thread.current[:request] = request
