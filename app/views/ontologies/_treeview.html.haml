@@ -4,8 +4,3 @@
       %li.root
         %ul
           = draw_tree(@root, @concept.id)
-
-  :javascript
-    jQuery(document).ready(function () {
-      jQuery("#sd_content").scrollTo(jQuery('a.active'));
-    })
