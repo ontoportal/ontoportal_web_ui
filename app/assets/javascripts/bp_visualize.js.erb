@@ -88,8 +88,8 @@
     jQuery(document).trigger("visualize_tab_change", [{tabType: tabId}]);
   }
 
-  function isNotEmpty(arr) {
-    return Array.isArray(arr) && arr.length > 0;
+  function isMultiple(arr) {
+    return Array.isArray(arr) && arr.length > 1;
   }
 
   // Only show BioMixer when tab is clicked
@@ -105,7 +105,8 @@
         objecttypes: 'class'
       };
 
-      if (isNotEmpty(jQuery(document).data().bp.ont_viewer.submission_lang)) {
+      // if submission_lang.length == 1, don't set the language
+      if (isMultiple(jQuery(document).data().bp.ont_viewer.submission_lang)) {
         extraParams["lang"] = jQuery(document).data().bp.ont_viewer.lang;
       }
 
