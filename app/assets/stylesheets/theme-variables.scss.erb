@@ -9,7 +9,7 @@
 } %>
 
 <% ui_theme = $UI_THEME.to_s.parameterize %>
-<% selected_theme_key = themes.key?(ui_theme) ? ui_theme : "ontoportal" %>
+<% selected_theme_key = themes.key?(ui_theme) ? ui_theme : 'ontoportal' %>
 <% selected_theme = themes[selected_theme_key] %>
 
 :root {
