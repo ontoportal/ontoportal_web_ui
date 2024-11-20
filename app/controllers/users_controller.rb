@@ -141,9 +141,10 @@ class UsersController < ApplicationController
   def verify_owner
     return if current_user_admin?
 
-    if session[:user].nil? || (!session[:user].id.eql?(params[:id]) && !session[:user].username.eql?(params[:id]))
-      redirect_to controller: 'login', action: 'index', redirect: "/accounts/#{params[:id]}"
-    end
+    user = session[:user]
+    return if user&.id == params[:id] || user&.username == params[:id]
+
+    redirect_to login_index_path(redirect: "/accounts/#{params[:id]}")
   end
 
   def get_ontology_list(ont_hash)
