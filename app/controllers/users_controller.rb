@@ -147,16 +147,6 @@ class UsersController < ApplicationController
     redirect_to login_index_path(redirect: "/accounts/#{params[:id]}")
   end
 
-  def get_ontology_list(ont_hash)
-    return '' if ont_hash.nil?
-
-    ontologies = []
-    ont_hash.each do |ont, checked|
-      ontologies << ont if checked.to_i == 1
-    end
-    ontologies.join(';')
-  end
-
   def validate(params)
     errors = []
     if params[:email].length < 1 || !params[:email].match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
