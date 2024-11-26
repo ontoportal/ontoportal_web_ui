@@ -141,19 +141,10 @@ class UsersController < ApplicationController
   def verify_owner
     return if current_user_admin?
 
-    if session[:user].nil? || (!session[:user].id.eql?(params[:id]) && !session[:user].username.eql?(params[:id]))
-      redirect_to controller: 'login', action: 'index', redirect: "/accounts/#{params[:id]}"
-    end
-  end
+    user = session[:user]
+    return if user&.id == params[:id] || user&.username == params[:id]
 
-  def get_ontology_list(ont_hash)
-    return '' if ont_hash.nil?
-
-    ontologies = []
-    ont_hash.each do |ont, checked|
-      ontologies << ont if checked.to_i == 1
-    end
-    ontologies.join(';')
+    redirect_to login_index_path(redirect: "/accounts/#{params[:id]}")
   end
 
   def validate(params)
