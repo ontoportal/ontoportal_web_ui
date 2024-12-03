@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
 
   def show
     @project = LinkedData::Client::Models::Project.get(params[:id])
-    not_found if @project&.errors && @project.status == 404
+    not_found if @project.nil? || (@project.errors && @project.status == 404)
     @ontologies_used = []
     onts_used = @project.ontologyUsed
     onts_used.each do |ont_used|
