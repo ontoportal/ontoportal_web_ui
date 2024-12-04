@@ -245,17 +245,9 @@ class OntologiesController < ApplicationController
       return
     end
 
-    if params[:ontology].to_i > 0
-      acronym = BPIDResolver.id_to_acronym(params[:ontology])
-      if acronym
-        redirect_new_api
-        return
-      end
-    end
-
     # Note: find_by_acronym includes ontology views
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology], include: 'all').first
-    not_found if @ontology.nil?
+    not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
 
     # Handle the case where an ontology is converted to summary only. 
     # See: https://github.com/ncbo/bioportal_web_ui/issues/133.
@@ -359,10 +351,6 @@ class OntologiesController < ApplicationController
       # end
       redirect_to "/ontologies/#{@ontology.acronym}"
     end
-  end
-
-  def virtual
-    redirect_new_api
   end
 
   def widgets

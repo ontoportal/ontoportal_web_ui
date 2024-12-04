@@ -323,7 +323,7 @@ module ApplicationHelper
 
   ###END ruby equivalent of JS code in bp_ajax_controller.
   def ontology_viewer_page_name(ontology_name, concept_name_title, page)
-    ontology_name + concept_name_title + " - #{page.capitalize}"
+    "#{ontology_name} - #{concept_name_title} - #{page.capitalize}"
   end
 
 end

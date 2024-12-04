@@ -18,7 +18,7 @@ x-app: &default-app
     BUNDLE_WITHOUT: ""
     BUNDLE_PATH: /usr/local/bundle
     DB_HOST: db
-    CACHE_HOST: cache
+    MEMCACHE_SERVERS: "cache:11211"
   tmpfs:
     - /tmp
     - /app/tmp/pids
