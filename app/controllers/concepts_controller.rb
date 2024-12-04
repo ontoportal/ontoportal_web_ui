@@ -2,7 +2,6 @@
 
 class ConceptsController < ApplicationController
   include MappingsHelper
-  before_action :redirect_new_api, except: [:show, :biomixer]
 
   layout 'ontology'
 
@@ -111,14 +110,6 @@ class ConceptsController < ApplicationController
     @immediate_load = true
 
     render partial: 'biomixer', layout: false
-  end
-
-  def redirect_new_api
-    return unless params[:ontology].to_i.positive?
-
-    params_cleanup_new_api
-    redirect_to "#{request.path}#{params_string_for_redirect(params, stop_words: %w[controller action])}",
-                status: :moved_permanently
   end
 
   private

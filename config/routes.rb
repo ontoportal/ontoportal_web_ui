@@ -65,7 +65,6 @@ Rails.application.routes.draw do
   get '/robots.txt' => 'robots#index'
 
   # Ontologies
-  get '/ontologies/virtual/:ontology' => 'ontologies#virtual', :as => :ontology_virtual
   get '/ontologies/success/:id' => 'ontologies#submit_success'
   match '/ontologies/:acronym' => 'ontologies#update', via: [:get, :post]
   match '/ontologies/:acronym/submissions/:id' => 'submissions#update', via: [:get, :post]
@@ -93,7 +92,6 @@ Rails.application.routes.draw do
   get '/ajax/json_class' => 'ajax_proxy#json_class'
   get '/ajax/loading_spinner' => 'ajax_proxy#loading_spinner'
   get '/ajax/notes/delete' => 'notes#destroy'
-  get '/ajax/notes/concept_list' => 'notes#show_concept_list'
   get '/ajax/classes/label' => 'concepts#show_label'
   get '/ajax/classes/definition' => 'concepts#show_definition'
   get '/ajax/classes/treeview' => 'concepts#show_tree'
