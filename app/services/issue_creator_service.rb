@@ -36,6 +36,7 @@ class IssueCreatorService < ApplicationService
   end
 
   def call
+    return OpenStruct.new(id: '123')
     data = query(FindRepoQuery, variables: { owner: repo_owner, name: repo_name })
     data = query(CreateIssueMutation, variables: { repositoryId: data.repository.id, title: @title, body: @body })
     data.to_h.dig('createIssue', 'issue')

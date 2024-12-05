@@ -15,7 +15,7 @@
           = hidden_field_tag("jump_to_concept_id")
         %div#sd_content.p-1
           = render TurboFrameComponent.new(id: 'concepts_tree_view' , src: "/ajax/classes/treeview?ontology=#{@ontology.acronym}&conceptid=#{escape(@concept.id)}&lang=#{request_lang(@submission)}")
-      %div#concept_content.d-flex.flex-column.card.p-1.ml-2{data:{'container-splitter-target': 'container'}}
+      %div#concept_content.d-flex.flex-column{data:{'container-splitter-target': 'container'}}
         = render partial: 'concepts/show'
 
     - form_for(:search, :url => '', :html=>{:id=>'search_form'}) do

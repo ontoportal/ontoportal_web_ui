@@ -79,15 +79,14 @@ class MappingsController < ApplicationController
     render partial: 'show'
   end
 
-  def get_concept_table
+   def get_concept_table
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontologyid]).first
     @concept = @ontology.explore.single_class({ full: true }, params[:conceptid])
 
     @mappings = @concept.explore.mappings
-
+    @type = params[:type]
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-
-    render partial: 'mapping_table'
+    render partial: 'mappings/concept_mappings', layout: false
   end
 
   def new

@@ -5,6 +5,38 @@ module OntologiesHelper
 
   LANGUAGE_FILTERABLE_SECTIONS = %w[classes].freeze
 
+  def ontology_object_json_link(ontology_acronym, object_type, id)
+    "#{rest_url}/ontologies/#{ontology_acronym}/#{object_type}/#{escape(id)}?display=all&apikey=#{get_apikey}"
+  end
+
+  def render_permalink_link
+    content_tag(:div, class: 'mx-1') do
+      link_to("#classPermalinkModal", class: "class-permalink nav-link", title: t('concepts.permanent_link_class'), aria: { label: t('concepts.permanent_link_class') }, data: { toggle: "modal", current_purl: @current_purl }) do
+        content_tag(:i, '', class: "fas fa-link", aria: { hidden: "true" })
+      end
+    end
+  end
+
+  def render_concepts_json_button(link)
+    content_tag(:div, class: 'concepts_json_button') do
+      render RoundedButtonComponent.new(link: link, target: '_blank')
+    end
+  end
+
+  def ontology_object_tabs_component(ontology_id:, objects_title:, object_id:, &block)
+    resource_url = ontology_object_json_link(ontology_id, objects_title, object_id)
+    render TabsContainerComponent.new(type: 'outline') do |c|
+      concat(c.pinned_right do
+        content_tag(:div, '', class: 'd-flex', 'data-concepts-json-target': 'button') do
+          concat(render_permalink_link) if $PURL_ENABLED
+          concat(render_concepts_json_button(resource_url))
+        end
+      end)
+
+      capture(c, &block)
+    end
+  end
+
   def additional_details
     return '' if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym].nil?
 
