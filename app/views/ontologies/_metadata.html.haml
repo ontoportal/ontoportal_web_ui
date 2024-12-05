@@ -34,6 +34,10 @@
           %tr
             %td Format
             %td= @submission_latest.hasOntologyLanguage
+          - if @submission_latest.naturalLanguage.present?
+            %tr
+              %td Language
+              %td= abbreviations_to_languages(@submission_latest.naturalLanguage).join(", ")
           %tr
             %td Contact
             %td= raw @submission_latest.contact.map {|c| [c.name, c.email].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
@@ -49,10 +53,6 @@
           %tr
             %td Groups
             %td= groups.map {|g| groups_hash[g].name}.sort.join(", ")
-        - unless @submission_latest.naturalLanguage.empty?
-          %tr
-            %td Language
-            %td= abbreviations_to_languages(@submission_latest.naturalLanguage).join(", ")
         = raw additional_details
 
     -# Submissions pane
