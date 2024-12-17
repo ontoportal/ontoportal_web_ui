@@ -107,7 +107,7 @@ class HomeController < ApplicationController
     @user_ontologies = @user.customOntology
     @user_ontologies ||= []
 
-    @admin_ontologies = LinkedData::Client::Models::Ontology.where do |o|
+    @admin_ontologies = LinkedData::Client::Models::Ontology.where(include_views: true) do |o|
       o.administeredBy.include? @user.id
     end
     @admin_ontologies.sort! { |a, b| a.name.downcase <=> b.name.downcase }

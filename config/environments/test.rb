@@ -27,7 +27,7 @@ Rails.application.configure do
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
-  config.cache_store = ActiveSupport::Cache::MemCacheStore.new('localhost:11211', namespace: 'BioPortal')
+  config.cache_store = :mem_cache_store, ENV['MEMCACHE_SERVERS'] || 'localhost', { namespace: 'BioPortal' }
 
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false

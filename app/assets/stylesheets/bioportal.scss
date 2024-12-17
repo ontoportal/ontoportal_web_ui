@@ -1,6 +1,10 @@
 .turbo-progress-bar {
-  height: 5px;
-  background-color: var(--admin-color);
+  height: 10px;
+  background-color: #ffffff;
+}
+
+.tabs-container .tab-items > div button{
+  color: var(--primary-color) !important
 }
 
 a{

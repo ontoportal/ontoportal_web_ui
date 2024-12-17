@@ -122,10 +122,12 @@ gem 'net-http'
 # Multi-Provider Authentication
 gem 'omniauth'
 gem 'omniauth-rails_csrf_protection'
-gem 'omniauth-github'
-gem 'omniauth-google-oauth2'
-gem 'omniauth-keycloak'
-gem 'omniauth-orcid'
+
+# Additional authentication providers are not yet implemented
+# gem 'omniauth-github'
+# gem 'omniauth-google-oauth2'
+# gem 'omniauth-keycloak'
+# gem 'omniauth-orcid'
 
 group :staging, :production, :appliance do
   # Application performance monitoring

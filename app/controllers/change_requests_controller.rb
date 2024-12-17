@@ -57,7 +57,7 @@ class ChangeRequestsController < ApplicationController
     # TODO: remove format.js handling after the create_synonym and remove_synonym actions are converted
     #   from Rails UJS to Turbo Streams.
     respond_to do |format|
-      format.turbo_stream { redirect_to login_index_path }
+      format.any(:html, :turbo_stream) { redirect_to login_index_path }
       format.js { render js: "window.location.href='#{login_index_path}'", status: :found }
     end
   end
