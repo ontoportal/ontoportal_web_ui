@@ -293,26 +293,46 @@ module ApplicationHelper
     "/ontologies/#{ont_acronym}"
   end
 
+
   def bp_class_link(cls_id, ont_acronym)
-    ontology_path(id: ont_acronym, p: 'classes', conceptid: cls_id)
+    "#{bp_ont_link(ont_acronym)}?p=classes&conceptid=#{escape(cls_id)}&language=#{request_lang}"
+  end
+
+  def label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
+    { data:
+        {
+          'label-ajax-cls-id-value': cls_id,
+          'label-ajax-ontology-acronym-value': ont_acronym,
+          'label-ajax-ajax-url-value': ajax_uri,
+          'label-ajax-cls-id-url-value': cls_url
+        }
+    }
+  end
+
+  def label_ajax_data(cls_id, ont_acronym, ajax_uri, cls_url)
+    label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
+  end
+
+  def label_ajax_link(link, cls_id, ont_acronym, ajax_uri, cls_url, target = nil)
+    data = label_ajax_data(cls_id, ont_acronym, ajax_uri, cls_url)
+    options = {  'data-controller': 'label-ajax' }.merge(data)
+    options = options.merge({ target: target }) if target
+    content_tag(:span, class: 'mx-1') do
+      render ChipButtonComponent.new(url: link, text: cls_id, type: 'clickable', **options)
+    end
   end
 
   def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil)
-    # NOTE: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
-    # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
-    # bp_ajax_controller.ajax_process_cls will try to resolve class labels and
-    # otherwise remove the UNIQUE_SPLIT_STR and the ont_acronym.
-    target = target.nil? ? '' : " target='#{target}' "
-
-    if cls_id.start_with?('http://', 'https://')
-      href_cls = " href='#{bp_class_link(cls_id, ont_acronym)}' "
-      data_cls = " data-cls='#{cls_id}' "
-      data_ont = " data-ont='#{ont_acronym}' "
-      "<a class='cls4ajax' #{data_ont} #{data_cls} #{href_cls} #{target}>#{cls_id}</a>"
+    if cls_id.start_with?('http://') || cls_id.start_with?('https://')
+      link = bp_class_link(cls_id, ont_acronym)
+      ajax_url = "/ajax/classes/label?language=#{request_lang}"
+      cls_url = "/ontologies/#{ont_acronym}?p=classes&conceptid=#{CGI.escape(cls_id)}"
+      label_ajax_link(link, cls_id, ont_acronym, ajax_url , cls_url ,target)
     else
       content_tag(:div, cls_id)
     end
   end
+
 
   def get_link_for_ont_ajax(ont_acronym)
     # Ajax call will replace the acronym with an ontology name (triggered by class='ont4ajax')
