@@ -1,4 +1,5 @@
 module MultiLanguagesHelper
+  include OntologiesHelper
 
   def portal_language_help_text
     t('language.portal_language_help_text')
@@ -110,6 +111,7 @@ module MultiLanguagesHelper
       [lang.english_name, lang.alpha2]
     end.compact
 
+    submission_lang << ['All languages', 'all']
     [submission_lang, current_lang]
   end
 
@@ -141,6 +143,37 @@ module MultiLanguagesHelper
       code_out = 'jp'
     end
     code_out
+  end
+  # @param label String | Array | OpenStruct
+  def display_in_multiple_languages(label)
+    if label.blank?
+      return render Display::AlertComponent.new(message: t('ontology_details.concept.no_preferred_name_for_selected_language'),
+                                                type: "warning",
+                                                closable: true)
+    end
+
+
+
+    label = label.to_h.reject { |key, _| %i[links context].include?(key) } if label.is_a?(OpenStruct)
+
+    if label.is_a?(String)
+      content_tag(:p, label)
+    elsif label.is_a?(Array)
+      content_tag(:div) do
+        raw(label.map { |x| content_tag(:div, x) }.join)
+      end
+    else
+      content_tag(:div) do
+        raw(label.map do |key, value|
+          Array(value).map do |v|
+            content_tag(:div, class: 'definition') do
+              concat content_tag(:span, v)
+              concat content_tag(:span, key.upcase, class: 'badge bg-secondary ml-1') unless key.to_s.upcase.eql?('NONE') || key.to_s.upcase.eql?('@NONE')
+            end
+          end.join
+        end.join)
+      end
+    end
   end
 
 end

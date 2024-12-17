@@ -1,146 +1,30 @@
-- require 'cgi'
+= turbo_frame_tag(params[:modal] ? 'application_modal_content' : 'concept_details', class: 'd-block p-2') do
+  = render ConceptDetailsComponent.new(id:'concept-details', acronym: @ontology.acronym, concept_id: @concept.id,
+                properties: @concept.properties,
+                top_keys: %w[description comment],
+                bottom_keys: %w[disjoint subclass is_a has_part]) do |c|
 
-%div.py-3.ps-3
-  %div#change-request-notice
+    - c.header(stripped: true) do |t|
+      - t.add_row({th: t('ontology_details.concept.id')}, {td:link_to_with_actions(@concept.id, acronym: @ontology.acronym)})
+      - t.add_row({th: t('ontology_details.concept.preferred_name')}) do |h|
+        - h.td do
+          = display_in_multiple_languages(@concept.prefLabel)
 
-  - if change_requests_enabled?(@ontology.acronym)
-    %div#addProposalDropdownDiv{class: 'd-flex flex-row-reverse'}
-      %div.btn-group.dropstart
-        = button_tag('Add a proposal', id: 'addProposalDropdown', class: 'btn btn-sm btn-primary dropdown-toggle',
-                     type: 'button', 'data-bs-toggle': 'dropdown',  'aria-haspopup': 'true', 'aria-expanded': 'false')
-        %div.dropdown-menu{'aria-labelledby': 'addProposalDropdown'}
-          = link_to('Deepen class', '#', class: 'dropdown-item disabled')
-          = link_to('Delete class', '#', class: 'dropdown-item disabled')
-          = link_to('Obsolete class',
-                    change_requests_node_obsoletion_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
-                                                         ont_acronym: @ontology.acronym),
-                    class: 'dropdown-item', 'data-turbo': 'true', 'data-turbo-stream': 'true', 'data-turbo-frame': '_top')
-          = link_to('Rename class',
-                    change_requests_node_rename_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
-                                                     ont_acronym: @ontology.acronym),
-                    class: 'dropdown-item', 'data-turbo': 'true', 'data-turbo-stream': 'true','data-turbo-frame': '_top')
-    %div{'data-controller': 'change-requests'}
-      %div{id: 'addProposalFormDiv', 'data-change-requests-target': 'addProposalForm'}
+      - unless @concept.synonym.nil? || @concept.synonym.empty?
+        - t.add_row({th: t('ontology_details.concept.synonyms')}) do |h|
+          - h.td do
+            %div.d-flex
+              %div.d-flex
+                = display_in_multiple_languages(@concept.synonym)
+              %div.synonym-change-request
+                = add_synonym_button
+                = remove_synonym_button
 
-  %table.minimal.concept_details{cellpadding: "0", cellspacing: "0", width: "100%"}
-    %tr
-      %td Preferred Name
-      %td
-        %p
-        - if @concept.prefLabel({:use_html => false}).to_s.empty?
-          %div.alert.alert-warning= 'No preferred name provided for selected language'
-        - else
-          = @concept.prefLabel({:use_html => true}).html_safe
-      %td
-    %tr
-      %td Synonyms
-      %td
-        - for synonym in @concept.synonym
-          %p= synonym
-      %td 
-        %div.synonym-change-request
-          = add_synonym_button
-          = remove_synonym_button
-    - unless @concept.definition.nil? || @concept.definition.empty?
-      %tr
-        %td Definitions
-        %td
-          %p= @concept.definition.join(" ")
-        %td
-    %tr
-      %td ID
-      %td
-        %p= @concept.id
-      %td
-    - if @concept.obsolete?
-      %tr
-        %td Obsolete
-        %td
-          %p true
-        %td
 
-    - concept_properties = concept_properties2hash(@concept.properties) # see concepts_helper.rb
-    - keys = concept_properties.keys
-    - top_keys=["description", "comment"]
-    - bottom_keys=["disjoint", "subclass", "is_a", "has_part"]
-    - top_set=[]
-    - bottom_set=[]
-    - leftover=[]
-    - for key in keys
-      - key = key.to_s
-      - top=false
-      - bottom=false
-      - top_keys.each do |top_key|
-        - if key.downcase.include?(top_key)
-          - top_set << key
-          - top=true
-      - bottom_keys.each do |bottom_key|
-        - if key.downcase.include?(bottom_key)
-          - bottom_set << key
-          - bottom=true
-      - if !top && !bottom
-        - leftover << key
-    - leftover.sort! {|x,y| x.downcase <=> y.downcase }
+      - unless @concept.definition.nil? || @concept.definition.empty?
+        - t.add_row({th: t('ontology_details.concept.definitions')}, {td: display_in_multiple_languages(@concept.definition)})
 
-    -# TOP set of properties
-    - for key in top_set
-      - key = key.to_s
-      - next if exclude_relation?(key)
-      - if concept_properties[key]
-        - data = concept_properties[key]
-        - full_key = data[:key]
-        - values = data[:values]
-        %tr
-          %td= "#{remove_owl_notation(key)}"
-          %td
-            -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
-            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank') }
-            = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>".html_safe
-            -# auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>")}</p>", :all, :target => "_blank")
-          %td
+      - if @concept.obsolete?
+        - t.add_row({th: t('ontology_details.concept.obsolete')}, {td: 'true'})
 
-    -# LEFTOVER set of properties
-    - for key in leftover
-      - next if exclude_relation?(key, @ontology)
-      - if concept_properties[key]
-        - data = concept_properties[key]
-        - full_key = data[:key].to_s # handle symbols
-        - values = data[:values]
-        %tr
-          %td= "#{remove_owl_notation(key)}"
-          %td
-
-            -# NCBO-648 Note: a property with complex values might return an array of nils from the REST-API client code.
-            -# If we use values.compact or values.any? we may miss exceptions on data that should be handled better.
-
-            -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
-            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank') }
-            = "<p>#{sanitize(ajax_links.join('</p><p>'))}</p>".html_safe
-            -# auto_link("<p>#{sanitize(values.join("<br/>")).split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
-          %td
-
-    -# BOTTOM set of properties
-    - for key in bottom_set
-      - next if exclude_relation?(key)
-      - if concept_properties[key]
-        - data = concept_properties[key]
-        - full_key = data[:key]
-        - values = data[:values]
-        %tr
-          %td= "#{remove_owl_notation(key)}"
-          %td
-            -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
-            - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank')}
-            = "<p>#{ajax_links.join('</p><p>')}</p>".html_safe
-            -# auto_link("<p>#{values.split("||%||").join("<\/p><p>").gsub("%ONT%", @ontology.acronym)}</p>", :all, :target => "_blank")
-          %td
-
-:javascript
-
-  jQuery(document).ready(function(){
-    // Ajax globals and functions are in  "/javascripts/bp_ajax_controller.js"
-    // Note: bind any 'responsive elements' to the ajax_proces_halt() function, e.g.
-    jQuery("#facebox a.close").click(function(event){ ajax_process_halt(); });
-    // Initiate ajax calls to resolve class ID to prefLabel.
-    ajax_process_init();  // see bp_ajax_controller.js
-  })
+      - t.add_row({th: t('ontology_details.concept.type')} , {td: @concept.type})

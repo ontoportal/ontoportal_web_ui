@@ -1,50 +1,38 @@
-= render TurboFrameComponent.new(id: 'concept_show', data: { turbo: false }) do
+= render TurboFrameComponent.new(id: 'concept_show') do
   - if @concept.id.eql?("bp_fake_root")
-    %div{:style => "padding: 100px 0; font-size: larger; font-weight: bold; text-align: center;"}
-      Use the "Jump To" to find a class and display details, visualization, notes, and mappings
+    = render Display::AlertComponent.new do
+      = t('concepts.use_jump_to')
   - else
-    %div.cls-info-container
-      %ul.nav.nav-tabs.tabs
-        %li#details_top.nav-item
-          %button.nav-link.active.py-1{:href => "#details" , data:{'bs-toggle': 'tab', 'bs-target': '#details_content'}} Details
-        %li#visualization_top.nav-item
-          %button.nav-link.py-1{:href => "#visualization", data:{'bs-toggle': 'tab', 'bs-target': '#visualization_content'}} Visualization
-        %li#notes_top.nav-item
-          %button.nav-link.py-1{:href => "#notes", data:{'bs-toggle': 'tab', 'bs-target': '#notes_content'}}
-            Notes
-            %span#note_count_wrapper
-              (
-              %span#note_count= @notes.length
-              )
-        %li#mappings_top.nav-item
-          %button.nav-link.py-1{:href => "#mappings", data:{'bs-toggle': 'tab', 'bs-target': '#mappings_content'}}
-            Class Mappings (
-            %span#mapping_count= @mappings.size
-            )
-        - if Rails.configuration.settings.purl[:enabled]
-          = link_to("#classPermalinkModal", class: "class-permalink py-1", title: "Get a link to this page",
-                      aria: {label: "Get a link to this page"},
-                      data: {"bs-toggle": "modal", current_purl: "#{@current_purl}"}) do
-            %i{class: "fas fa-link", aria: {hidden: "true"}}
-      #contents.tab-content
-        #details_content.tab-pane.active.show
+    %div{'data-controller': 'concepts-json', 'data-action': 'click->concepts-json#update'}
+      = ontology_object_tabs_component(ontology_id: @ontology.acronym, objects_title: "classes", object_id: @concept.id) do |c|
+        - apikey = "apikey=#{get_apikey}"
+        - baseClassUrl = "#{@ontology.id}/classes/#{escape(@concept.id)}"
+        - tab_item_component(container_tabs: c, title: t('concepts.details'), path: '#details', selected: true, json_link: "#{baseClassUrl}?#{apikey}&display=all") do
           = render :partial =>'/concepts/details'
-        #visualization_content.tab-pane
+
+        - tab_item_component(container_tabs: c, title: t('concepts.visualization'), path: '#visualization') do
           = render :partial =>'/concepts/biomixer'
-        #notes_content.tab-pane
+
+
+        - count_span = content_tag(:span, "#{t('concepts.notes')} (#{content_tag(:span, @notes.length, id: 'note_count')})".html_safe)
+        - tab_item_component(container_tabs: c, title: count_span, path: '#notes', json_link: "#{baseClassUrl}/notes?#{apikey}") do
           = render :partial =>'/notes/list'
-        #mappings_content.tab-pane
-          = render :partial => '/mappings/concept_mappings'
 
-:javascript
-  jQuery(document).ready(function(){
 
-    jQuery("#classPermalinkModal").on("shown.bs.modal", function (e) {
-      var currentPurl = jQuery("a.class-permalink").data("current-purl");
-      jQuery("#purl_input").val(currentPurl);
-    })
+        - count_span = content_tag(:span, "#{t('concepts.mappings')} (#{content_tag(:span, concept_mappings_loader(ontology_acronym: @ontology.acronym, concept_id: @concept.id))})".html_safe, class: "d-flex")
+        - tab_item_component(container_tabs: c, title: count_span, path: '#mappings', json_link: "#{baseClassUrl}/mappings?#{apikey}") do
+          = render TurboFrameComponent.new(id:'concept_mappings',
+          src:"/ajax/mappings/get_concept_table?ontologyid=#{@ontology.acronym}&conceptid=#{CGI.escape(@concept.id)}")
 
-    jQuery("#purl_input").on("click", function () {
-      jQuery(this).select();
+
+  :javascript
+    jQuery(document).ready(function(){
+      jQuery("#classPermalinkModal").on("shown.bs.modal", function (e) {
+        var currentPurl = jQuery("#classPermalink").data("current-purl");
+        jQuery("#purl_input").val(currentPurl);
+      })
+
+      jQuery("#purl_input").on("click", function () {
+        jQuery(this).select();
+      });
     });
-  });

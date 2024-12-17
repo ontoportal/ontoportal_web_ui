@@ -4,7 +4,7 @@ require 'cgi'
 
 class MappingsController < ApplicationController
   include ActionView::Helpers::NumberHelper
-  include MappingStatistics
+  include MappingStatistics,MappingsHelper
 
   layout :determine_layout
   before_action :authorize_and_redirect, only: [:create, :new, :destroy]
@@ -79,15 +79,14 @@ class MappingsController < ApplicationController
     render partial: 'show'
   end
 
-  def get_concept_table
+   def get_concept_table
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontologyid]).first
     @concept = @ontology.explore.single_class({ full: true }, params[:conceptid])
 
-    @mappings = @concept.explore.mappings
-
+    @mappings = get_concept_mappings(@concept)
+    @type = params[:type]
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-
-    render partial: 'mapping_table'
+    render partial: 'mappings/concept_mappings', layout: false
   end
 
   def new

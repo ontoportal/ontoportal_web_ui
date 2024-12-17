@@ -57,25 +57,25 @@ export default class extends Controller {
     if (this.indexAxisValue === axe) {
       return {
         border: {
-          display: false
+          display: true
         },
         grid: {
           display: false
         },
         ticks: {
-          beginAtZero: false
+          beginAtZero: true
         }
       }
     } else {
       return {
         border: {
-          display: false
+          display: true
         },
         grid: {
-          display: false
+          display: true
         },
         ticks: {
-          display: false
+          display: true
         }
       }
     }

@@ -1,7 +1,10 @@
 $ont-metadata-bg-color: #e2ebf0;
 $widget-table-border-color: #EFEFEF;
 $ont-show-bg-color: #e9ecef;
-
+#concept_details{
+  max-height: 90vh;
+  overflow-y: auto;
+}
 .ontologies.show {
   background-color: $ont-show-bg-color;
 
@@ -11,7 +14,6 @@ $ont-show-bg-color: #e9ecef;
 }
 
 .ontologies.show .gutter {
-  background-color: rgba(0, 0, 0, 0.03);
   background-repeat: no-repeat;
   background-position: center;
 
@@ -184,8 +186,9 @@ $ont-show-bg-color: #e9ecef;
 }
 
 #bd_content .sidebar {
-  overflow-x: auto;
   white-space: nowrap;
+  min-height: 70vh;
+  max-height: 90vh;
 }
 
 #search_box:focus {

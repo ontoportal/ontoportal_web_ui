@@ -143,8 +143,6 @@ class OntologiesController < ApplicationController
 
     unless @concept.id == "bp_fake_root"
       @notes = @concept.explore.notes
-      @mappings = get_concept_mappings(@concept)
-      @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     end
     
     update_tab(@ontology, @concept.id)
