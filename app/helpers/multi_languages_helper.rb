@@ -145,7 +145,7 @@ module MultiLanguagesHelper
     code_out
   end
   # @param label String | Array | OpenStruct
-  def display_in_multiple_languages(label)
+  def display_in_multiple_languages(label, show_max: 10, style_as_badge: false)
     if label.blank?
       return render Display::AlertComponent.new(message: t('ontology_details.concept.no_preferred_name_for_selected_language'),
                                                 type: "warning",
@@ -160,7 +160,7 @@ module MultiLanguagesHelper
       content_tag(:p, label)
     elsif label.is_a?(Array)
       content_tag(:div) do
-        raw(label.map { |x| content_tag(:div, x) }.join)
+        raw(label.map { |x| content_tag(:span, x, class: style_as_badge ? 'badge bg-secondary' : '') }.join(', '))
       end
     else
       content_tag(:div) do
