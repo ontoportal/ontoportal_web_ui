@@ -1,4 +1,24 @@
 = turbo_frame_tag(params[:modal] ? 'application_modal_content' : 'concept_details', class: 'd-block p-2') do
+  %div.p-1
+    %div#change-request-notice
+    - if change_requests_enabled?(@ontology.acronym)
+      %div#addProposalDropdownDiv{class: 'd-flex flex-row-reverse'}
+        %div.btn-group.dropstart
+          = button_tag('Add a proposal', id: 'addProposalDropdown', class: 'btn btn-sm btn-primary dropdown-toggle',
+                       type: 'button', 'data-bs-toggle': 'dropdown',  'aria-haspopup': 'true', 'aria-expanded': 'false')
+          %div.dropdown-menu{'aria-labelledby': 'addProposalDropdown'}
+            = link_to('Deepen class', '#', class: 'dropdown-item disabled')
+            = link_to('Delete class', '#', class: 'dropdown-item disabled')
+            = link_to('Obsolete class',
+                      change_requests_node_obsoletion_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
+                                                           ont_acronym: @ontology.acronym),
+                      class: 'dropdown-item', 'data-turbo': 'true', 'data-turbo-stream': 'true', 'data-turbo-frame': '_top')
+            = link_to('Rename class',
+                      change_requests_node_rename_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
+                                                       ont_acronym: @ontology.acronym),
+                      class: 'dropdown-item', 'data-turbo': 'true', 'data-turbo-stream': 'true','data-turbo-frame': '_top')
+      %div{'data-controller': 'change-requests'}
+        %div{id: 'addProposalFormDiv', 'data-change-requests-target': 'addProposalForm'}
   = render ConceptDetailsComponent.new(id:'concept-details', acronym: @ontology.acronym, concept_id: @concept.id,
                 properties: @concept.properties,
                 top_keys: %w[description comment],
@@ -10,14 +30,13 @@
         - h.td do
           = display_in_multiple_languages(@concept.prefLabel)
 
-      - unless @concept.synonym.nil? || @concept.synonym.empty?
-        - t.add_row({th: t('ontology_details.concept.synonyms')}) do |h|
-          - h.td do
-            %div.d-flex
-              = display_in_multiple_languages(@concept.synonym, style_as_badge: true, show_max: 5)
-              %div.synonym-change-request
-                = add_synonym_button
-                = remove_synonym_button
+      - t.add_row({th: t('ontology_details.concept.synonyms')}) do |h|
+        - h.td do
+          %div.d-flex.justify-content-between
+            = display_in_multiple_languages(@concept.synonym, style_as_badge: true, show_max: 5)
+            %div.synonym-change-request
+              = add_synonym_button
+              = remove_synonym_button
 
 
       - unless @concept.definition.nil? || @concept.definition.empty?
