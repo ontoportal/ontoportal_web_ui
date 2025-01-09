@@ -33,7 +33,7 @@
       - t.add_row({th: t('ontology_details.concept.synonyms')}) do |h|
         - h.td do
           %div.d-flex.justify-content-between
-            = display_in_multiple_languages(@concept.synonym, style_as_badge: true, show_max: 5)
+            = display_in_multiple_languages(@concept.synonym, show_empty_alert: false, style_as_badge: true)
             %div.synonym-change-request
               = add_synonym_button
               = remove_synonym_button
