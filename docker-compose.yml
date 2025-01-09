@@ -9,7 +9,7 @@ x-app: &default-app
     - rails_cache:/app/tmp/cache
     - assets:/app/public/assets
     - .:/app
-  depends_on:
+  depends_on: &depends_on
     db:
       condition: service_healthy
     cache:
@@ -57,6 +57,10 @@ services:
     networks:
       - internal
       - external
+    depends_on:
+      <<: *depends_on
+      node:
+       condition: service_started
     ports:
       - "3000:3000"
 
