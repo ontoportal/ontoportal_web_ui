@@ -1,5 +1,5 @@
 module MultiLanguagesHelper
-  include OntologiesHelper
+  include OntologiesHelper, ComponentsHelper
 
   def portal_language_help_text
     t('language.portal_language_help_text')
@@ -136,14 +136,15 @@ module MultiLanguagesHelper
     when 'hi'
       code_out = 'in'
     when 'ur'
-      code_out =  'pk'
+      code_out = 'pk'
     when 'zh'
-      code_out =  'cn'
+      code_out = 'cn'
     when 'ja'
       code_out = 'jp'
     end
     code_out
   end
+
   # @param label String | Array | OpenStruct
   def display_in_multiple_languages(label, show_max: 10, style_as_badge: false)
     if label.blank?
@@ -152,15 +153,15 @@ module MultiLanguagesHelper
                                                 closable: true)
     end
 
-
-
     label = label.to_h.reject { |key, _| %i[links context].include?(key) } if label.is_a?(OpenStruct)
 
     if label.is_a?(String)
       content_tag(:p, label)
     elsif label.is_a?(Array)
-      content_tag(:div) do
-        raw(label.map { |x| content_tag(:span, x, class: style_as_badge ? 'badge bg-secondary' : '') }.join(', '))
+      list_items_component(max_items: show_max) do |r|
+        label.map do |x|
+          r.container { content_tag(:span, x, class: style_as_badge ? 'badge bg-secondary' : '').html_safe }
+        end
       end
     else
       content_tag(:div) do

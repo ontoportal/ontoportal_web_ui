@@ -9,6 +9,12 @@ module ComponentsHelper
     render Display::AlertComponent.new(type: type, message: message)
   end
 
+  def list_items_component(max_items:, &block)
+    render ListItemsShowMoreComponent.new(max_items: max_items) do |r|
+      capture(r, &block)
+    end
+  end
+
   def link_to_with_actions(link_to_tag, acronym: nil, url: nil, copy: true, check_resolvability: true, generate_link: true, generate_htaccess: false)
     tag = link_to_tag
     url = link_to_tag if url.nil?
@@ -21,7 +27,7 @@ module ComponentsHelper
   end
 
   def rounded_button_component(link)
-    render RoundedButtonComponent.new(link: link, target: '_blank',size: 'small',title: t("components.go_to_api"))
+    render RoundedButtonComponent.new(link: link, target: '_blank', size: 'small', title: t("components.go_to_api"))
   end
 
   def copy_link_to_clipboard(url, show_content: false)
@@ -30,9 +36,7 @@ module ComponentsHelper
     end
   end
 
-
-
-  def loader_component(type:'pulsing', small: false )
+  def loader_component(type: 'pulsing', small: false)
     render LoaderComponent.new(type: type, small: small)
   end
 
@@ -44,9 +48,8 @@ module ComponentsHelper
     content_tag(:p, message.html_safe, class: 'font-italic field-description_text')
   end
 
-
   def regular_button(id, value, variant: "secondary", state: "regular", size: "slim", &block)
-    render Buttons::RegularButtonComponent.new(id:id, value: value, variant: variant, state: state, size: size) do |btn|
+    render Buttons::RegularButtonComponent.new(id: id, value: value, variant: variant, state: state, size: size) do |btn|
       capture(btn, &block) if block_given?
     end
   end
