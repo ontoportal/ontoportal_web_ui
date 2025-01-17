@@ -12,6 +12,11 @@ class ChangeRequestsController < ApplicationController
     respond_to :turbo_stream
   end
 
+  def edit_definition
+    @definition = params[:concept_definition]
+    respond_to :turbo_stream
+  end
+
   def create_synonym
     respond_to :js
   end
