@@ -401,14 +401,18 @@ module ApplicationHelper
     end
   end
 
-  def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil)
+  def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil, style_as_badge = false)
     if cls_id.start_with?('http://') || cls_id.start_with?('https://')
       link = bp_class_link(cls_id, ont_acronym)
       ajax_url = "/ajax/classes/label?language=#{request_lang}"
       cls_url = "/ontologies/#{ont_acronym}?p=classes&conceptid=#{CGI.escape(cls_id)}"
       label_ajax_link(link, cls_id, ont_acronym, ajax_url , cls_url ,target)
     else
-      content_tag(:div, cls_id)
+      if cls_id.size > 20 || !style_as_badge
+       content_tag(:span, cls_id)
+      else
+        render ChipButtonComponent.new(text: cls_id)
+      end
     end
   end
 

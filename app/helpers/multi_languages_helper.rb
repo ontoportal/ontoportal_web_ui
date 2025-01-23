@@ -160,7 +160,13 @@ module MultiLanguagesHelper
     elsif label.is_a?(Array)
       list_items_component(max_items: show_max) do |r|
         label.map do |x|
-          r.container { content_tag(:span, x, class: style_as_badge ? 'badge bg-secondary' : '').html_safe }
+          r.container do
+            if style_as_badge
+              render ChipButtonComponent.new(text: x) if style_as_badge
+            else
+              content_tag(:span, x).html_safe
+            end
+          end
         end
       end
     else

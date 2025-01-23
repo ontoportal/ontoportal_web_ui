@@ -42,14 +42,16 @@ class ConceptDetailsComponent < ViewComponent::Base
       values = data[:values]
       url = data[:key]
 
+      is_list = values.is_a?(Array) && values.size > 1
+
       ajax_links = Array(values).map do |v|
         if block_given?
           block.call(v)
         else
           if v.is_a?(String)
-            get_link_for_cls_ajax(v, ontology_acronym, '_blank')
+            get_link_for_cls_ajax(v, ontology_acronym, '_blank', is_list)
           else
-            display_in_multiple_languages([v].to_h)
+            display_in_multiple_languages([v].to_h, style_as_badge: true)
           end
         end
       end
