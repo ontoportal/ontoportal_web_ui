@@ -3,7 +3,7 @@
     = header
   %div.my-3
   %div.raw-table
-    = render DropdownContainerComponent.new(title: 'Raw data', id: "accordion-#{@id}") do
+    = render DropdownContainerComponent.new(title: 'All Properties', id: "accordion-#{@id}", is_open: true) do
       = render TableComponent.new(stripped: true) do |t|
         - if @bottom_keys.present?
           - top_set, leftover_set, bottom_set = filter_properties(@top_keys, @bottom_keys, @exclude_keys, prefix_properties(@concept_properties))
