@@ -1,7 +1,8 @@
 = render TurboFrameComponent.new(id: 'concept_show') do
   - if @concept.id.eql?("bp_fake_root")
-    = render Display::AlertComponent.new do
-      = t('concepts.use_jump_to')
+    %div.text-center.py-5.card.h-100
+      %span.font-weight-bold
+        = t('concepts.use_jump_to')
   - else
     %div{'data-controller': 'concepts-json', 'data-action': 'click->concepts-json#update'}
       = ontology_object_tabs_component(ontology_id: @ontology.acronym, objects_title: "classes", object_id: @concept.id) do |c|
