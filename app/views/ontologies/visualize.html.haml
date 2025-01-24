@@ -3,7 +3,7 @@
     - @title = "#{@ontology.name} - #{@concept.prefLabel}"
     %div.tooltip
     %div#bd_content.bd_content.explore.py-3{data:{controller: 'container-splitter'}}
-      %div.sidebar.d-flex.flex-column.pr-2{data:{'container-splitter-target': 'container'}}
+      %div.sidebar.d-flex.flex-column.p-1.mx-2{data:{'container-splitter-target': 'container'}}
         %div#qsearch.input-group.pb-2.pe-1
           %span.input-group-text Jump to:
           = text_field_tag("search_box", nil, class: "form-control rounded-end", aria: {label: "Jump to:"},
@@ -15,7 +15,7 @@
           = hidden_field_tag("jump_to_concept_id")
         %div#sd_content.p-1
           = render TurboFrameComponent.new(id: 'concepts_tree_view' , src: "/ajax/classes/treeview?ontology=#{@ontology.acronym}&conceptid=#{escape(@concept.id)}&lang=#{request_lang(@submission)}")
-      %div#concept_content.d-flex.flex-column.card.p-1.ml-2{data:{'container-splitter-target': 'container'}}
+      %div#concept_content.d-flex.flex-column{data:{'container-splitter-target': 'container'}}
         = render partial: 'concepts/show'
 
     - form_for(:search, :url => '', :html=>{:id=>'search_form'}) do
