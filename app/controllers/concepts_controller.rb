@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ConceptsController < ApplicationController
-  include MappingsHelper
+  include MappingsHelper, ConceptsHelper
 
   layout 'ontology'
 
@@ -17,6 +17,8 @@ class ConceptsController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
     @submission = get_ontology_submission_ready(@ontology)
     @concept = @ontology.explore.single_class({full: true, lang: helpers.request_lang(@submission)}, params[:id])
+
+    @current_purl = @concept.purl if Rails.configuration.settings.purl[:enabled]
 
     not_found if @concept.nil?
     gather_details
@@ -47,17 +49,10 @@ class ConceptsController < ApplicationController
   end
 
   def show_label
-    @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
-    @ontology ||= LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    not_found unless @ontology
-    # Retrieve a class prefLabel or return the class ID (URI)
-    # - mappings may contain class URIs that are not in bioportal (e.g. obo-xrefs)
-    cls = @ontology.explore.single_class(params[:concept])
-    # TODO: log any cls.errors
-    # TODO: NCBO-402 might be implemented here, but it throws off a lot of ajax result rendering.
-    # cls_label = cls.prefLabel({:use_html => true}) || cls_id
-    cls_label = cls.prefLabel || params[:concept]
-    render plain: cls_label
+  cls_id = params[:concept] || params[:id]  # cls_id should be a full URI
+    ont_id = params[:ontology]  # ont_id could be a full URI or an acronym
+
+    render inline: helpers.main_language_label(concept_label(ont_id, cls_id))
   end
 
   def show_definition
