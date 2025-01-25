@@ -1,5 +1,7 @@
 = tag.p("Proposal: rename '#{@concept_label}'", class: 'lead')
-= form_with scope: :node_rename, url: change_requests_path, data: {turbo: true}, class: 'mb-5' do |f|
+= form_with(scope: :node_rename, url: change_requests_path,
+            data: {turbo: true, turbo_frame: '_top', action: 'turbo:submit-end->change-requests#hideForm'},
+            class: 'mb-5') do |f|
   = hidden_field_tag 'concept_id', @concept_id
   = hidden_field_tag 'concept_label', @concept_label
   = hidden_field_tag 'github_id', @user.githubId

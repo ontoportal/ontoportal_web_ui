@@ -20,7 +20,7 @@
                                                      ont_acronym: @ontology.acronym),
                     class: 'dropdown-item', 'data-turbo': 'true', 'data-turbo-stream': 'true','data-turbo-frame': '_top')
     %div{'data-controller': 'change-requests'}
-      %div{id: 'addProposalFormDiv', 'data-change-requests-target': 'addProposalForm'}
+      %div{id: 'addProposalFormDiv', 'data-change-requests-target': 'proposalForm'}
 
   %table.minimal.concept_details{cellpadding: "0", cellspacing: "0", width: "100%"}
     %tr
@@ -112,7 +112,7 @@
             - if key.eql?('definition')
               %div= sanitize(values.first)
               %div{'data-controller': 'change-requests'}
-                %div{id: 'editDefinitionFormDiv', 'data-change-requests-target': 'editDefinitionForm'}
+                %div{id: 'editDefinitionFormDiv', 'data-change-requests-target': 'proposalForm'}
             - else
               -# Note: get_link_for_cls_ajax is in application_helper.rb, it calls auto_link when necessary.
               - ajax_links = values.map {|v| get_link_for_cls_ajax(v, @ontology.acronym, '_blank') }

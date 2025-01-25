@@ -1,4 +1,5 @@
-= form_with(scope: :edit_definition, url: change_requests_path, data: {turbo: true, turbo_frame: 'top'},
+= form_with(scope: :edit_definition, url: change_requests_path,
+            data: {turbo: true, turbo_frame: 'top', action: 'turbo:submit-end->change-requests#hideForm'},
             class: 'my-4') do |f|
   = hidden_field_tag 'concept_id', @concept_id
   = hidden_field_tag 'concept_label', @concept_label
@@ -20,4 +21,4 @@
               id: 'editDefinitionCommentHelpBlock')
   = submit_tag 'Submit', id: 'edit_definition_button', class: 'btn btn-primary btn-sm'
   = tag.button('Cancel', type: 'button',
-               'data-action': 'click->change-requests#clearEditDefinitionForm', class: 'btn btn-primary btn-sm')
+               'data-action': 'click->change-requests#clearProposalForm', class: 'btn btn-primary btn-sm')
