@@ -17,7 +17,7 @@ module ChangeRequestsHelper
                                                  concept_definition: definition, ont_acronym: @ontology.acronym),
             role: 'button', class: 'btn btn-link', 'aria-label': 'Edit definition',
             data: { 'turbo': true, 'turbo-stream': 'true', 'turbo-frame': '_top' }) do
-      content_tag(:i, '', class: 'fas fa-user-edit fa-lg', aria: { hidden: 'true' })
+      content_tag(:i, '', class: 'fas fa-pen fa-lg', aria: { hidden: 'true' })
     end
   end
 
