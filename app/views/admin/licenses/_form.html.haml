@@ -1,4 +1,4 @@
-= form_with(model: [:admin, license]) do |form|
+= form_with(model: [:admin, license], data: { remote: true }) do |form|
   - if license.errors.any?
     %div.alert.alert-danger{role: "alert"}
       %h5.alert-heading
