@@ -484,7 +484,7 @@ UpdateCheck.prototype.onSuccessAction = function(data, ontology, deferredObj) {
     }
 
     if (updateInfo.hasOwnProperty("appliance_id")) {
-      jQuery("#appliance-id span").text(updateInfo["appliance_id"])
+      document.querySelector("#appliance-id span").textContent = updateInfo["appliance_id"];
     }
   }
 };
