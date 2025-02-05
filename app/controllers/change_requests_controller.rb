@@ -30,7 +30,11 @@ class ChangeRequestsController < ApplicationController
     params[:curie] = generate_curie(params[:ont_acronym], params[:concept_id])
     params[:content] = KGCL::IssueContentGenerator.call(params)
 
-    result = IssueCreatorService.call(params)
+    begin
+      result = IssueCreatorService.call(params)
+    rescue  StandardError => e
+      result =  { success: false, error: e.message }
+    end
     if result[:success]
       flash.now.notice = helpers.change_request_success_message(result[:issue])
     else
