@@ -27,7 +27,7 @@ module ChangeRequestsHelper
     link_to(change_requests_create_synonym_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
                                                 ont_acronym: @ontology.acronym),
             role: 'button',
-            class: 'btn btn-link',
+            class: 'btn btn-link p-0',
             aria: { label: 'Create synonym' },
             data: { 'bs-toggle': 'modal', 'bs-target': '#changeRequestModal' },
             remote: 'true') do
@@ -39,13 +39,13 @@ module ChangeRequestsHelper
     return unless change_requests_enabled?(@ontology.acronym)
 
     if @concept.synonym.blank?
-      tag.a role: 'button', class: 'btn btn-link disabled', aria: { disabled: true } do
+      tag.a role: 'button', class: 'btn btn-link disabled p-0', aria: { disabled: true } do
         tag.i class: 'fas fa-minus-circle fa-lg', aria: { hidden: true }
       end
     else
       link_to(change_requests_remove_synonym_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
                                                   ont_acronym: @ontology.acronym, concept_synonyms: @concept.synonym),
-              role: 'button', class: 'btn btn-link', aria: { label: 'Remove synonym' },
+              role: 'button', class: 'btn btn-link p-0', aria: { label: 'Remove synonym' },
               data: { 'bs-toggle': 'modal', 'bs-target': '#changeRequestModal' }, remote: 'true') do
         tag.i class: 'fas fa-minus-circle fa-lg', aria: { hidden: 'true' }
       end
