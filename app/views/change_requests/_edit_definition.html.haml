@@ -1,5 +1,5 @@
 = form_with(scope: :edit_definition, url: change_requests_path,
-            data: {turbo: true, turbo_frame: 'top', action: 'turbo:submit-end->change-requests#hideForm'},
+            data: {turbo: true, turbo_frame: '_top', action: 'turbo:submit-end->change-requests#hideForm'},
             class: 'my-4') do |f|
   = hidden_field_tag 'concept_id', @concept_id
   = hidden_field_tag 'concept_label', @concept_label
