@@ -2,9 +2,9 @@
   %div.p-1
     %div#change-request-notice
     - if change_requests_enabled?(@ontology.acronym)
-      %div#addProposalDropdownDiv{class: 'd-flex flex-row-reverse'}
-        %div.btn-group.dropstart
-          = button_tag('Add a proposal', id: 'addProposalDropdown', class: 'btn btn-sm btn-primary dropdown-toggle',
+      = render 'ontologies/add_proposal'
+  %div
+    = render ConceptDetailsComponent.new(id:'concept-details', acronym: @ontology.acronym, concept_id: @concept.id,
                        type: 'button', 'data-bs-toggle': 'dropdown',  'aria-haspopup': 'true', 'aria-expanded': 'false')
           %div.dropdown-menu{'aria-labelledby': 'addProposalDropdown'}
             = link_to('Deepen class', '#', class: 'dropdown-item disabled')
