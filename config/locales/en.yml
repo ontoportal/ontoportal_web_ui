@@ -106,6 +106,7 @@ en:
     visualization: Visualization
     mappings: Mappings
     permanent_link_class: Get a permanent link to this class
+    api_link_class: Go to class API
 
   components:
     check_resolvability: checking resolvability...
