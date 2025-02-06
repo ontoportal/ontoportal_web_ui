@@ -12,6 +12,11 @@ class ChangeRequestsController < ApplicationController
     respond_to :turbo_stream
   end
 
+  def edit_definition
+    @definition = params[:concept_definition]
+    respond_to :turbo_stream
+  end
+
   def create_synonym
     respond_to :js
   end
@@ -24,8 +29,17 @@ class ChangeRequestsController < ApplicationController
   def create
     params[:curie] = generate_curie(params[:ont_acronym], params[:concept_id])
     params[:content] = KGCL::IssueContentGenerator.call(params)
-    @issue = IssueCreatorService.call(params)
-    flash.now.notice = helpers.change_request_success_message if @issue['id'].present?
+
+    begin
+      result = IssueCreatorService.call(params)
+    rescue  StandardError => e
+      result =  { success: false, error: e.message }
+    end
+    if result[:success]
+      flash.now.notice = helpers.change_request_success_message(result[:issue])
+    else
+      flash.now.alert = "Change request failed: #{result[:error]}"
+    end
 
     # TODO: remove format.js from this block, and the create.js.erb file after the create_synonym and
     #   remove_synonym actions are converted from Rails UJS to Turbo Streams.

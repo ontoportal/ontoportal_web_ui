@@ -2,9 +2,15 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="change-requests"
 export default class extends Controller {
-  static targets = [ 'addProposalForm' ]
+  static targets = [ 'proposalForm' ]
 
   clearProposalForm() {
-    this.addProposalFormTarget.innerHTML = '';
+    this.proposalFormTarget.innerHTML = '';
+  }
+
+  hideForm(event) {
+    if (event.detail.success) {
+      this.clearProposalForm();
+    }
   }
 }

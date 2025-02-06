@@ -71,39 +71,7 @@ module ApplicationHelper
     # Reconstruct the cleaned URL
     "#{protocol}://#{cleaned_path}"
   end
-  def prefix_property_url(key_string, key = nil)
-    namespace_key, _ = RESOLVE_NAMESPACE.find { |_, value| key_string.include?(value) }
 
-    if key && namespace_key
-      "#{namespace_key}:#{key}"
-    elsif key.nil? && namespace_key
-      namespace_key
-    else # we don't try to guess the prefix
-      nil
-    end
-  end
-
-  def prefix_properties(concept_properties)
-    modified_properties = {}
-
-    concept_properties&.each do |key, value|
-      if value.is_a?(Hash) && value.key?(:key)
-        key_string = value[:key].to_s
-        next if key_string.include?('metadata')
-
-        modified_key = prefix_property_url(key_string, key)
-
-        if modified_key
-          modified_properties[modified_key] = value
-        else
-          modified_properties[link_last_part(key_string)] = value
-        end
-
-      end
-    end
-
-    modified_properties
-  end
 
   def draw_tree(root, id = nil, submission = @submission || @submission_latest)
     if id.nil?

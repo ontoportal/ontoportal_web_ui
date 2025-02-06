@@ -2,47 +2,46 @@
   %div.p-1
     %div#change-request-notice
     - if change_requests_enabled?(@ontology.acronym)
-      %div#addProposalDropdownDiv{class: 'd-flex flex-row-reverse'}
-        %div.btn-group.dropstart
-          = button_tag('Add a proposal', id: 'addProposalDropdown', class: 'btn btn-sm btn-primary dropdown-toggle',
-                       type: 'button', 'data-bs-toggle': 'dropdown',  'aria-haspopup': 'true', 'aria-expanded': 'false')
-          %div.dropdown-menu{'aria-labelledby': 'addProposalDropdown'}
-            = link_to('Deepen class', '#', class: 'dropdown-item disabled')
-            = link_to('Delete class', '#', class: 'dropdown-item disabled')
-            = link_to('Obsolete class',
-                      change_requests_node_obsoletion_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
-                                                           ont_acronym: @ontology.acronym),
-                      class: 'dropdown-item', 'data-turbo': 'true', 'data-turbo-stream': 'true', 'data-turbo-frame': '_top')
-            = link_to('Rename class',
-                      change_requests_node_rename_path(concept_id: @concept.id, concept_label: @concept.prefLabel,
-                                                       ont_acronym: @ontology.acronym),
-                      class: 'dropdown-item', 'data-turbo': 'true', 'data-turbo-stream': 'true','data-turbo-frame': '_top')
-      %div{'data-controller': 'change-requests'}
-        %div{id: 'addProposalFormDiv', 'data-change-requests-target': 'addProposalForm'}
-  = render ConceptDetailsComponent.new(id:'concept-details', acronym: @ontology.acronym, concept_id: @concept.id,
-                properties: @concept.properties,
-                top_keys: %w[description comment],
-                bottom_keys: %w[disjoint subclass is_a has_part]) do |c|
-
-    - c.header(stripped: true) do |t|
-      - t.add_row({th: t('ontology_details.concept.id')}, {td:link_to_with_actions(@concept.id, acronym: @ontology.acronym)})
-      - t.add_row({th: t('ontology_details.concept.preferred_name')}) do |h|
-        - h.td do
-          = display_in_multiple_languages(@concept.prefLabel)
-
-      - t.add_row({th: t('ontology_details.concept.synonyms')}) do |h|
-        - h.td do
-          %div.d-flex.justify-content-between
-            = display_in_multiple_languages(@concept.synonym, show_empty_alert: false, style_as_badge: true)
-            %div.synonym-change-request
-              = add_synonym_button
-              = remove_synonym_button
+      = render 'ontologies/add_proposal'
+  %div
+    = render ConceptDetailsComponent.new(id:'concept-details', acronym: @ontology.acronym, concept_id: @concept.id,
+                  properties: @concept.properties,
+                  top_keys: %w[description comment label prefLabel altLabel],
+                  bottom_keys: %w[disjoint subclass is_a has_part],
+                  exclude_keys: %w[definition]) do |c|
 
 
-      - unless @concept.definition.nil? || @concept.definition.empty?
-        - t.add_row({th: t('ontology_details.concept.definitions')}, {td: display_in_multiple_languages(@concept.definition)})
+      - c.header(stripped: true) do |t|
+        - t.add_row({th: t('ontology_details.concept.id')}, {td:link_to_with_actions(@concept.id, acronym: @ontology.acronym)})
+        - t.add_row({th: t('ontology_details.concept.preferred_name')}) do |h|
+          - h.td do
+            = display_in_multiple_languages(@concept.prefLabel)
 
-      - if @concept.obsolete?
-        - t.add_row({th: t('ontology_details.concept.obsolete')}, {td: 'true'})
+        - if change_requests_enabled?(@ontology.acronym) || !@concept.synonym.empty?
+          - t.add_row({th: t('ontology_details.concept.synonyms')}) do |h|
+            - h.td do
+              %div.d-flex.justify-content-between.alingn-items-center
+                = display_in_multiple_languages(@concept.synonym, show_empty_alert: false, style_as_badge: true)
+                %div.change-request-buttons
+                  = add_synonym_button
+                  = remove_synonym_button
 
-      - t.add_row({th: t('ontology_details.concept.type')} , {td: @concept.type})
+
+        - unless @concept.definition.nil? || @concept.definition.empty?
+          - t.add_row({th: t('ontology_details.concept.definitions')}, {td: display_in_multiple_languages(@concept.definition)})
+
+        - if @concept.obsolete?
+          - t.add_row({th: t('ontology_details.concept.obsolete')}, {td: 'true'})
+
+        - t.add_row({th: t('ontology_details.concept.type')} , {td: @concept.type})
+
+      - c.add_sections(['definition']) do |v|
+        %div.d-flex.justify-content-between.align-items-center
+          %div.d-flex.flex-column
+            %div= Array(v).first
+            %div
+              %div.w-100{'data-controller': 'change-requests', turbo_frame: '_top'}
+                %div{id: 'editDefinitionFormDiv', 'data-change-requests-target': 'proposalForm'}
+          %div.change-request-buttons
+            - if change_requests_enabled?(@ontology.acronym)
+              = edit_definition_button(Array(v).first)
