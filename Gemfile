@@ -59,6 +59,10 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
+# https://stackoverflow.com/questions/79360526/uninitialized-constant-activesupportloggerthreadsafelevellogger-nameerror
+# remove pin after upgrade to rails 8.0.1+ or proper fix is implemented
+gem "concurrent-ruby", "= 1.3.4"
+
 # Memcached client for Ruby
 gem 'dalli'
 
@@ -193,4 +197,3 @@ group :test do
   gem 'rspec-rails'
 end
 
-gem "concurrent-ruby", "= 1.3.4"
