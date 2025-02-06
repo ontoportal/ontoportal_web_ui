@@ -39,3 +39,6 @@ application.register("turbo-frame", TurboFrameController)
 
 import TurboFrameErrorController from "./turbo_frame_error_controller"
 application.register("turbo-frame-error", TurboFrameErrorController)
+
+import LabelAjaxController from "./label_ajax_controller"
+application.register("label-ajax", LabelAjaxController)

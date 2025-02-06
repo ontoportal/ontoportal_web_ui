@@ -3,6 +3,20 @@ require 'cgi'
 require 'digest/sha1'
 
 module ApplicationHelper
+  include ModalHelper, MultiLanguagesHelper
+
+  RESOLVE_NAMESPACE = {:omv => "http://omv.ontoware.org/2005/05/ontology#", :skos => "http://www.w3.org/2004/02/skos/core#", :owl => "http://www.w3.org/2002/07/owl#",
+                       :rdf => "http://www.w3.org/1999/02/22-rdf-syntax-ns#", :rdfs => "http://www.w3.org/2000/01/rdf-schema#", :metadata => "http://data.bioontology.org/metadata/",
+                       :metadata_def => "http://data.bioontology.org/metadata/def/", :dc => "http://purl.org/dc/elements/1.1/", :xsd => "http://www.w3.org/2001/XMLSchema#",
+                       :oboinowl_gen => "http://www.geneontology.org/formats/oboInOwl#", :obo_purl => "http://purl.obolibrary.org/obo/",
+                       :umls => "http://bioportal.bioontology.org/ontologies/umls/", :door => "http://kannel.open.ac.uk/ontology#", :dct => "http://purl.org/dc/terms/",
+                       :void => "http://rdfs.org/ns/void#", :foaf => "http://xmlns.com/foaf/0.1/", :vann => "http://purl.org/vocab/vann/", :adms => "http://www.w3.org/ns/adms#",
+                       :voaf => "http://purl.org/vocommons/voaf#", :dcat => "http://www.w3.org/ns/dcat#", :mod => "http://www.isibang.ac.in/ns/mod#", :prov => "http://www.w3.org/ns/prov#",
+                       :cc => "http://creativecommons.org/ns#", :schema => "http://schema.org/", :doap => "http://usefulinc.com/ns/doap#", :bibo => "http://purl.org/ontology/bibo/",
+                       :wdrs => "http://www.w3.org/2007/05/powder-s#", :cito => "http://purl.org/spar/cito/", :pav => "http://purl.org/pav/", :nkos => "http://w3id.org/nkos/nkostype#",
+                       :oboInOwl => "http://www.geneontology.org/formats/oboInOwl#", :idot => "http://identifiers.org/idot/", :sd => "http://www.w3.org/ns/sparql-service-description#",
+                       :cclicense => "http://creativecommons.org/licenses/",
+                       'skos-xl' => "http://www.w3.org/2008/05/skos-xl#"}
   def get_apikey
     unless session[:user].nil?
       session[:user].apikey
@@ -47,6 +61,17 @@ module ApplicationHelper
     # TODO_REV: No OWL notation, but should we modify the IRI?
     string
   end
+
+  def rest_url
+    # Split the URL into protocol and path parts
+    protocol, path = $REST_URL.split("://", 2)
+
+    # Remove the last '/' in the path part
+    cleaned_path = path.chomp('/')
+    # Reconstruct the cleaned URL
+    "#{protocol}://#{cleaned_path}"
+  end
+
 
   def draw_tree(root, id = nil, submission = @submission || @submission_latest)
     if id.nil?
@@ -93,11 +118,33 @@ module ApplicationHelper
     string
   end
 
+
   def tree_link_to_concept(li_id:, child:, ontology_acronym:, active_style:, lang: )
-    page_name = ontology_viewer_page_name(ontology_acronym, child.prefLabel, 'Classes')
+    page_name = ontology_viewer_page_name(ontology_acronym, main_language_label(child.prefLabel), 'Classes')
     open = child.expanded? ? "class='open'" : ''
-    href = ontology_acronym.blank? ? '#' :  "/ontologies/#{child.explore.ontology.acronym}/concepts/?id=#{CGI.escape(child.id)}&lang=#{lang}"
-    "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' data-bp-ont-page-name='#{page_name}' data-turbo=true data-turbo-frame='concept_show' href='#{href}' #{active_style}> #{child.prefLabel({ use_html: true })}</a>"
+    pref_label_html, tooltip = tree_node_label(child)
+    href = ontology_acronym.blank? ? '#' :  "/ontologies/#{ontology_acronym}/concepts/?id=#{CGI.escape(child.id)}&lang=#{lang}"
+    "<li #{open} id='#{li_id}'><a id='#{CGI.escape(child.id)}' data-bp-ont-page-name='#{page_name}' data-turbo=true data-turbo-frame='concept_show' href='#{href}' #{active_style} title='#{tooltip}'> #{pref_label_html}</a>"
+  end
+
+  def tree_node_label(child)
+    label = begin
+              child.prefLabel || child.label
+            rescue
+              child.id
+            end
+
+    if label.nil?
+      pref_label_html = link_last_part(child.id)
+    else
+      pref_label_lang, pref_label_html = select_language_label(label)
+      pref_label_lang = pref_label_lang.to_s.upcase
+      tooltip = pref_label_lang.eql?("@NONE") ? "" : pref_label_lang
+
+      pref_label_html = "<span class='obsolete_class'>#{pref_label_html.html_safe}</span>".html_safe if child.obsolete?
+    end
+
+    [pref_label_html, tooltip]
   end
 
   def tree_link_to_children(li_id:, child:, ontology_acronym:, lang: )
@@ -293,26 +340,50 @@ module ApplicationHelper
     "/ontologies/#{ont_acronym}"
   end
 
+
   def bp_class_link(cls_id, ont_acronym)
-    ontology_path(id: ont_acronym, p: 'classes', conceptid: cls_id)
+    "#{bp_ont_link(ont_acronym)}?p=classes&conceptid=#{escape(cls_id)}&language=#{request_lang}"
   end
 
-  def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil)
-    # NOTE: bp_ajax_controller.ajax_process_cls will try to resolve class labels.
-    # Uses 'http' as a more generic attempt to resolve class labels than .include? ont_acronym; the
-    # bp_ajax_controller.ajax_process_cls will try to resolve class labels and
-    # otherwise remove the UNIQUE_SPLIT_STR and the ont_acronym.
-    target = target.nil? ? '' : " target='#{target}' "
+  def label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
+    { data:
+        {
+          'label-ajax-cls-id-value': cls_id,
+          'label-ajax-ontology-acronym-value': ont_acronym,
+          'label-ajax-ajax-url-value': ajax_uri,
+          'label-ajax-cls-id-url-value': cls_url
+        }
+    }
+  end
 
-    if cls_id.start_with?('http://', 'https://')
-      href_cls = " href='#{bp_class_link(cls_id, ont_acronym)}' "
-      data_cls = " data-cls='#{cls_id}' "
-      data_ont = " data-ont='#{ont_acronym}' "
-      "<a class='cls4ajax' #{data_ont} #{data_cls} #{href_cls} #{target}>#{cls_id}</a>"
-    else
-      content_tag(:div, cls_id)
+  def label_ajax_data(cls_id, ont_acronym, ajax_uri, cls_url)
+    label_ajax_data_h(cls_id, ont_acronym, ajax_uri, cls_url)
+  end
+
+  def label_ajax_link(link, cls_id, ont_acronym, ajax_uri, cls_url, target = nil)
+    data = label_ajax_data(cls_id, ont_acronym, ajax_uri, cls_url)
+    options = {  'data-controller': 'label-ajax' }.merge(data)
+    options = options.merge({ target: target }) if target
+    content_tag(:span, class: 'mx-1') do
+      render ChipButtonComponent.new(url: link, text: cls_id, type: 'clickable', **options)
     end
   end
+
+  def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil, style_as_badge = false)
+    if cls_id.start_with?('http://') || cls_id.start_with?('https://')
+      link = bp_class_link(cls_id, ont_acronym)
+      ajax_url = "/ajax/classes/label?language=#{request_lang}"
+      cls_url = "/ontologies/#{ont_acronym}?p=classes&conceptid=#{CGI.escape(cls_id)}"
+      label_ajax_link(link, cls_id, ont_acronym, ajax_url, cls_url, target)
+    else
+      if style_as_badge
+        render ChipButtonComponent.new(text: cls_id)
+      else
+        content_tag(:span, cls_id)
+      end
+    end
+  end
+
 
   def get_link_for_ont_ajax(ont_acronym)
     # Ajax call will replace the acronym with an ontology name (triggered by class='ont4ajax')

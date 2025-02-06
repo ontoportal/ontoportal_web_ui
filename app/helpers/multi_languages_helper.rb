@@ -1,4 +1,5 @@
 module MultiLanguagesHelper
+  include OntologiesHelper, ComponentsHelper
 
   def portal_language_help_text
     t('language.portal_language_help_text')
@@ -110,6 +111,7 @@ module MultiLanguagesHelper
       [lang.english_name, lang.alpha2]
     end.compact
 
+    submission_lang << ['All languages', 'all']
     [submission_lang, current_lang]
   end
 
@@ -134,13 +136,51 @@ module MultiLanguagesHelper
     when 'hi'
       code_out = 'in'
     when 'ur'
-      code_out =  'pk'
+      code_out = 'pk'
     when 'zh'
-      code_out =  'cn'
+      code_out = 'cn'
     when 'ja'
       code_out = 'jp'
     end
     code_out
+  end
+
+  # @param label String | Array | OpenStruct
+  def display_in_multiple_languages(label, show_max: 10, style_as_badge: false, show_empty_alert: true)
+    if label.blank? && show_empty_alert
+      return render Display::AlertComponent.new(message: t('ontology_details.concept.no_preferred_name_for_selected_language'),
+                                                type: "warning",
+                                                closable: true)
+    end
+
+    label = label.to_h.reject { |key, _| %i[links context].include?(key) } if label.is_a?(OpenStruct)
+
+    if label.is_a?(String)
+      content_tag(:p, label)
+    elsif label.is_a?(Array)
+      list_items_component(max_items: show_max) do |r|
+        label.map do |x|
+          r.container do
+            if style_as_badge
+              render ChipButtonComponent.new(text: x) if style_as_badge
+            else
+              content_tag(:span, x).html_safe
+            end
+          end
+        end
+      end
+    else
+      content_tag(:div) do
+        raw(label.map do |key, value|
+          Array(value).map do |v|
+            content_tag(:div, class: 'definition') do
+              concat content_tag(:span, v)
+              concat content_tag(:span, key.upcase, class: 'badge bg-secondary ml-1') unless key.to_s.upcase.eql?('NONE') || key.to_s.upcase.eql?('@NONE')
+            end
+          end.join
+        end.join)
+      end
+    end
   end
 
 end
