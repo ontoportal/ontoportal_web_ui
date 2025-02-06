@@ -1,15 +1,14 @@
-= form_with(model: [:admin, license]) do |form|
+= form_with(model: [:admin, license], data: { remote: true }) do |form|
   - if license.errors.any?
-    %div.alert.alert-danger{role: "alert"}
+    %div{class: 'alert alert-danger my-4', role: "alert"}
       %h5.alert-heading
         = pluralize(license.errors.count, "error") 
         prohibited this license from being saved:
       - license.errors.full_messages.each do |message|
-        %p.font-italic.pl-3.mb-0= message
-  %div.form-group
-    %label{for: "license_encrypted_key"} License key
-    = text_area(:license, :encrypted_key, rows: 10, required: true, class: "form-control", aria: { describedBy: "licenseKeyHelpBlock" })
-    %small#licenseKeyHelpBlock.form-text.text-muted
-      Paste your license key into the text area
-  %div.form-group
-    = form.submit "Submit", class: "btn btn-primary"
+        %p.font-italic.ps-3.mb-0= message
+  %div.mb-3
+    %label{for: "license_encrypted_key", class: 'form-label'} License key
+    = text_area(:license, :encrypted_key, rows: 10, required: true, class: "form-control",
+                aria: { describedBy: "licenseKeyHelpBlock" })
+    %div{id: '#licenseKeyHelpBlock', class: 'form-text'} Paste your license key into the text area
+  = form.submit "Submit", class: "btn btn-primary"
