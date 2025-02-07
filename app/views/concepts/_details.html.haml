@@ -17,6 +17,9 @@
           - h.td do
             = display_in_multiple_languages(@concept.prefLabel)
 
+        - unless @concept.definition.nil? || @concept.definition.empty?
+          - t.add_row({th: t('ontology_details.concept.definitions')}, {td: display_in_multiple_languages(@concept.definition)})
+
         - if change_requests_enabled?(@ontology.acronym) || !@concept.synonym.empty?
           - t.add_row({th: t('ontology_details.concept.synonyms')}) do |h|
             - h.td do
@@ -26,10 +29,6 @@
                   = add_synonym_button
                   = remove_synonym_button
 
-
-        - unless @concept.definition.nil? || @concept.definition.empty?
-          - t.add_row({th: t('ontology_details.concept.definitions')}, {td: display_in_multiple_languages(@concept.definition)})
-
         - if @concept.obsolete?
           - t.add_row({th: t('ontology_details.concept.obsolete')}, {td: 'true'})
 
@@ -38,7 +37,7 @@
       - c.add_sections(['definition']) do |v|
         %div.d-flex.justify-content-between.align-items-center
           %div.d-flex.flex-column
-            %div= Array(v).first
+            %div= display_in_multiple_languages(v)
             %div
               %div.w-100{'data-controller': 'change-requests', turbo_frame: '_top'}
                 %div{id: 'editDefinitionFormDiv', 'data-change-requests-target': 'proposalForm'}
