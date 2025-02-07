@@ -111,7 +111,7 @@ module MultiLanguagesHelper
       [lang.english_name, lang.alpha2]
     end.compact
 
-    submission_lang << ['All languages', 'all']
+    submission_lang << ['All Languages', 'all']
     [submission_lang, current_lang]
   end
 
