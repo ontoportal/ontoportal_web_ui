@@ -145,6 +145,68 @@ module MultiLanguagesHelper
     code_out
   end
 
+def display_in_multiple_languages33(label, show_max: 10, style_as_badge: false, show_empty_alert: true)
+  return render_empty_alert if label.blank? && show_empty_alert
+
+  label = format_label_if_openstruct(label)
+
+  case label
+  when String
+    content_tag(:p, label)
+  when Array
+    render_label_list(label, show_max, style_as_badge)
+  else
+    render_label_definitions(label)
+  end
+end
+
+private
+
+def render_empty_alert
+  render Display::AlertComponent.new(
+    message: t('ontology_details.concept.no_preferred_name_for_selected_language'),
+    type: 'warning',
+    closable: true
+  )
+end
+
+def format_label_if_openstruct(label)
+  return label unless label.is_a?(OpenStruct)
+
+  label.to_h.reject { |key, _| %i[links context].include?(key) }
+end
+
+def render_label_list(label, show_max, style_as_badge)
+  list_items_component(max_items: show_max) do |r|
+    label.each do |x|
+      r.container do
+        style_as_badge ? render(ChipButtonComponent.new(text: x)) : content_tag(:span, x).html_safe
+      end
+    end
+  end
+end
+
+def render_label_definitions(label)
+  content_tag(:div) do
+    raw(
+      label.map do |key, value|
+        Array(value).map do |v|
+          render_label_entry(v, key)
+        end.join
+      end.join
+    )
+  end
+end
+
+def render_label_entry(value, key)
+  content_tag(:div, class: 'definition') do
+    concat content_tag(:span, value)
+    unless %w[NONE @NONE].include?(key.to_s.upcase)
+      concat content_tag(:span, key.downcase, class: 'badge bg-secondary ml-2')
+    end
+  end
+end
+
   # @param label String | Array | OpenStruct
   def display_in_multiple_languages(label, show_max: 10, style_as_badge: false, show_empty_alert: true)
     if label.blank? && show_empty_alert
@@ -175,7 +237,7 @@ module MultiLanguagesHelper
           Array(value).map do |v|
             content_tag(:div, class: 'definition') do
               concat content_tag(:span, v)
-              concat content_tag(:span, key.upcase, class: 'badge bg-secondary ml-1') unless key.to_s.upcase.eql?('NONE') || key.to_s.upcase.eql?('@NONE')
+              concat content_tag(:span, key.downcase, class: 'badge bg-secondary m-1') unless key.to_s.upcase.eql?('NONE') || key.to_s.upcase.eql?('@NONE')
             end
           end.join
         end.join)
