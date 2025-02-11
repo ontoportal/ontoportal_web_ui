@@ -37,7 +37,7 @@
       - c.add_sections(['definition']) do |v|
         %div.d-flex.justify-content-between.align-items-center
           %div.d-flex.flex-column
-            %div= display_in_multiple_languages(v)
+            %div= display_in_multiple_languages([v].to_h, style_as_badge: true)
             %div
               %div.w-100{'data-controller': 'change-requests', turbo_frame: '_top'}
                 %div{id: 'editDefinitionFormDiv', 'data-change-requests-target': 'proposalForm'}
