@@ -175,7 +175,7 @@ module MultiLanguagesHelper
           Array(value).map do |v|
             content_tag(:div, class: 'definition') do
               concat content_tag(:span, v)
-              concat content_tag(:span, key.downcase, class: 'badge bg-secondary m-1') unless key.to_s.upcase.eql?('NONE') || key.to_s.upcase.eql?('@NONE')
+              concat content_tag(:span, key.downcase, class: 'badge bg-secondary ms-1') unless key.to_s.upcase.eql?('NONE') || key.to_s.upcase.eql?('@NONE')
             end
           end.join
         end.join)
