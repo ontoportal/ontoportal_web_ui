@@ -543,7 +543,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  base64 (= 0.1.0)
   bcrypt_pbkdf (>= 1.0, < 2.0)
   bootsnap
   bootstrap (~> 5.2.3)
