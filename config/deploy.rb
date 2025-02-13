@@ -4,6 +4,7 @@ set :application, "bioportal_web_ui"
 set :repo_url, "https://github.com/#{fetch(:author)}/#{fetch(:application)}.git"
 
 set :deploy_via, :remote_cache
+# set :deploy_via, :copy
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
@@ -14,7 +15,7 @@ set :deploy_via, :remote_cache
 set :branch, ENV.include?('BRANCH') ? ENV['BRANCH'] : 'master'
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, "/srv/ontoportal/#{fetch(:application)}"
+set :deploy_to, "/opt/ontoportal/#{fetch(:application)}"
 
 # Default value for :scm is :git
 # set :scm, :git
