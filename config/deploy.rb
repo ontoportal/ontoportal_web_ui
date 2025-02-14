@@ -35,7 +35,8 @@ set :deploy_to, "/opt/ontoportal/#{fetch(:application)}"
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache public/system public/assets config/locales}
 set :linked_dirs, %w{log tmp/pids tmp/cache public/system public/assets}
-
+set :puma_state, "#{shared_path}/tmp/pids/puma.state"
+set :puma_pid, "#{shared_path}/tmp/pids/puma.pid"
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
@@ -48,9 +49,13 @@ set :bundle_config, { deployment: true }
 set :assets_roles, [:web, :app]
 set :keep_assets, 3
 
-# If you want to restart using `touch tmp/restart.txt`, add this to your config/deploy.rb:
+# Puma details
+set :puma_state, "#{shared_path}/tmp/pids/puma.state"
+set :puma_pid, "#{shared_path}/tmp/pids/puma.pid"
 
+# If you want to restart using `touch tmp/restart.txt`, add this to your config/deploy.rb:
 set :passenger_restart_with_touch, true
+
 # If you want to restart using `passenger-config restart-app`, add this to your config/deploy.rb:
 # set :passenger_restart_with_touch, false # Note that `nil` is NOT the same as `false` here
 # If you don't set `:passenger_restart_with_touch`, capistrano-passenger will check what version of passenger you are running
