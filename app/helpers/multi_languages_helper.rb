@@ -111,7 +111,7 @@ module MultiLanguagesHelper
       [lang.english_name, lang.alpha2]
     end.compact
 
-    submission_lang << ['All languages', 'all']
+    submission_lang << ['All Languages', 'all']
     [submission_lang, current_lang]
   end
 
@@ -175,7 +175,7 @@ module MultiLanguagesHelper
           Array(value).map do |v|
             content_tag(:div, class: 'definition') do
               concat content_tag(:span, v)
-              concat content_tag(:span, key.upcase, class: 'badge bg-secondary ml-1') unless key.to_s.upcase.eql?('NONE') || key.to_s.upcase.eql?('@NONE')
+              concat content_tag(:span, key.downcase, class: 'badge bg-secondary ms-1') unless key.to_s.upcase.eql?('NONE') || key.to_s.upcase.eql?('@NONE')
             end
           end.join
         end.join)

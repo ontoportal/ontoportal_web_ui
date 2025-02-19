@@ -263,6 +263,16 @@ class OntologiesController < ApplicationController
     # Get the latest submission (not necessarily the latest 'ready' submission)
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
 
+    # show summary only for ontologies without any submissions in ready state
+    unless helpers.submission_ready?(@submission_latest)
+      submissions = @ontology.explore.submissions(include: 'submissionId,submissionStatus')
+      if submissions.any?{|x| helpers.submission_ready?(x)}
+        @old_submission_ready = true
+      elsif !params[:p].blank?
+        params[:p] = "summary"
+      end
+    end
+
     # Is the ontology downloadable?
     restrict_downloads = $NOT_DOWNLOADABLE
     @ont_restricted = restrict_downloads.include? @ontology.acronym

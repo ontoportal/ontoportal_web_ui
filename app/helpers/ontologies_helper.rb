@@ -19,7 +19,7 @@ module OntologiesHelper
 
   def render_concepts_json_button(link)
     content_tag(:div, class: 'concepts_json_button') do
-      render RoundedButtonComponent.new(link: link, target: '_blank', title: t('concepts.permanent_link_class'))
+      render RoundedButtonComponent.new(link: link, target: '_blank', title: t('concepts.api_link_class'))
     end
   end
 
