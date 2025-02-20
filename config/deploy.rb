@@ -30,7 +30,7 @@ set :deploy_to, "/opt/ontoportal/#{fetch(:application)}"
 # set :pty, true
 
 # Default value for :linked_files is []
-# set :linked_files, %w{config/bioportal_config.rb config/database.yml public/robots.txt}
+# set :linked_files, %w{tmp/restart.txt}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache public/system public/assets config/locales}
@@ -48,9 +48,10 @@ set :assets_roles, [:web, :app]
 set :keep_assets, 3
 
 # Puma details
-set :puma_pid, "#{shared_path}/tmp/pids/puma.pid"
-set :puma_state, "#{shared_path}/tmp/pids/puma.state"
-set :puma_bind, "unix://#{shared_path}/tmp/sockets/puma.sock"
+# set :puma_pid, "#{shared_path}/tmp/pids/puma.pid"
+# set :puma_state, "#{shared_path}/tmp/pids/puma.state"
+# set :puma_bind, "unix://#{shared_path}/tmp/sockets/puma.sock"
+# set :puma_role, :app
 
 # If you want to restart using `touch tmp/restart.txt`, add this to your config/deploy.rb:
 # set :passenger_restart_with_touch, true
@@ -105,8 +106,7 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      # Your restart mechanism here, for example:
-      execute :touch, release_path.join('tmp/restart.txt')
+      execute 'sudo /bin/systemctl restart ui.service'
     end
   end
 

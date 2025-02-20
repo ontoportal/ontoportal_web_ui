@@ -57,9 +57,6 @@ if %w[production staging appliance].include?(rails_env)
     end
   end
 
-  # Allow Puma to be restarted by touching 'restart.txt'
-  plugin :tmp_restart
-
   # PID & state file locations
   pidfile "tmp/pids/puma.pid"
   state_path "tmp/pids/puma.state"
