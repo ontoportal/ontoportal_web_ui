@@ -49,3 +49,7 @@ common: &default_settings
 # If your application has other named environments, configure them here.
 appliance:
   <<: *default_settings
+
+production:
+  <<: *default_settings
+  
