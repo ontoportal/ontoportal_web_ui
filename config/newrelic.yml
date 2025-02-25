@@ -52,4 +52,8 @@ appliance:
 
 production:
   <<: *default_settings
-  
+
+staging:
+  <<: *default_settings
+  app_name: <%= Rails.application.credentials[:newrelic][:app_name] %>
+  license_key: <%= Rails.application.credentials[:newrelic][:license_key] %>
