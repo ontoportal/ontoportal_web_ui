@@ -29,11 +29,7 @@
   -# User's API key
   %h4{class: 'pb-2 my-4 border-bottom'} API Key
   = tag.p("Your API key can be used to access the #{$SITE} RESTful API and services", class: 'text-muted')
-  %div{'data-controller': 'clipboard'}
-    %span{'data-clipboard-target': 'source'}= session[:user].apikey
-    %div{class: 'd-flex align-items-center mt-2'}
-      = tag.button 'Copy to clipboard', 'data-action': 'clipboard#copy',  class: 'btn btn-sm btn-outline-secondary'
-      %span{'data-clipboard-target': 'copiedIndicator', class: 'hidden text-success fw-semibold ms-2'} Copied!
+  = link_to_with_actions(session[:user].apikey)
 
   -# User's subscriptions
   - unless @user.subscription.blank?
