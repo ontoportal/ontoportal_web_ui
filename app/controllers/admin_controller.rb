@@ -34,7 +34,7 @@ class AdminController < ApplicationController
         response[:errors] = update_info['error']
         response[:update_info] = update_info
       else
-        @update_info = update_info
+        @update_info = update_info.symbolize_keys
         response[:update_info] = update_info
         response[:notices] = update_info['notes'] if update_info['notes']
         response[:success] = 'Update info successfully retrieved'
