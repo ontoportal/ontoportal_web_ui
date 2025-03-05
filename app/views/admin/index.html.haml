@@ -59,7 +59,8 @@
           %div.site-admin-page-section
             %div#appliance-id
               %span
-              = copy_link_to_clipboard(@update_info[:appliance_id], show_content: false)
+              = content_tag(:span, style: 'display: inline-block;') do
+                = render ClipboardComponent.new(message: @update_info[:appliance_id], title: 'Copy Appliance ID', show_content: false)
 
       -# Ontology Administration tab
       %div.tab-pane.fade{id: "ontology-admin", role: "tabpanel", aria: { labelledby: "ontology-admin-tab" }}

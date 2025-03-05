@@ -29,7 +29,9 @@
   -# User's API key
   %h4{class: 'pb-2 my-4 border-bottom'} API Key
   = tag.p("Your API key can be used to access the #{$SITE} RESTful API and services", class: 'text-muted')
-  = link_to_with_actions(session[:user].apikey)
+  = session[:user].apikey
+  = content_tag(:span, style: 'display: inline-block;') do
+    = render ClipboardComponent.new(message: session[:user].apikey, title: 'Copy API Key', show_content: false)
 
   -# User's subscriptions
   - unless @user.subscription.blank?
