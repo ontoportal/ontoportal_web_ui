@@ -1,6 +1,42 @@
 # frozen_string_literal: true
+require 'iso-639'
 
 module OntologiesHelper
+
+  LANGUAGE_FILTERABLE_SECTIONS = %w[classes].freeze
+
+  def ontology_object_json_link(ontology_acronym, object_type, id)
+    "#{rest_url}/ontologies/#{ontology_acronym}/#{object_type}/#{escape(id)}?display=all&apikey=#{get_apikey}"
+  end
+
+  def render_permalink_link
+    content_tag(:div,  class: 'concepts_json_button mx-2') do
+      render RoundedButtonComponent.new(id: 'classPermalink', link: 'javascript:void(0);', title: t('concepts.permanent_link_class'),  data: { 'bs-toggle': "modal", 'bs-target': "#classPermalinkModal", current_purl: @current_purl} ) do
+        inline_svg_tag('icons/copy_link.svg', width: 20, height: 20)
+      end
+    end
+  end
+
+  def render_concepts_json_button(link)
+    content_tag(:div, class: 'concepts_json_button') do
+      render RoundedButtonComponent.new(link: link, target: '_blank', title: t('concepts.api_link_class'))
+    end
+  end
+
+  def ontology_object_tabs_component(ontology_id:, objects_title:, object_id:, &block)
+    resource_url = ontology_object_json_link(ontology_id, objects_title, object_id)
+    render TabsContainerComponent.new(type: 'outline') do |c|
+      concat(c.pinned_right do
+        content_tag(:div, '', class: 'd-flex', 'data-concepts-json-target': 'button') do
+          concat(render_permalink_link) if $PURL_ENABLED
+          concat(render_concepts_json_button(resource_url))
+        end
+      end)
+
+      capture(c, &block)
+    end
+  end
+
   def additional_details
     return '' if $ADDITIONAL_ONTOLOGY_DETAILS.nil? || $ADDITIONAL_ONTOLOGY_DETAILS[@ontology.acronym].nil?
 
@@ -153,9 +189,109 @@ module OntologiesHelper
     ontologies.present? ? ontologies.map { |ont| ont.acronym } : []
   end
 
+  def selected_section?(section_title)
+    current_section.eql?(section_title)
+  end
+
+  def submission_ready?(submission)
+    Array(submission&.submissionStatus).include?('RDF')
+  end
+
+  def concept_label_to_show(submission: @submission_latest)
+    submission&.hasOntologyLanguage == 'SKOS' ? 'concepts' : 'classes'
+  end
+
+  def sections_to_show
+    sections = ['summary']
+    if !@ontology.summaryOnly && (submission_ready?(@submission_latest) || @old_submission_ready)
+      sections += ['classes']
+      sections += %w[properties]
+      #sections += %w[schemes collections] if skos?
+      #sections += %w[instances] unless skos?
+      #sections += %w[notes mappings widgets sparql]
+      sections += %w[notes mappings widgets]
+    end
+    sections
+  end
+
+  def lazy_load_section(section_title, &block)
+    if current_section.eql?(section_title)
+      block.call
+    else
+      render TurboFrameComponent.new(id: section_title, src: "/ontologies/#{@ontology.acronym}?p=#{section_title}",
+                                     loading: Rails.env.development? ? "lazy" : "eager",
+                                     target: '_top', data: { "turbo-frame-target": "frame" })
+    end
+  end
+  def language_selector_hidden_tag(section)
+    hidden_field_tag "language_selector_hidden_#{section}", '',
+                     data: { controller: "language-change", 'language-change-section-value': section, action: "change->language-change#dispatchLangChangeEvent" }
+  end
+
+  def section_data(section_title)
+    if ontology_data_section?(section_title)
+      url_value = selected_section?(section_title) ? request.fullpath : "/ontologies/#{@ontology.acronym}?p=#{section_title}"
+      { controller: "history turbo-frame", 'turbo-frame-url-value': url_value, action: "lang_changed->history#updateURL lang_changed->turbo-frame#updateFrame" }
+    else
+      {}
+    end
+  end
+
+
+
+  def visits_chart_dataset(visits_data)
+    visits_chart_dataset_array({'Visits': visits_data})
+  end
+
+  def visits_chart_dataset_array(visits_data, fill: true)
+    visits_data = visits_data.map do |label , x|
+      {
+        label: label,
+        data: x,
+        borderWidth: 2,
+        borderRadius: 5,
+        borderSkipped: false,
+        cubicInterpolationMode: 'monotone',
+        tension: 0.4,
+        fill: fill
+      }
+    end
+    visits_data.to_json
+  end
+
   def change_requests_enabled?(ontology_acronym)
     return false unless Rails.configuration.change_request[:ontologies].present?
 
     Rails.configuration.change_request[:ontologies].include? ontology_acronym.to_sym
   end
+
+  def current_section
+    (params[:p]) ? params[:p] : 'summary'
+  end
+
+  def ontology_data_sections
+    LANGUAGE_FILTERABLE_SECTIONS
+  end
+
+  def ontology_data_section?(section_title = current_section)
+    ontology_data_sections.include?(section_title)
+  end
+
+  def language_selector_tag(name)
+    content_language_selector(id: name, name: name)
+  end
+
+  def submission_languages(submission = @submission)
+    Array(submission&.naturalLanguage).map { |natural_language| natural_language.split('/').last }.compact
+  end
+
+  def abbreviations_to_languages(abbreviations)
+    # Use iso-639 gem to convert language codes to their English names
+    languages = abbreviations.map do |abbr|
+      language = ISO_639.find_by_code(abbr) || ISO_639.find_by_english_name(abbr)
+      language ? language.english_name : abbr
+    end
+    languages.sort
+  end
+
 end

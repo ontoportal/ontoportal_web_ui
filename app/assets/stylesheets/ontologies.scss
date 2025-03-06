@@ -1,7 +1,10 @@
 $ont-metadata-bg-color: #e2ebf0;
 $widget-table-border-color: #EFEFEF;
 $ont-show-bg-color: #e9ecef;
-
+#concept_details{
+  max-height: 90vh;
+  overflow-y: auto;
+}
 .ontologies.show {
   background-color: $ont-show-bg-color;
 
@@ -11,7 +14,6 @@ $ont-show-bg-color: #e9ecef;
 }
 
 .ontologies.show .gutter {
-  background-color: rgba(0, 0, 0, 0.03);
   background-repeat: no-repeat;
   background-position: center;
 
@@ -36,6 +38,7 @@ $ont-show-bg-color: #e9ecef;
 
     a {
       color: #343a40;
+      text-decoration: none;
     }
   }
 
@@ -50,8 +53,8 @@ $ont-show-bg-color: #e9ecef;
 }
 
 .ont-info-links {
-  a + a {
-    margin-left: 1rem;
+  a:hover {
+    color: var(--bs-btn-hover-color);
   }
 }
 
@@ -116,6 +119,10 @@ $ont-show-bg-color: #e9ecef;
     font-size: .9em;
     padding-left: 10px;
   }
+
+  a {
+    text-decoration: none;
+  }
 }
 
 .ont-details-card {
@@ -166,6 +173,7 @@ $ont-show-bg-color: #e9ecef;
 #ontology_versions td.show_more_subs {
   text-align: right; 
   background-color: white;
+  border-bottom: none;
 }
 
 /************************************
@@ -178,8 +186,9 @@ $ont-show-bg-color: #e9ecef;
 }
 
 #bd_content .sidebar {
-  overflow-x: auto;
-  white-space: nowrap;
+  white-space: wrap;
+  min-height: 70vh;
+  max-height: 90vh;
 }
 
 #search_box:focus {
@@ -189,33 +198,6 @@ $ont-show-bg-color: #e9ecef;
   -webkit-box-shadow: none;
 }
 
-#bd .bd_content .cls-info-container .tabs {
-  height: 24px;
-  float: left;
-}
-
-#bd .bd_content .cls-info-container .tabs ul {
-  margin: 0;
-  float: left;
-}
-
-#bd .bd_content .cls-info-container .tabs li {
-  margin: 0;
-}
-
-#bd .bd_content .cls-info-container .tabs li.first {
-  padding-left: 0;
-}
-
-#bd .bd_content .cls-info-container .tabs a {
-  padding: 0 15px 0 15px;
-}
-
-#bd .bd_content .cls-info-container #contents {
-  float: left;
-  width: 100%;
-  overflow: auto;
-}
 
 #mappings_top.tab {
   border-right: 1px solid #bcc6d0;
@@ -268,11 +250,15 @@ $ont-show-bg-color: #e9ecef;
  * Browse page (index)
  ************************************/
 
-.ontologies.index #angular-notices {
-  margin-left: 15px;
-  margin-right: 15px;
-}
-
 #ontology-browse-help i {
   margin-left: .25em;
+}
+
+.ontology.grid-parent h2 {
+  a {
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
 }

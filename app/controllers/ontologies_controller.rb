@@ -59,12 +59,6 @@ class OntologiesController < ApplicationController
     analytics = LinkedData::Client::Analytics.last_month
     @analytics = Hash[analytics.onts.map {|o| [o[:ont].to_s, o[:views]]}]
 
-    reviews = {}
-    LinkedData::Client::Models::Review.all(display_links: false, display_context: false).each do |r|
-      reviews[r.reviewedOntology] ||= []
-      reviews[r.reviewedOntology] << r
-    end
-
     metrics_hash = get_metrics_hash
 
     @formats = Set.new
@@ -86,11 +80,9 @@ class OntologiesController < ApplicationController
       o[:id]               = ont.id
       o[:type]             = ont.viewOf.nil? ? "ontology" : "ontology_view"
       o[:show]             = ont.viewOf.nil? ? true : false # show ontologies only by default
-      o[:reviews]          = reviews[ont.id] || []
       o[:groups]           = ont.group || []
       o[:categories]       = ont.hasDomain || []
       o[:note_count]       = ont.notes.length
-      o[:review_count]     = ont.reviews.length
       o[:project_count]    = ont.projects.length
       o[:private]          = ont.private?
       o[:popularity]       = @analytics[ont.acronym] || 0
@@ -112,7 +104,6 @@ class OntologiesController < ApplicationController
 
       o[:artifacts] = []
       o[:artifacts] << "notes" if ont.notes.length > 0
-      o[:artifacts] << "reviews" if ont.reviews.length > 0
       o[:artifacts] << "projects" if ont.projects.length > 0
       o[:artifacts] << "summary_only" if ont.summaryOnly
 
@@ -141,19 +132,17 @@ class OntologiesController < ApplicationController
   end
 
   def classes
-    get_class(params)
+    @submission = get_ontology_submission_ready(@ontology)
+    get_class(params, @submission)
 
     if ["application/ld+json", "application/json"].include?(request.accept)
       render plain: @concept.to_jsonld, content_type: request.accept and return
     end
 
-    @current_purl = @concept.purl if $PURL_ENABLED
-    @submission = get_ontology_submission_ready(@ontology)
+    @current_purl = @concept.purl if Rails.configuration.settings.purl[:enabled]
 
     unless @concept.id == "bp_fake_root"
       @notes = @concept.explore.notes
-      @mappings = get_concept_mappings(@concept)
-      @delete_mapping_permission = check_delete_mapping_permission(@mappings)
     end
     
     update_tab(@ontology, @concept.id)
@@ -197,7 +186,7 @@ class OntologiesController < ApplicationController
 
   def edit
     # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], include: 'all').first
     redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
     @categories = LinkedData::Client::Models::Category.all
     @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
@@ -254,18 +243,10 @@ class OntologiesController < ApplicationController
       return
     end
 
-    if params[:ontology].to_i > 0
-      acronym = BPIDResolver.id_to_acronym(params[:ontology])
-      if acronym
-        redirect_new_api
-        return
-      end
-    end
-
     # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    not_found if @ontology.nil?
-    
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology], include: 'all').first
+    not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
+
     # Handle the case where an ontology is converted to summary only. 
     # See: https://github.com/ncbo/bioportal_web_ui/issues/133.
     if @ontology.summaryOnly && params[:p].present?
@@ -275,14 +256,22 @@ class OntologiesController < ApplicationController
       end
     end
 
-    @ob_instructions = helpers.ontolobridge_instructions_template(@ontology)
-
     # Retrieve submissions in descending submissionId order (should be reverse chronological order)
     @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
     LOG.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
 
     # Get the latest submission (not necessarily the latest 'ready' submission)
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
+
+    # show summary only for ontologies without any submissions in ready state
+    unless helpers.submission_ready?(@submission_latest)
+      submissions = @ontology.explore.submissions(include: 'submissionId,submissionStatus')
+      if submissions.any?{|x| helpers.submission_ready?(x)}
+        @old_submission_ready = true
+      elsif !params[:p].blank?
+        params[:p] = "summary"
+      end
+    end
 
     # Is the ontology downloadable?
     restrict_downloads = $NOT_DOWNLOADABLE
@@ -322,7 +311,7 @@ class OntologiesController < ApplicationController
   end
 
   def submit_success
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], include: 'all').first
     render 'submit_success'
   end
 
@@ -354,9 +343,9 @@ class OntologiesController < ApplicationController
       return
     end
     # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology][:acronym] || params[:id]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id]).first
     @ontology.update_from_params(ontology_params)
-    error_response = @ontology.update
+    error_response = @ontology.update(cache_refresh_all: false)
     if response_error?(error_response)
       @categories = LinkedData::Client::Models::Category.all
       @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
@@ -370,10 +359,6 @@ class OntologiesController < ApplicationController
       # end
       redirect_to "/ontologies/#{@ontology.acronym}"
     end
-  end
-
-  def virtual
-    redirect_new_api
   end
 
   def widgets

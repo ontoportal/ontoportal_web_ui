@@ -43,6 +43,11 @@ jQuery(document).ready(function(){
   jQuery("#contacts").on("click", ".add-contact", addContact);
   jQuery("#contacts").on("click", ".remove-contact", removeContact);
 
+  jQuery("#submission_naturalLanguage").select2({
+    dropdownParent: jQuery(".submissions form"),
+    include_hidden: false,
+  });
+
   jQuery("#ontology_submission_form").validate({
     highlight: function(element) {
       $(element).closest('.form-group').addClass('has-error');
@@ -72,7 +77,7 @@ function addContact(event) {
   var removeButton = newContact.querySelector("button").cloneNode(true);
   removeButton.classList.replace("btn-success", "btn-danger");
   removeButton.classList.replace("add-contact", "remove-contact");
-  removeButton.classList.add("ml-1")
+  removeButton.classList.add("ms-1")
   removeButton.querySelector("i").classList.replace("fa-plus", "fa-minus");
   newContact.appendChild(removeButton);
   

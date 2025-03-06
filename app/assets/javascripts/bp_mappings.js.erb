@@ -3,18 +3,6 @@
 // The count returned may not match the actual number of mappings
 // To get around this, we re-calculate based on the mapping table size
 
-function updateMappingCount() {
-  var rows = jQuery("#concept_mappings_table tbody tr"), mappings_count = null;
-  rows.first().children("td").each(function() {
-    if (this.innerHTML.indexOf("no mappings") > -1) {
-      mappings_count = 0;
-    }
-  });
-  if (mappings_count === null) {
-    mappings_count = rows.length;
-  }
-  jQuery("#mapping_count").html(mappings_count);
-}
 
 // Also in bp_create_mappings.js
 function updateMappingDeletePermissions() {
@@ -63,12 +51,10 @@ function loadMappings(value) {
                 }
             ]
         });
-        jQuery(".mappings.index a.facebox").facebox();
     });
 }
 
 jQuery(document).ready(function(){
-  updateMappingCount();
   updateMappingDeletePermissions();
 
   jQuery("#search_ontologies").chosen({search_contains: true, width:"100%"});
@@ -84,7 +70,6 @@ jQuery(document).ready(function(){
   jQuery("#mappings-help").on("click", bpPopWindow);
 });
 
-jQuery(document).bind("tree_changed", updateMappingCount);
 
 // deleteMappings() is a callback that is called by "#delete_mappings_button" created in
 // /app/views/mappings/_concept_mappings.html.haml
@@ -133,7 +118,6 @@ function deleteMappings() {
         jQuery("#" + rowId).css("border", "red solid");
       }
 
-      jQuery("#mapping_count").html(jQuery("#mapping_details tbody tr:visible").size());
       jQuery.bioportal.ont_pages["mappings"].retrieve_and_publish();
       updateMappingDeletePermissions();
     },
@@ -144,4 +128,3 @@ function deleteMappings() {
     }
   });
 }
-

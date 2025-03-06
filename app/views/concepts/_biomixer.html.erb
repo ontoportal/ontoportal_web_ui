@@ -36,7 +36,7 @@ jQuery(document).data().bp.biomixer_fullscreen.toggle = function(toggle) {
     jQuery("#biomixer_container").css("padding", 0).css("width", jQuery(document).data().bp.biomixer_fullscreen.bio_container_w);
     jQuery("#bd_content").trigger('resize');
   } else {
-    height = jQuery(window).height() - jQuery("#bd_content .cls-info-container").offset().top - 50;
+    height = jQuery(window).height() -  50;
     jQuery("#bd_content .cls-info-container").css("width", "100%").css("height", height);
     jQuery("#bd .bd_content .cls-info-container #contents").css("max-height", height);
     jQuery("#biomixer_container").css("padding", 0).css("width", "100%").css("height", height);
@@ -44,7 +44,7 @@ jQuery(document).data().bp.biomixer_fullscreen.toggle = function(toggle) {
 }
 
 window.onmessage = function(e) {
-  var iframeHeight = jQuery(window).height() - jQuery("#bd_content .cls-info-container").offset().top - 50;
+  var iframeHeight = jQuery(window).height() -  50;
   if (e.data === "biomixer_full_screen_request") {
     if (jQuery(document).data().bp.biomixer_fullscreen.enabled) {
       // make small
@@ -60,6 +60,6 @@ window.onmessage = function(e) {
 </script>
 
 <div id="biomixer_container" style="padding-left: .5%; width: 99.5%; height: 900px;">
-  <iframe id="biomixer_iframe" src="<%=original_src%>" data-src="<%=src_url%>"
+  <iframe id="biomixer_iframe" src="<%=src_url%>"
     style="min-height: 700px;" height="100%" width="100%" frameborder="0"></iframe>
 </div>

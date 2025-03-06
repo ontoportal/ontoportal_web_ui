@@ -1,3 +1,23 @@
+.turbo-progress-bar {
+  height: 10px;
+  background-color: #ffffff;
+}
+
+.tabs-container .tab-items > div button{
+  color: var(--primary-color) !important
+}
+
+a{
+  text-decoration: none !important;
+}
+p {
+  margin-bottom: 0;
+}
+
+body{
+  position: relative;
+}
+
 .alignright {
   float:right;
 }
@@ -35,62 +55,10 @@
 #hd ul li a {
   color:#fff;
 }
-.tabs {
-  float:left;
-  width:100%;
-  background: image-url('layout/subnav_bg.png') repeat-x;
-  height:24px;
-  display:block;
-  border-bottom:1px solid #bcc6d0;
-  font-size:90%;
-  overflow: hidden;
-}
-.tabs ul {
-  margin:0;
-}
-.tabs li {
-  float:left;
-  display:inline;
-  border-left:1px solid #bcc6d0;
-  height:24px;
-}
-.tabs li:hover {
-  background:#efefef;
-}
-.tabs li.first {
-  border-left:none;
-  padding-left:20px;
-}
-.tabs a {
-  float:left;
-  display:block;
-  padding:5px 20px 5px 5px;
-  color:#000;
-  text-decoration:none;
-}
-.tabs a.close {
-  padding:6px 0 0 5px;
-}
-.tabs li.selected {
-  background:#234979;
-  border-top:1px solid #8ca0b9;
-  height:23px;
-}
-.tabs li.selected a {
-  color:#fff;
-  padding-top:4px;
-}
-.tab_container {
-}
+
+
 #bd {
   background: #fff;
-}
-#bd hr {
-  border:0;
-  height:1px;
-  color:#e9eaeb;
-  background:#e9eaeb;
-  margin:10px 0;
 }
 
 #grab-point {
@@ -437,21 +405,6 @@ tr.mainresource td {
   background: #e2ebf0;
 }
 
-/* Ratings */
-.star_ratings{
-    color: #234979;
-    border: 1px solid #C1DAD7;
-    background: #e2ebf0;
-    width:300px;
-    float:left;
-    margin-right:10px;
-
-}
-.star_ratings li{
-    list-style:none;
-    border-bottom:1px solid white;
-}
-
 /*Projects */
 .pheader {
   cursor:pointer;
@@ -533,7 +486,7 @@ tr.mainresource td {
 }
 
 .obsolete_class {
-  color: rgb(100,100,100);
+  color: rgb(100,100,100)!important;
   cursor: help;
   font-style: oblique;
 }
@@ -927,35 +880,21 @@ button.fg-button-menu, button.fg-button {
 /************************************
  * Top navigation bar
  ************************************/
-.btn-bp-login {
-  color: #C58612;
-  border-color: #C58612 !important;
+div#topNavigationToggler {
+  justify-content: space-between;
+  a.btn.btn-login {
+    color: #C58612;
+    border-color: #C58612;
 
-  &:hover {
-    color: #234979;
-    background-color: #C58612;
+    &:hover {
+      color: #234979;
+      background-color: #C58612;
+    }
   }
 }
 
 .navbar-custom {
   background-color: #234979;
-}
-
-.nav_text a {
-  font-family: 'Droid Sans', sans-serif;
-  font-size: 1.1em;
-  padding: 25px 15px;
-  position: relative;
-  text-decoration: none;
-  top: 11px;
-}
-
-.nav_text a:hover {
-  color: lightGray !important;
-}
-
-.nav_text_active a {
-  color: lightGray !important;
 }
 
 /************************************
@@ -992,6 +931,8 @@ button.fg-button-menu, button.fg-button {
 #ontology_picker_container div.chzn-drop {
   display: none;
 }
+
+
 
 .no_right_border {
   border-right: none !important;
@@ -1053,9 +994,6 @@ button.fg-button-menu, button.fg-button {
  * Help Links
  ************************************/
 .pop_window {
-}
-div.subdomain_info a.pop_window {
-  font-size: inherit;
 }
 
 /************************************
@@ -1151,4 +1089,22 @@ a.truncated_less, a.truncated_more {
 .highlighted .search_ontology_acronym {
   color: white;
 }
+.hide {
+  display: none !important;
+}
 
+.empty-state {
+  display: none;
+
+  &:only-child {
+    display: revert;
+  }
+
+}
+
+turbo-frame[busy] > .hide-if-loading, .show-if-loading {
+  display: none;
+}
+turbo-frame[busy] ~ .show-if-loading {
+  display: inline-block;
+}

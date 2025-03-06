@@ -5,7 +5,9 @@ module KGCL
     RENDERERS = {
       KGCL::Operations::NEW_SYNONYM => KGCL::Renderers::NewSynonymContent,
       KGCL::Operations::NODE_OBSOLETION => KGCL::Renderers::NodeObsoletionContent,
-      KGCL::Operations::REMOVE_SYNONYM => KGCL::Renderers::RemoveSynonymContent
+      KGCL::Operations::NODE_RENAME => KGCL::Renderers::NodeRenameContent,
+      KGCL::Operations::REMOVE_SYNONYM => KGCL::Renderers::RemoveSynonymContent,
+      KGCL::Operations::TEXT_DEFINITION_REPLACEMENT => KGCL::Renderers::EditDefinitionContent
     }.freeze
 
     def self.call(params)
