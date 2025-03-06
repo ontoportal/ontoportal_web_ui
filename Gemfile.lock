@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: 694648f7b6dc6f17c150386c70f75fc2cc339e64
-  tag: v2.5.0
+  revision: c580be518edc71453a274a022295cfc9e6daa875
+  tag: v2.5.2
   specs:
-    ontologies_api_client (2.5.0)
+    ontologies_api_client (2.5.2)
       activesupport (= 7.0.8)
       addressable (~> 2.8)
       excon
@@ -157,7 +157,8 @@ GEM
     ed25519 (1.3.0)
     erubi (1.13.1)
     erubis (2.7.0)
-    excon (1.2.3)
+    excon (1.2.5)
+      logger
     execjs (2.10.0)
     faraday (2.12.2)
       faraday-net_http (>= 2.0, < 3.5)
