@@ -379,11 +379,10 @@ module ApplicationHelper
       if style_as_badge
         render ChipButtonComponent.new(text: cls_id)
       else
-        content_tag(:span, cls_id)
+        content_tag(:div, cls_id)
       end
     end
   end
-
 
   def get_link_for_ont_ajax(ont_acronym)
     # Ajax call will replace the acronym with an ontology name (triggered by class='ont4ajax')
