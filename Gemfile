@@ -107,7 +107,8 @@ gem 'flag-icons-rails', '~> 3.4'
 gem 'iso-639', '~> 0.3.6'
 
 # Custom API client
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.4.0'
+gem 'ontologies_api_client', git: 'https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git', branch: 'development'
+
 
 # compatibilty pin https://github.com/ncbo/bioportal_web_ui/issues/293
 gem 'base64', '0.1.0'
