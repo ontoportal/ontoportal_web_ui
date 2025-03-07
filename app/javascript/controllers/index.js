@@ -19,8 +19,8 @@ application.register("change-requests", ChangeRequestsController)
 import LanguageChangeController from "./language_change_controller"
 application.register("language-change", LanguageChangeController)
 
-import ClipboardController from "./clipboard_controller"
-application.register("clipboard", ClipboardController)
+import ClipboardComponentController from '../../components/clipboard_component/clipboard_component_controller'
+application.register('clipboard', ClipboardComponentController)
 
 import LoadChartController from "./load_chart_controller"
 application.register("load-chart", LoadChartController)

@@ -14,14 +14,16 @@ class AdminController < ApplicationController
 
   def index
     @users = LinkedData::Client::Models::User.all
+
     if session[:user].nil? || !session[:user].admin?
       redirect_to controller: 'login', action: 'index', redirect: '/admin'
     else
+      update_info(false)
       render action: 'index'
     end
   end
 
-  def update_info
+  def update_info(render_response = true)
     response = { update_info: {}, errors: '', success: '', notices: '' }
     json = LinkedData::Client::HTTP.get("#{ADMIN_URL}update_info", params, raw: true)
 
@@ -32,6 +34,7 @@ class AdminController < ApplicationController
         response[:errors] = update_info['error']
         response[:update_info] = update_info
       else
+        @update_info = update_info.symbolize_keys
         response[:update_info] = update_info
         response[:notices] = update_info['notes'] if update_info['notes']
         response[:success] = 'Update info successfully retrieved'
@@ -39,7 +42,7 @@ class AdminController < ApplicationController
     rescue StandardError => e
       response[:errors] = "Problem retrieving update info - #{e.message}"
     end
-    render json: response
+    render json: response if render_response
   end
 
   def update_check_enabled

@@ -26,7 +26,6 @@ class TabItemComponent < ViewComponent::Base
     "#{item_id}_content"
   end
 
-
   def id
     @id || @title
   end
@@ -44,7 +43,7 @@ class TabItemComponent < ViewComponent::Base
   end
 
   def call
-    link_to(@path, id: "#{item_id}_tab", class: "#{active_class} tab-link", 'data-json-link': @json_link) do
+    content_tag(:button, id: "#{item_id}_tab", class: "#{active_class} tab-link", 'data-json-link': @json_link) do
       (title && !title.empty?) ? title.html_safe : content
     end
   end

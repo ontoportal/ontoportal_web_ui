@@ -19,11 +19,11 @@ class ConceptDetailsComponent < ViewComponent::Base
     @id = id
     @concept_id = concept_id
 
-    @concept_properties = concept_properties2hash(@properties) if @properties
+    @concept_properties = concept_properties2hash(@properties, acronym) if @properties
   end
 
   def add_sections(keys, &block)
-    scheme_set = properties_set_by_keys(keys, prefix_properties(concept_properties))
+    scheme_set = properties_set_by_keys(keys,concept_properties)
     rows = row_hash_properties(scheme_set, concept_properties, &block)
 
     rows.each do |row|
@@ -41,15 +41,16 @@ class ConceptDetailsComponent < ViewComponent::Base
 
       values = data[:values]
       url = data[:key]
+      style_as_badge = values.is_a?(Array) && values.size > 1 && short_values(values)
 
       ajax_links = Array(values).map do |v|
         if block_given?
-          block.call(v)
+          capture(v, &block)
         else
           if v.is_a?(String)
-            get_link_for_cls_ajax(v, ontology_acronym, '_blank')
+            get_link_for_cls_ajax(v, ontology_acronym, '_blank', style_as_badge)
           else
-            display_in_multiple_languages([v].to_h)
+            display_in_multiple_languages([v].to_h, style_as_badge: true)
           end
         end
       end
@@ -60,6 +61,18 @@ class ConceptDetailsComponent < ViewComponent::Base
       ]
     end
     out
+  end
+
+  def short_values(vals)
+    vals.each do |str|
+      word_count = str.split.count
+      character_count = str.length
+
+      unless word_count < 10 && character_count < 100
+        return false
+      end
+    end
+    true
   end
 
   def properties_set_by_keys(keys, concept_properties, exclude_keys = [])
@@ -86,7 +99,7 @@ class ConceptDetailsComponent < ViewComponent::Base
     end
   end
 
-  def concept_properties2hash(properties)
+  def concept_properties2hash(properties, ontology_acronym)
     # NOTE: example properties
     #
     # properties
@@ -123,8 +136,8 @@ class ConceptDetailsComponent < ViewComponent::Base
       k = key.to_s if key.kind_of?(Symbol)
       k ||= key
       label = key
-      if k.start_with?("http")
-        label = LinkedData::Client::HTTP.get("/ontologies/#{@ontology.acronym}/properties/#{CGI.escape(k)}/label").label rescue ""
+      if k.to_s.start_with?("http")
+        label = LinkedData::Client::HTTP.get("/ontologies/#{ontology_acronym}/properties/#{CGI.escape(k)}/label").label
         if label.nil? || label.empty?
           k = k.gsub(/.*#/, '') # greedy regex replace everything up to last '#'
           k = k.gsub(/.*\//, '') # greedy regex replace everything up to last '/'
@@ -146,20 +159,11 @@ class ConceptDetailsComponent < ViewComponent::Base
       data = { :key => key, :values => values }
       properties_data[label] = data
     end
-    return properties_data
+    properties_data
   end
 
   def exclude_relation?(relation_to_check, ontology = nil)
     excluded_relations = ["type", "rdf:type", "[R]", "SuperClass", "InstanceCount"]
-
-    # Show or hide property based on the property and ontology settings
-    if ontology
-      # TODO_REV: Handle obsolete classes
-      # Hide owl:deprecated if a user has set class or property based obsolete checking
-      # if !ontology.obsoleteParent.nil? && relation_to_check.include?("owl:deprecated") || !ontology.obsoleteProperty.nil? && relation_to_check.include?("owl:deprecated")
-      #   return true
-      # end
-    end
 
     excluded_relations.each do |relation|
       return true if relation_to_check.is_a?(Array) && relation_to_check.include?(relation)
