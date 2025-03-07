@@ -19,7 +19,7 @@
   },
   "bioportal"   => {
     primary: "#234979",
-    hover: "#6B96B7",
+    hover: "#2B5892",
     secondary: "#ffc107",
     light: "#F0F5F6",
     bg_chip_button_container: "#777777" ,
@@ -44,7 +44,7 @@
 } %>
 
 <% ui_theme = $UI_THEME.to_s.parameterize %>
-<% selected_theme_key = themes.key?(ui_theme) ? ui_theme : 'ontoportal' %>
+<% selected_theme_key = themes.key?(ui_theme) ? ui_theme : 'bioportal' %>
 <% selected_theme = themes[selected_theme_key] %>
 
 :root {

@@ -30,10 +30,8 @@
   opacity: 60%;
   transition: opacity 0.3s ease;
 
-  a, button {
-    color: #5e5e5e;
-    border: none;
-    background: none;
+  a {
+    color: #5e5e5e !important;
   }
 }
 
@@ -54,7 +52,7 @@
 
 .tabs-container .tab-items .active hr {
   display: block;
-  border: 1px solid var(--primary-color) !important;
+  border: 1px solid var(--primary-color);
   opacity: 100%;
 }
 .container{

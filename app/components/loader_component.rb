@@ -21,7 +21,14 @@ class LoaderComponent < ViewComponent::Base
   def call
     if type
       content_tag(:div, class: 'd-flex align-items-center flex-column') do
-        content_tag(:div, '', class: "spinner-border #{small_class}")
+        content_tag(:div, class: "spinner-border #{small_class}") do
+          content_tag(:span) do
+            t('components.loading')
+          end
+          content_tag(:div, class: 'spinner-text my-2') do
+            t('components.loading')
+          end
+        end
       end
     else
       content_tag(:div, class: 'loader-component') do

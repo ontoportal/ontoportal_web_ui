@@ -19,11 +19,11 @@ class ConceptDetailsComponent < ViewComponent::Base
     @id = id
     @concept_id = concept_id
 
-    @concept_properties = concept_properties2hash(@properties, acronym) if @properties
+    @concept_properties = concept_properties2hash(@properties) if @properties
   end
 
   def add_sections(keys, &block)
-    scheme_set = properties_set_by_keys(keys, concept_properties)
+    scheme_set = properties_set_by_keys(keys, prefix_properties(concept_properties))
     rows = row_hash_properties(scheme_set, concept_properties, &block)
 
     rows.each do |row|
@@ -31,6 +31,7 @@ class ConceptDetailsComponent < ViewComponent::Base
         table_row.create(*row)
       end
     end
+
   end
 
   def row_hash_properties(properties_set, ontology_acronym, &block)
@@ -41,16 +42,14 @@ class ConceptDetailsComponent < ViewComponent::Base
       values = data[:values]
       url = data[:key]
 
-      is_list = values.is_a?(Array) && values.size > 1
-
       ajax_links = Array(values).map do |v|
         if block_given?
-          capture(v, &block)
+          block.call(v)
         else
           if v.is_a?(String)
-            get_link_for_cls_ajax(v, ontology_acronym, '_blank', is_list)
+            get_link_for_cls_ajax(v, ontology_acronym, '_blank')
           else
-            display_in_multiple_languages([v].to_h, style_as_badge: true)
+            display_in_multiple_languages([v].to_h)
           end
         end
       end
@@ -87,7 +86,7 @@ class ConceptDetailsComponent < ViewComponent::Base
     end
   end
 
-  def concept_properties2hash(properties, ontology_acronym)
+  def concept_properties2hash(properties)
     # NOTE: example properties
     #
     # properties
@@ -124,8 +123,8 @@ class ConceptDetailsComponent < ViewComponent::Base
       k = key.to_s if key.kind_of?(Symbol)
       k ||= key
       label = key
-      if k.to_s.start_with?("http")
-        label = LinkedData::Client::HTTP.get("/ontologies/#{ontology_acronym}/properties/#{CGI.escape(k)}/label").label
+      if k.start_with?("http")
+        label = LinkedData::Client::HTTP.get("/ontologies/#{@ontology.acronym}/properties/#{CGI.escape(k)}/label").label rescue ""
         if label.nil? || label.empty?
           k = k.gsub(/.*#/, '') # greedy regex replace everything up to last '#'
           k = k.gsub(/.*\//, '') # greedy regex replace everything up to last '/'
@@ -147,11 +146,20 @@ class ConceptDetailsComponent < ViewComponent::Base
       data = { :key => key, :values => values }
       properties_data[label] = data
     end
-    properties_data
+    return properties_data
   end
 
   def exclude_relation?(relation_to_check, ontology = nil)
     excluded_relations = ["type", "rdf:type", "[R]", "SuperClass", "InstanceCount"]
+
+    # Show or hide property based on the property and ontology settings
+    if ontology
+      # TODO_REV: Handle obsolete classes
+      # Hide owl:deprecated if a user has set class or property based obsolete checking
+      # if !ontology.obsoleteParent.nil? && relation_to_check.include?("owl:deprecated") || !ontology.obsoleteProperty.nil? && relation_to_check.include?("owl:deprecated")
+      #   return true
+      # end
+    end
 
     excluded_relations.each do |relation|
       return true if relation_to_check.is_a?(Array) && relation_to_check.include?(relation)
