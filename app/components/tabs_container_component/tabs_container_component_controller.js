@@ -10,7 +10,7 @@ export default class extends Controller {
 
     selectTab(event) {
         this.event = event
-        if (this.#parameter()) {
+        if (this.#parameter() && this.#parameter() !== "") {
             this.#updateURL()
         }
         this.element.dispatchEvent(new CustomEvent("tab-selected", {

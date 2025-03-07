@@ -159,3 +159,4 @@ en:
 
   mappings:
     intro: Browse mappings between classes in different ontologies
+  no_result_was_found: "No result found"
