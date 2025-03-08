@@ -60,10 +60,11 @@ module MetadataHelper
     all_metadata.each do |metadata|
       metadata_list[metadata["attribute"]] = metadata["label"]
     end
-    reject = [:csvDump, :dataDump, :openSearchDescription, :metrics, :prefLabelProperty, :definitionProperty,
+    reject = [:description,:csvDump, :dataDump, :openSearchDescription, :metrics, :prefLabelProperty, :definitionProperty,
               :definitionProperty, :synonymProperty, :authorProperty, :hierarchyProperty, :obsoleteProperty,
-              :ontology, :endpoint, :submissionId, :submissionStatus, :uploadFilePath, :diffFilePath]
-    metadata_list.reject{|k,v| reject.include?(k.to_sym)}.sort
+              :ontology, :endpoint, :submissionId, :submissionStatus, :uploadFilePath, :diffFilePath,
+              :pullLocation, :status, :hasOntologyLanguage]
+    metadata_list.reject{|k,v| reject.include?(k.to_sym)}.sort_by{|k,v| v || k}
   end
 
   def attr_uri?(attr_label)
@@ -74,23 +75,24 @@ module MetadataHelper
     input_type?(attr_metadata(attr_label), "boolean")
   end
 
-  def agent?(attr)
-    input_type?(attr_metadata(attr), "Agent")
+
+  def display_contact(contacts)
+    contacts.map do |c|
+      next unless c.member?(:name) && c.member?(:email)
+
+      formatted_name = c[:name].titleize
+      formatted_email = c[:email].downcase
+      "<div><span class='date_creation_text'>#{formatted_name}</span> (#{formatted_email})</div>"
+    end.join("")
   end
 
   def display_attribute(metadata, value)
     return 'N/A' if value.nil? || Array(value).empty?
 
-    if agent?(metadata)
-      display_agent(value)
-    elsif metadata.eql?("naturalLanguage")
-      render LanguageFieldComponent.new(value: value)
+    if metadata.eql?("naturalLanguage")
+      render LanguageFieldComponent.new(value: value, auto_label: true)
     elsif metadata.to_s.eql?("hasLicense")
       render LicenseFieldComponent.new(value: value)
-    elsif metadata.to_s.eql?("endpoint") && (value.start_with?("http://sparql.") || value.start_with?("https://sparql."))
-      link_to(value, :title => value, :target => "_blank", :style => "border-width:0;") do
-        image_tag('logos/sparql_logo.png', :title => value, :class => 'logo')
-      end
     elsif date_time?(metadata)
       render DateTimeFieldComponent.new(value: value)
     elsif attr_uri?(metadata)
