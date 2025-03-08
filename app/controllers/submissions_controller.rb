@@ -1,38 +1,41 @@
 # frozen_string_literal: true
 
 class SubmissionsController < ApplicationController
+  include SubmissionsHelper, SubmissionUpdater, OntologyUpdater
+
   layout :determine_layout
   before_action :authorize_and_redirect, only: [:edit, :update, :create, :new]
 
+  # When getting "Add submission" form to display
   def new
-    # NOTE: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
-    @submission = @ontology.explore.latest_submission
-    @submission ||= LinkedData::Client::Models::OntologySubmission.new
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id], {include: 'all'}).first
+    @submission = @ontology.explore.latest_submission || LinkedData::Client::Models::OntologySubmission.new
+    @submission.id = nil
+    @categories = LinkedData::Client::Models::Category.all
+    @groups = LinkedData::Client::Models::Group.all
+    @user_select_list = LinkedData::Client::Models::User.all(include: 'username').map { |u| [u.username, u.id] }
+    @user_select_list.sort! { |a, b| a[1].downcase <=> b[1].downcase }
+    @is_update_ontology = true
+    render "ontologies/new"
   end
 
+  # Called when form to "Add submission" is submitted
   def create
-    # Make the contacts an array
-    params[:submission][:contact] = params[:submission][:contact].values
-    params[:submission][:naturalLanguage].compact_blank!
+    @is_update_ontology = true
 
-    @submission = LinkedData::Client::Models::OntologySubmission.new(values: submission_params)
-    @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
+    if params[:ontology]
+      @ontology, response = update_existent_ontology(params[:ontology_id])
 
-    # Update summaryOnly on ontology object
-    @ontology.summaryOnly = @submission.isRemote.eql?('3')
-    @ontology.update
-
-    @submission_saved = @submission.save(cache_refresh_all: false)
-    if response_error?(@submission_saved)
-      @errors = response_errors(@submission_saved) # see application_controller::response_errors
-      if @errors && @errors[:uploadFilePath]
-        @errors = ['Please specify the location of your ontology']
-      elsif @errors && @errors[:contact]
-        @errors = ['Please enter a contact']
+      if response.nil? || response_error?(response)
+        show_new_errors(response)
+        return
       end
+    end
+    @submission = @ontology.explore.latest_submission({ display: 'all' })
+    @submission = save_submission(new_submission_hash(@ontology, @submission))
 
-      render 'new'
+    if response_error?(@submission)
+      show_new_errors(@submission)
     else
       redirect_to "/ontologies/success/#{@ontology.acronym}"
     end

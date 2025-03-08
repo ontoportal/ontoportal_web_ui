@@ -3,6 +3,87 @@ require 'iso-639'
 
 module OntologiesHelper
 
+  def error_message_text(errors = @errors)
+    return errors if errors.is_a?(String)
+    errors = errors[:error] if errors && errors[:error]
+    t('application.errors_in_fields', errors: errors.keys.join(', '))
+  end
+
+  def error_message_alert(errors = @errors)
+    return if errors.nil?
+
+    content_tag(:div, class: 'my-1') do
+      alert_component(error_message_text(errors), type: 'danger')
+    end
+  end
+  
+  def download_button
+    return unless (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
+
+    down_link = @submissions.first.id + "/download?apikey=#{get_apikey}"
+    render RoundedButtonComponent.new(link: down_link, icon: 'summary/download.svg',
+                                      size: 'medium', title: 'Download latest submission')
+  end
+  def ontology_purl_button(purl)
+    return unless Rails.configuration.settings.purl[:enabled]
+
+    render RoundedButtonComponent.new(link: purl, icon: 'icons/copy_link.svg',
+                                      size: 'medium', title: "#{portal_name} PURL" )
+  end
+
+  def homepage_button(homepage)
+    return unless homepage
+    render RoundedButtonComponent.new(link: homepage, icon: 'summary/homepage.svg',
+                                      size: 'medium', title: 'Homepage')
+  end
+
+  def documentation_button(documentation)
+    return unless documentation
+    render RoundedButtonComponent.new(link: documentation, icon: 'summary/documentation.svg',
+                                      size: 'medium', title: 'Documentation')
+  end
+
+  def publication_button(publication)
+    render RoundedButtonComponent.new(link: publication, icon: 'icons/publication.svg',
+                                      size: 'medium', title: 'Publication')
+  end
+
+  def new_submission_button
+    return unless @ontology.admin?(session[:user])
+    render RoundedButtonComponent.new(link: new_ontology_submission_path(@ontology.acronym), icon: 'icons/plus.svg',
+                                      size: 'medium', title: t('ontologies.add_new_submission'))
+  end
+
+  def ontology_edit_button
+    return unless @ontology.admin?(session[:user])
+    render RoundedButtonComponent.new(link: edit_ontology_submission_path(ontology_id: @ontology.acronym, id: @submission_latest.id.split('/').last), icon: 'edit.svg',
+                                      size: 'medium',
+                                      title: t('ontologies.edit_metadata'))
+  end
+  def summary_only?
+    @ontology&.summaryOnly || @submission&.isRemote&.eql?('3')
+  end
+
+  def ontology_pull_location?
+    !(@submission.pullLocation.nil? || @submission.pullLocation.empty?)
+  end
+
+  def upload_ontology_button
+    if session[:user].nil?
+      render Buttons::RegularButtonComponent.new(id: "upload-ontology-button", value: t('home.ontology_upload_button'), variant: "secondary", state: "regular", href: "/login?redirect=/ontologies/new") do |btn|
+        btn.icon_left do
+          inline_svg_tag "upload.svg"
+        end
+      end
+    else
+      render Buttons::RegularButtonComponent.new(id: "upload-ontology-button", value: t('home.ontology_upload_button'), variant: "secondary", state: "regular", href: new_ontology_path) do |btn|
+        btn.icon_left do
+          inline_svg_tag "upload.svg"
+        end
+      end
+    end
+  end
+
   LANGUAGE_FILTERABLE_SECTIONS = %w[classes].freeze
 
   def ontology_object_json_link(ontology_acronym, object_type, id)
