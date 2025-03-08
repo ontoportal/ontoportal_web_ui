@@ -227,6 +227,22 @@ module SubmissionInputsHelper
     end
   end
 
+
+  def onts_for_select(include_views: false)
+    ontologies ||= LinkedData::Client::Models::Ontology.all({include: "acronym,name,viewOf", include_views: include_views})
+    onts_for_select = [['', '']]
+    ontologies.each do |ont|
+      next if ( ont.acronym.nil? or ont.acronym.empty? )
+      acronym = ont.acronym
+      name = ont.name
+      abbreviation = acronym.empty? ? "" : "(#{acronym})"
+      ont_label = "#{name.strip} #{abbreviation}#{ont.viewOf ? ' [view]' : ''}"
+      onts_for_select << [ont_label, acronym]
+    end
+    onts_for_select.sort! { |a,b| a[0].downcase <=> b[0].downcase }
+    onts_for_select
+  end
+
   def ontology_view_of_input(ontology = @ontology)
     render Layout::RevealComponent.new(selected: ontology.view?, toggle: true) do |c|
       c.button do
