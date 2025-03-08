@@ -3,6 +3,20 @@ require 'iso-639'
 
 module OntologiesHelper
 
+  def error_message_text(errors = @errors)
+    return errors if errors.is_a?(String)
+    errors = errors[:error] if errors && errors[:error]
+    t('application.errors_in_fields', errors: errors.keys.join(', '))
+  end
+
+  def error_message_alert(errors = @errors)
+    return if errors.nil?
+
+    content_tag(:div, class: 'my-1') do
+      alert_component(error_message_text(errors), type: 'danger')
+    end
+  end
+  
   def download_button
     return unless (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
 
