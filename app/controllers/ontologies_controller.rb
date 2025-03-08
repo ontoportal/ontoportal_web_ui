@@ -1,6 +1,7 @@
 class OntologiesController < ApplicationController
   include MappingsHelper
   include MappingStatistics
+  include OntologyUpdater
 
   require "multi_json"
   require 'cgi'
@@ -12,29 +13,6 @@ class OntologiesController < ApplicationController
 
   KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties"])
 
-  # GET /ontologies
-  # GET /ontologies.xml
-  def index_old
-    @ontologies = LinkedData::Client::Models::Ontology.all(include: LinkedData::Client::Models::Ontology.include_params)
-    @submissions = LinkedData::Client::Models::OntologySubmission.all
-    @submissions_map = Hash[@submissions.map {|sub| [sub.ontology.acronym, sub] }]
-    @categories = LinkedData::Client::Models::Category.all
-    @groups = LinkedData::Client::Models::Group.all
-
-    # Count the number of classes in each ontology
-    metrics_hash = get_metrics_hash
-    @class_counts = {}
-    @ontologies.each do |o|
-      @class_counts[o.id] = metrics_hash[o.id].classes if metrics_hash[o.id]
-      @class_counts[o.id] ||= 0
-    end
-
-    @mapping_counts = {}
-    @note_counts = {}
-    respond_to do |format|
-      format.html # index.rhtml
-    end
-  end
 
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
@@ -47,8 +25,13 @@ class OntologiesController < ApplicationController
     @admin = session[:user] ? session[:user].admin? : false
     @development = Rails.env.development?
 
-    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false, display_context: false)
-    submissions_map = Hash[submissions.map {|sub| [sub.ontology.acronym, sub] }]
+    submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false, display_context: false, include: "submissionStatus,hasOntologyLanguage,pullLocation,description,creationDate,status")
+    submissions_map = submissions.map do |sub|
+      ontology_id = sub.id.split("/")[0..-3].join("/")
+      ontology =  ontologies_hash[ontology_id]
+      [ontology.acronym, sub]
+    end.to_h
+
 
     @categories = LinkedData::Client::Models::Category.all(display_links: false, display_context: false)
     @categories_hash = Hash[@categories.map {|c| [c.id, c] }]
@@ -163,34 +146,34 @@ class OntologiesController < ApplicationController
   end
 
   def create
-    if params[:commit].eql? 'Cancel'
-      redirect_to ontologies_path and return
+    @is_update_ontology = false
+    @ontology = ontology_from_params.save(cache_refresh_all: false)
+
+    if response_error?(@ontology)
+      show_new_errors(@ontology)
+      return
     end
 
-    @ontology = LinkedData::Client::Models::Ontology.new(values: ontology_params)
-    @ontology_saved = @ontology.save
-    if response_error?(@ontology_saved)
-      @categories = LinkedData::Client::Models::Category.all
-      @user_select_list = LinkedData::Client::Models::User.all.map { |u| [u.username, u.id] }
-      @user_select_list.sort! { |a, b| a[1].downcase <=> b[1].downcase }
-      @errors = response_errors(@ontology_saved)
-      render 'new'
+    @submission = save_submission(new_submission_hash(@ontology))
+
+    if response_error?(@submission)
+      @ontology.delete
+      show_new_errors(@submission)
     else
-      if @ontology_saved.summaryOnly
-        redirect_to "/ontologies/success/#{@ontology.acronym}"
-      else
-        redirect_to new_ontology_submission_path(@ontology.acronym)
-      end
+      redirect_to "/ontologies/success/#{@ontology.acronym}"
     end
   end
 
   def edit
-    # Note: find_by_acronym includes ontology views
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], include: 'all').first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], {include: 'all', display_links: false, display_context: false}).first
     redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
-    @categories = LinkedData::Client::Models::Category.all
-    @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
-    @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+
+    submission = @ontology.explore.latest_submission(include: 'submissionId')
+    if submission
+      redirect_to edit_ontology_submission_path(@ontology.acronym, submission.submissionId)
+    else
+      redirect_to new_ontology_submission_path(@ontology.acronym)
+    end
   end
 
   def mappings
@@ -205,10 +188,16 @@ class OntologiesController < ApplicationController
 
   def new
     @ontology = LinkedData::Client::Models::Ontology.new
-    @ontologies =  LinkedData::Client::Models::Ontology.all(include: "acronym", include_views: true, display_links: false, display_context: false)
+    @ontology.viewOf = params.dig(:ontology, :viewOf)
+    @submission = LinkedData::Client::Models::OntologySubmission.new
+    @submission.hasOntologyLanguage = 'OWL'
+    @submission.released = Date.today.to_s
+    @submission.status = 'production'
+    @ontologies = LinkedData::Client::Models::Ontology.all(include: 'acronym', include_views: true, display_links: false, display_context: false)
     @categories = LinkedData::Client::Models::Category.all
-    @user_select_list = LinkedData::Client::Models::User.all.map {|u| [u.username, u.id]}
-    @user_select_list.sort! {|a,b| a[1].downcase <=> b[1].downcase}
+    @groups = LinkedData::Client::Models::Group.all
+    @user_select_list = LinkedData::Client::Models::User.all(include: 'username').map { |u| [u.username, u.id] }
+    @user_select_list.sort! { |a, b| a[1].downcase <=> b[1].downcase }
   end
 
   def notes
@@ -371,15 +360,6 @@ class OntologiesController < ApplicationController
 
   private
 
-  def ontology_params
-    p = params.require(:ontology).permit(:name, :acronym, { administeredBy:[] }, :viewingRestriction, { acl:[] },
-                                         { hasDomain:[] }, :isView, :viewOf, :subscribe_notifications)
-
-    p[:administeredBy].reject!(&:blank?)
-    p[:acl].reject!(&:blank?)
-    p[:hasDomain].reject!(&:blank?)
-    p.to_h
-  end
 
   def determine_layout
     case action_name
