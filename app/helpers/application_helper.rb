@@ -29,6 +29,14 @@ module ApplicationHelper
     CGI.escape(url) if url
   end
 
+  def portal_name
+    $SITE || 'BioPortal'
+  end
+
+
+  def empty_state(text: t('no_result_was_found'))
+    render Display::EmptyStateComponent.new(text: text)
+  end
 
   def section_name(section)
     section = concept_label_to_show(submission: @submission_latest || @submission) if section.eql?('classes')
