@@ -57,13 +57,7 @@ module SubmissionInputsHelper
     attr = SubmissionMetadataInput.new(attribute_key: attr_key, submission: @submission, label: label,
                                        attr_metadata: attr_metadata(attr_key))
 
-    if attr.type?('Agent')
-      if attr.type?('list')
-        generate_list_agent_input(attr, helper_text: help)
-      else
-        generate_agent_input(attr)
-      end
-    elsif attr.type?('integer')
+    if attr.type?('integer')
       generate_integer_input(attr)
     elsif attr.type?('date_time')
       if attr.type?('list')
@@ -94,8 +88,8 @@ module SubmissionInputsHelper
       label = attr_header_label(attr, show_tooltip: show_tooltip)
       if attr.type?('list')
         generate_list_text_input(attr, helper_text: help, long_text: long_text)
-      elsif attr.metadata['attribute'].to_s.eql?('URI')
-        url_input(name: name, label: label, value: @submission.URI)
+      elsif attr.metadata['attribute'].to_s.eql?('uri')
+        url_input(name: name, label: label, value: @submission.uri)
       elsif long_text
         text_area_input(name: name, label: label,
                         value: attr.values, resize: true)
@@ -108,13 +102,15 @@ module SubmissionInputsHelper
   end
 
   def ontology_name_input(ontology = @ontology, label: 'Name')
-    text_input(name: 'ontology[name]', value: ontology.name, label: label_required(label))
+    content_tag(:div, class: 'mb-2') do
+      text_input(name: 'ontology[name]', value: ontology.name, label: label_required(label))
+    end
   end
 
   def ontology_acronym_input(ontology = @ontology, update: @is_update_ontology, label: 'Acronym')
     out = text_input(name: 'ontology[acronym]', value: ontology.acronym, disabled: update, label: label_required(label))
     out += hidden_field_tag('ontology[acronym]', ontology.acronym) if update
-    out
+    content_tag(:div, out, class: 'my-1')
   end
 
   def ontology_administered_by_input(ontology = @ontology, users_list = @user_select_list)
@@ -512,7 +508,7 @@ module SubmissionInputsHelper
       tooltip_span = render(Display::InfoTooltipComponent.new(text: attribute_help_text(attr)))
       html = content_tag(:span, label)
       html += content_tag(:span, '*', class: "text-danger") if attr.required?
-      html += content_tag(:span, tooltip_span, class: 'ml-1') if show_tooltip
+      html += content_tag(:span, tooltip_span, class: 'ms-1') if show_tooltip
       html
     end
   end
