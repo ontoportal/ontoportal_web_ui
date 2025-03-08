@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 module SubmissionsHelper
+
+  def metadata_help_link
+    content_tag(:div, class: 'edit-ontology-desc') do
+      html = content_tag(:div) do
+        content_tag(:div, t('submission_inputs.edit_metadata_instruction',
+                            portal_name: portal_name,
+                            link: link_to(t('submission_inputs.edit_metadata_instruction_link'), Rails.configuration.settings.links[:metadata_help], target: '_blank')).html_safe
+        )
+      end
+
+      html.html_safe
+    end
+  end
+
   def acronym_from_submission_muted(submission)
     acronym =
       if submission.ontology.respond_to? :acronym
