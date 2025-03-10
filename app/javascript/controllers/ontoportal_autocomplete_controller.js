@@ -79,7 +79,7 @@ export default class extends Controller {
     }
 
     #isMultiple(arr) {
-        return Array.isArray(arr) && arr.length > 0;
+        return Array.isArray(arr) && arr.length > 1;
     }
 
 }
