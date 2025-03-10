@@ -41,6 +41,9 @@ class ApplicationController < ActionController::Base
 
   before_action :set_global_thread_values, :domain_ontology_set, :clean_empty_strings_from_params_arrays, :init_trial_license
 
+  def submission_metadata
+    @metadata ||= helpers.submission_metadata
+  end
 
   def rest_url
     helpers.rest_url

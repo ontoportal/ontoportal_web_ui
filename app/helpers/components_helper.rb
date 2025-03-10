@@ -54,4 +54,38 @@ module ComponentsHelper
     end
   end
 
+  def chips_component(id:, name:, label:, value:, checked: false, tooltip: nil, disabled: false, &block)
+    content_tag(:div, data: { controller: 'tooltip' }, title: tooltip) do
+      check_input(id: id, name: name, value: value, label: label, checked: checked, disabled: disabled, &block)
+    end
+  end
+
+  def group_chip_component(id: nil, name:, object:, checked:, value: nil, title: nil, disabled: false, &block)
+    title ||= object["name"]
+    value ||= (object["value"] || object["acronym"] || object["id"])
+
+    chips_component(id: id || value, name: name, label: object["acronym"],
+                    checked: checked,
+                    value: value, tooltip: title, disabled: disabled, &block)
+  end
+
+  alias :category_chip_component :group_chip_component
+
+
+  def form_save_button(enable_loading: true)
+    render Buttons::RegularButtonComponent.new(id: 'save-button', value: t('components.save_button'), variant: "primary", size: "slim", type: "submit", state: enable_loading ? 'animate' : '') do |btn|
+      btn.icon_left do
+        inline_svg_tag "check.svg"
+      end
+    end
+  end
+
+  def form_cancel_button
+    render Buttons::RegularButtonComponent.new(id: 'cancel-button', value: t('components.cancel_button'), variant: "secondary", size: "slim") do |btn|
+      btn.icon_left do
+        inline_svg_tag "x.svg", width: "9", height: "9"
+      end
+    end
+  end
+
 end
