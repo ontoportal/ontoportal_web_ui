@@ -95,31 +95,6 @@ class HomeController < ApplicationController
     render json: bp_config_json
   end
 
-  def account
-    @title = 'Account Information'
-    if session[:user].nil?
-      redirect_to controller: 'login', action: 'index', redirect: '/account'
-      return
-    end
-
-    @user = LinkedData::Client::Models::User.get(session[:user].id, include: 'all')
-
-    @user_ontologies = @user.customOntology
-    @user_ontologies ||= []
-
-    @admin_ontologies = LinkedData::Client::Models::Ontology.where(include_views: true) do |o|
-      o.administeredBy.include? @user.id
-    end
-    @admin_ontologies.sort! { |a, b| a.name.downcase <=> b.name.downcase }
-
-    @user_projects = LinkedData::Client::Models::Project.where do |p|
-      p.creator.include? @user.id
-    end
-    @user_projects.sort! { |a, b| a.name.downcase <=> b.name.downcase }
-
-    render 'users/show'
-  end
-
   def feedback_complete; end
 
   def validate_ontology_file_show; end
