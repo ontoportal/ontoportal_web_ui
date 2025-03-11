@@ -32,7 +32,7 @@
               = session[:user].username
             %ul.dropdown-menu.dropdown-menu-end
               %li
-                = link_to("Account settings", "/account", class: "dropdown-item")
+                = link_to("Account settings", user_path(session[:user].username), class: "dropdown-item")
               - unless session[:ontologies].nil?
                 %li
                   %hr.dropdown-divider
