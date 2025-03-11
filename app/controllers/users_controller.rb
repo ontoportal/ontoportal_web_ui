@@ -19,12 +19,10 @@ class UsersController < ApplicationController
     @user = LinkedData::Client::Models::User.get(params[:id], include: 'all')
     @user_ontologies = @user.customOntology
     @all_ontologies = LinkedData::Client::Models::Ontology.all(ignore_custom_ontologies: true, include_views: true)
-    @admin_ontologies = @all_ontologies.select { |o| o.administeredBy.include? @user.id }
-
-    @user_projects = LinkedData::Client::Models::Project.where do |p|
-      p.creator.include? @user.id
-    end
-    @user_projects.sort! { |a, b| a.name.downcase <=> b.name.downcase }
+    @admin_ontologies = @all_ontologies.filter { |o| o.administeredBy.include? @user.id }
+                                       .sort_by { |o| o.name.downcase }
+    @user_projects = LinkedData::Client::Models::Project.where { |p| p.creator.include? @user.id }
+                                                        .sort_by { |p| p.name.downcase }
   end
 
   def new
