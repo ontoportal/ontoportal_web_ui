@@ -2,7 +2,7 @@
   background-color: var(--bg-chip-button);
   padding: 6px;
   border-radius: 5px;
-  color: var(--text-chip-button);
+  color: var(--text-chip-button) !important;
   font-weight: 500;
   font-size: 15px;
   line-height: 44px;
