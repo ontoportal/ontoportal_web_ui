@@ -42,6 +42,14 @@ class ApplicationController < ActionController::Base
   before_action :set_global_thread_values, :domain_ontology_set, :clean_empty_strings_from_params_arrays, :init_trial_license
 
 
+  def ontology_not_found(ontology_acronym)
+    not_found(t('application.ontology_not_found',acronym: ontology_acronym))
+  end
+
+  def submission_metadata
+    @metadata ||= helpers.submission_metadata
+  end
+
   def rest_url
     helpers.rest_url
   end
@@ -88,13 +96,13 @@ class ApplicationController < ActionController::Base
     user ||= User.new({"id" => 0})
   end
 
-  def not_found
+  def not_found(message = '')
     if request.xhr?
-      render plain: "Error: load failed"
+      render plain: message || t('application.error_load')
       return
     end
-    
-    raise ActiveRecord::RecordNotFound.new('Not Found')
+
+    raise ActiveRecord::RecordNotFound.new(message || t('application.not_found_message'))
   end
 
   NOTIFICATION_TYPES = { :notes => "CREATE_NOTE_NOTIFICATION", :all => "ALL_NOTIFICATION" }
