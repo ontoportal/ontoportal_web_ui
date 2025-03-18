@@ -1108,3 +1108,17 @@ turbo-frame[busy] > .hide-if-loading, .show-if-loading {
 turbo-frame[busy] ~ .show-if-loading {
   display: inline-block;
 }
+
+.cookie-banner {
+  position: fixed;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  top: initial;
+  left: initial;
+  bottom: 2em;
+  right: 2em;
+  z-index: 9999;
+  background: white;
+  max-width: 1024px;
+}
