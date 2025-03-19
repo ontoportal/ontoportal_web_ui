@@ -159,3 +159,12 @@ en:
 
   mappings:
     intro: Browse mappings between classes in different ontologies
+
+  cookies:
+    index:
+      message:
+        html: >
+          We use cookies to enhance your experience: essential cookies for login and preferences, and optional 
+          analytics cookies to improve our site. Accepting cookies allows analytics tracking. Rejecting disables 
+          analytics. See "<a href="%{cookies}" target="_blank">use of cookies</a>" for more information.
+
