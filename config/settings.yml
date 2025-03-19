@@ -2,7 +2,6 @@ shared:
   links:
     about: 'https://www.bioontology.org/about-us/'
     cite: 'https://www.bioontology.org/about-us/#cite-bioportal'
-    cookies: 'https://www.bioontology.org/terms/#use-of-cookies'
     facebook: 'https://www.facebook.com/National-Center-for-Biomedical-Ontology-127444774011153/'
     github: 'http://github.com/ncbo'
     help: 'https://www.bioontology.org/wiki/BioPortal_Help'
@@ -30,6 +29,7 @@ development:
   google_analytics:
     tag_id: null
   links:
+    cookies: 'https://www.bioontology.org/terms/#use-of-cookies'
     release_notes: 'https://github.com/ncbo/bioportal_web_ui/releases'
   purl:
     enabled: true
@@ -48,6 +48,7 @@ staging:
   google_analytics:
     tag_id: 'G-KF3SKHPEGW'
   links:
+    cookies: 'https://www.bioontology.org/terms/#use-of-cookies'
     release_notes: 'https://github.com/ncbo/bioportal_web_ui/releases'
   purl:
     enabled: true
@@ -58,6 +59,7 @@ production:
   google_analytics:
     tag_id: 'G-KF3SKHPEGW'
   links:
+    cookies: 'https://www.bioontology.org/terms/#use-of-cookies'
     release_notes: 'https://github.com/ncbo/bioportal_web_ui/releases'
   purl:
     enabled: true
@@ -68,6 +70,7 @@ appliance:
   google_analytics:
     tag_id: null
   links:
+    cookies: 'https://www.bioontology.org/terms/#use-of-cookies'
     release_notes: 'https://www.bioontology.org/wiki/BioPortal_Virtual_Appliance_Release_Notes'
   purl:
     # Set enabled to true if you're running a PURL server to provide PURLs for ontologies and concepts
