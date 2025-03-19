@@ -41,43 +41,70 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def edit
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
-    submissions = @ontology.explore.submissions
-    @submission = submissions.select { |o| o.submissionId == params['id'].to_i }.first
+  # Called when form to "Edit submission" is submitted
+  def edit_properties
+    display_submission_attributes params[:ontology_id], params[:properties]&.split(','), submissionId: params[:submission_id],
+                                  inline_save: params[:inline_save]&.eql?('true')
+
+    attribute_template_output = render_to_string(inline: helpers.render_submission_inputs(params[:container_id] || 'metadata_by_ontology', @submission))
+
+    render inline: attribute_template_output
+
   end
 
+  def edit
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id], {include: 'all'}).first
+    ontology_not_found(params[:ontology_id]) unless @ontology
+
+    category_attributes = submission_metadata.group_by { |x| x['category'] }.transform_values { |x| x.map { |attr| attr['attribute'] } }
+    category_attributes = category_attributes.reject { |key| ['no'].include?(key.to_s) }
+    category_attributes['general'] << %w[acronym name uri groups administeredBy categories contact]
+    category_attributes['licensing'] << 'viewingRestriction'
+    category_attributes['relations'] << 'viewOf'
+    category_attributes.delete('persons and organizations')
+    @selected_attributes = Array(params[:properties])
+    if @selected_attributes.empty?
+      @categories_order = ['general', 'description', 'dates', 'licensing', 'links', 'media', 'community', 'usage', 'relations', 'content', 'methodology', 'object description properties']
+      @category_attributes = category_attributes
+    end
+
+    render 'submissions/edit', layout: params[:container_id] ? nil : 'ontology'
+  end
+
+  # When editing a submission (called when submit "Edit submission information" form)
   def update
-    # Make the contacts an array
-    params[:submission][:contact] = params[:submission][:contact].values
-    params[:submission][:contact].delete_if { |c| c[:name].empty? || c[:email].empty? }
-    params[:submission][:naturalLanguage].compact_blank!
+    @is_update_ontology = true
+    acronym = params[:ontology_id]
+    submission_id = params[:id]
+    if params[:ontology]
+      @ontology, response = update_existent_ontology(acronym)
 
-    @ontology = LinkedData::Client::Models::Ontology.get(params[:submission][:ontology])
-    submissions = @ontology.explore.submissions
-    @submission = submissions.select { |o| o.submissionId == params['id'].to_i }.first
+      if response.nil? || response_error?(response)
+        show_new_errors(response, partial: 'submissions/form_content', id: 'test')
+        return
+      end
+    end
 
-    @submission.update_from_params(submission_params)
-    # Update summaryOnly on ontology object
-    @ontology.summaryOnly = @submission.isRemote.eql?('3')
-    @ontology.update
-    error_response = @submission.update(cache_refresh_all: false)
-    if response_error?(error_response)
-      @errors = response_errors(error_response) # see application_controller::response_errors
-      render 'edit'
+    if params[:submission].nil?
+      return redirect_to "/ontologies/#{acronym}",
+                         notice: t('submissions.submission_updated_successfully')
+    end
+
+    @submission, response = update_submission(update_submission_hash(acronym), submission_id, @ontology)
+    if params[:attribute].nil?
+      if response_error?(response)
+        show_new_errors(response, partial: 'submissions/form_content', id: 'test')
+      else
+        redirect_to "/ontologies/#{acronym}",
+                    notice: t('submissions.submission_updated_successfully'), status: :see_other
+      end
     else
-      redirect_to "/ontologies/#{@ontology.acronym}"
+      @errors = response_errors(response) if response_error?(response)
+      @submission = submission_from_params(params[:submission])
+      @submission.submissionId = submission_id
+      reset_agent_attributes
+      render_submission_attribute(params[:attribute])
     end
   end
 
-  private
-
-  def submission_params
-    p = params.require(:submission).permit(:ontology, :description, :hasOntologyLanguage, :prefLabelProperty,
-                                           :synonymProperty, :definitionProperty, :authorProperty, :obsoleteProperty,
-                                           :obsoleteParent, :version, :status, :released, :isRemote, :pullLocation,
-                                           :filePath, { contact: [:name, :email] }, :homepage, :documentation,
-                                           :publication, naturalLanguage: [])
-    p.to_h
-  end
 end
