@@ -3,6 +3,85 @@ require 'iso-639'
 
 module OntologiesHelper
 
+  def category_name_chip_component(domain)
+    text = domain.split('/').last.titleize
+
+    return render(ChipButtonComponent.new(text: text, tooltip: domain, type: "static")) unless link?(domain)
+
+    acronym = domain.split('/').last
+    category = LinkedData::Client::Models::Category.find(acronym)
+
+    if category
+      render ChipButtonComponent.new(text: category.name, tooltip: category.id, url: category.id, type: "clickable", target: '_blank')
+    else
+      render(ChipButtonComponent.new(text: text, tooltip: domain, type: "static"))
+    end
+  end
+
+  def group_name_chip_component(domain)
+    text = domain.split('/').last.titleize
+
+    return render(ChipButtonComponent.new(text: text, tooltip: domain, type: "static")) unless link?(domain)
+
+    acronym = domain.split('/').last
+    category = LinkedData::Client::Models::Group.find(acronym)
+    if category
+      render ChipButtonComponent.new(text: category.name, tooltip: category.id, url: category.id, type: "clickable", target: '_blank')
+    else
+      render(ChipButtonComponent.new(text: text, tooltip: domain, type: "static"))
+    end
+  end
+
+  def ontology_retired?(submission)
+    submission[:status].to_s.eql?('retired') || submission[:deprecated].to_s.eql?('true')
+  end
+
+  def ontology_license_badge(acronym, submission = @submission_latest)
+    return if submission.nil?
+
+    no_license = submission.hasLicense.blank?
+    render ChipButtonComponent.new(class: "text-nowrap chip_button_small #{no_license && 'disabled-link'}", type: no_license ? 'static' : 'clickable') do
+      if no_license
+        content_tag(:span) do
+          content_tag(:span, t('ontologies.no_license'), class: "mx-1") + inline_svg_tag('icons/law.svg', width: "15px")
+        end
+      else
+        link_to_modal(nil, "/ajax/submission/show_licenses/#{acronym}", data: { show_modal_title_value: t('ontologies.access_rights_information') }) do
+          content_tag(:span, t('ontologies.view_license'), class: "mx-1") + inline_svg_tag('icons/law.svg')
+        end
+      end
+
+    end
+  end
+
+  def ontology_retired_badge(submission, small: false, clickable: true)
+    return if submission.nil? || !ontology_retired?(submission)
+    text_color = submission[:status].to_s.eql?('retired') ? 'text-danger bg-danger-light' : 'text-warning bg-warning-light'
+    text_content = submission[:status].to_s.eql?('retired') ? 'Retired' : 'Deprecated'
+    style = "#{text_color} #{small && 'chip_button_small'}"
+    render ChipButtonComponent.new(class: "#{style} mr-1", text: text_content, type: clickable ? 'clickable' : 'static')
+  end
+
+  def ontology_alternative_names(submission = @submission_latest)
+    alt_labels = (Array(submission&.alternative) + Array(submission&.hiddenLabel))
+    return unless alt_labels.present?
+
+    content_tag(:div, class: 'creation_text') do
+      concat(t('ontologies.referred_to'))
+      concat(content_tag(:span, class: 'date_creation_text') do
+        if alt_labels.length > 1
+          concat("#{alt_labels[0..-2].join(', ')} or #{alt_labels.last}.")
+        else
+          concat("#{alt_labels.first}.")
+        end
+      end)
+    end
+  end
+
+  def private_ontology_icon(is_private)
+    raw(content_tag(:i, '', class: 'fas fa-key', title: t('ontologies.private_ontology'))) if is_private
+  end
+
   def error_message_text(errors = @errors)
     return errors if errors.is_a?(String)
     errors = errors[:error] if errors && errors[:error]
@@ -16,7 +95,7 @@ module OntologiesHelper
       alert_component(error_message_text(errors), type: 'danger')
     end
   end
-  
+
   def download_button
     return unless (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
 
@@ -24,11 +103,12 @@ module OntologiesHelper
     render RoundedButtonComponent.new(link: down_link, icon: 'summary/download.svg',
                                       size: 'medium', title: 'Download latest submission')
   end
+
   def ontology_purl_button(purl)
     return unless Rails.configuration.settings.purl[:enabled]
 
     render RoundedButtonComponent.new(link: purl, icon: 'icons/copy_link.svg',
-                                      size: 'medium', title: "#{portal_name} PURL" )
+                                      size: 'medium', title: "#{portal_name} PURL")
   end
 
   def homepage_button(homepage)
@@ -60,6 +140,7 @@ module OntologiesHelper
                                       size: 'medium',
                                       title: t('ontologies.edit_metadata'))
   end
+
   def summary_only?
     @ontology&.summaryOnly || @submission&.isRemote&.eql?('3')
   end
@@ -91,8 +172,8 @@ module OntologiesHelper
   end
 
   def render_permalink_link
-    content_tag(:div,  class: 'concepts_json_button mx-2') do
-      render RoundedButtonComponent.new(id: 'classPermalink', link: 'javascript:void(0);', title: t('concepts.permanent_link_class'),  data: { 'bs-toggle': "modal", 'bs-target': "#classPermalinkModal", current_purl: @current_purl} ) do
+    content_tag(:div, class: 'concepts_json_button mx-2') do
+      render RoundedButtonComponent.new(id: 'classPermalink', link: 'javascript:void(0);', title: t('concepts.permanent_link_class'), data: { 'bs-toggle': "modal", 'bs-target': "#classPermalinkModal", current_purl: @current_purl }) do
         inline_svg_tag('icons/copy_link.svg', width: 20, height: 20)
       end
     end
@@ -231,8 +312,8 @@ module OntologiesHelper
   # Link for private/public/licensed ontologies
   def visibility_link(ontology)
     ont_url = "/ontologies/#{ontology.acronym}" # 'ontology' is NOT a submission here
-    page_name = 'summary'  # default ontology page view for visibility link
-    link_name = 'Public'   # default ontology visibility
+    page_name = 'summary' # default ontology page view for visibility link
+    link_name = 'Public' # default ontology visibility
     if ontology.summaryOnly
       link_name = 'Summary Only'
     elsif ontology.private?
@@ -287,9 +368,9 @@ module OntologiesHelper
     if !@ontology.summaryOnly && (submission_ready?(@submission_latest) || @old_submission_ready)
       sections += ['classes']
       sections += %w[properties]
-      #sections += %w[schemes collections] if skos?
-      #sections += %w[instances] unless skos?
-      #sections += %w[notes mappings widgets sparql]
+      # sections += %w[schemes collections] if skos?
+      # sections += %w[instances] unless skos?
+      # sections += %w[notes mappings widgets sparql]
       sections += %w[notes mappings widgets]
     end
     sections
@@ -304,6 +385,7 @@ module OntologiesHelper
                                      target: '_top', data: { "turbo-frame-target": "frame" })
     end
   end
+
   def language_selector_hidden_tag(section)
     hidden_field_tag "language_selector_hidden_#{section}", '',
                      data: { controller: "language-change", 'language-change-section-value': section, action: "change->language-change#dispatchLangChangeEvent" }
@@ -318,14 +400,12 @@ module OntologiesHelper
     end
   end
 
-
-
   def visits_chart_dataset(visits_data)
-    visits_chart_dataset_array({'Visits': visits_data})
+    visits_chart_dataset_array({ 'Visits': visits_data })
   end
 
   def visits_chart_dataset_array(visits_data, fill: true)
-    visits_data = visits_data.map do |label , x|
+    visits_data = visits_data.map do |label, x|
       {
         label: label,
         data: x,
@@ -365,14 +445,4 @@ module OntologiesHelper
   def submission_languages(submission = @submission)
     Array(submission&.naturalLanguage).map { |natural_language| natural_language.split('/').last }.compact
   end
-
-  def abbreviations_to_languages(abbreviations)
-    # Use iso-639 gem to convert language codes to their English names
-    languages = abbreviations.map do |abbr|
-      language = ISO_639.find_by_code(abbr) || ISO_639.find_by_english_name(abbr)
-      language ? language.english_name : abbr
-    end
-    languages.sort
-  end
-
 end

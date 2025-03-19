@@ -16,7 +16,7 @@ class SubmissionMetadataComponent < ViewComponent::Base
       out = 'N/A'
     else
       out = Array(@submission.send(metadata)).map do |value|
-        content_tag(:div, class: 'm-1 f32') do
+        content_tag(:div) do
           display_attribute(metadata, value)
         end
       end.join

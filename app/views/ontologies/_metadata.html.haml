@@ -3,9 +3,9 @@
     -# Details pane
     %section.ont-metadata-card.ont-details-card
       %header.pb-2.fw-bold Details
-      %table.table.table-sm
+      %table.table.table-sm.mb-0
         %tr.border-top
-          %td Acronym
+          %td{style: 'width: 200px'} Acronym
           %td= @ontology.acronym
         %tr
           %td Visibility
@@ -34,26 +34,21 @@
           %tr
             %td Format
             %td= @submission_latest.hasOntologyLanguage
-          - if @submission_latest.naturalLanguage.present?
-            %tr
-              %td Language
-              %td= abbreviations_to_languages(@submission_latest.naturalLanguage).join(", ")
-          %tr
-            %td Contact
-            %td= raw @submission_latest.contact.map {|c| [c.name, c.email].join(", ") if c.member?(:name) && c.member?(:email)}.join("<br/>")
-        - categories_hash = LinkedData::Client::Models::Category.all_to_hash
         - categories = @ontology.hasDomain
         - unless categories.empty?
           %tr
             %td Categories
-            %td= categories.map {|c| categories_hash[c].name}.sort.join(", ")
-        - groups_hash = LinkedData::Client::Models::Group.all_to_hash
+            %td
+              = categories.map {|c| category_name_chip_component(c) }.join.html_safe
         - groups = @ontology.group
         - unless groups.empty?
           %tr
             %td Groups
-            %td= groups.map {|g| groups_hash[g].name}.sort.join(", ")
+            %td
+              = groups.map {|c| group_name_chip_component(c) }.join.html_safe
         = raw additional_details
+      %section.ont-metadata-card
+        = render SubmissionMetadataComponent.new(submission: @submission_latest, submission_metadata: submission_metadata)
 
     -# Submissions pane
     %section.ont-metadata-card.ont-subs-card
