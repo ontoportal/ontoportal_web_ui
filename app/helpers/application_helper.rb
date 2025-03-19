@@ -17,6 +17,15 @@ module ApplicationHelper
                        :oboInOwl => "http://www.geneontology.org/formats/oboInOwl#", :idot => "http://identifiers.org/idot/", :sd => "http://www.w3.org/ns/sparql-service-description#",
                        :cclicense => "http://creativecommons.org/licenses/",
                        'skos-xl' => "http://www.w3.org/2008/05/skos-xl#"}
+
+  def link?(str)
+    # Regular expression to match strings starting with "http://" or "https://"
+    link_pattern = /\Ahttps?:\/\//
+    str = str&.strip
+    # Check if the string matches the pattern
+    !!(str =~ link_pattern)
+  end
+
   def get_apikey
     unless session[:user].nil?
       session[:user].apikey
@@ -27,6 +36,10 @@ module ApplicationHelper
 
   def escape(url)
     CGI.escape(url) if url
+  end
+
+  def portal_name
+    $SITE || 'BioPortal'
   end
 
 
