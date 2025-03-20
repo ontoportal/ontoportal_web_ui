@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 # Main Rails gem
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.0.8'
+gem 'rails', '7.2.2.1'
 
 # JavaScript bundling for Rails
 gem 'jsbundling-rails'
@@ -107,7 +107,8 @@ gem 'flag-icons-rails', '~> 3.4'
 gem 'iso-639', '~> 0.3.6'
 
 # Custom API client
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.5.2'
+# gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.5.2'
+gem 'ontologies_api_client', path: '/Users/jlvendetti/Development/GitHub/ncbo/ontologies_api_ruby_client'
 
 gem 'rexml', '~> 3'
 
