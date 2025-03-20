@@ -24,9 +24,7 @@
 //= require bp_property_tree
 //= require concepts
 //= require home
-//= require ontologies
 //= require projects
-//= require submissions
 
 //= require application_esbuild
 
