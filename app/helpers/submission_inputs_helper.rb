@@ -525,6 +525,11 @@ module SubmissionInputsHelper
 
     render SummarySectionComponent.new(title: title, show_card: false) do
       help_text = ''
+
+      unless attr['helpText'].nil?
+        help_text += render(FieldContainerComponent.new(label: t('submission_inputs.help_text'), value: help.html_safe))
+      end
+
       unless attr['metadataMappings'].nil?
         help_text += render(FieldContainerComponent.new(label: t('submission_inputs.equivalents'), value: attr['metadataMappings'].join(', ')))
       end
@@ -533,10 +538,6 @@ module SubmissionInputsHelper
         help_text += render(FieldContainerComponent.new(label: t('submission_inputs.validators'), value: attr['enforce'].map do |x|
           content_tag(:span, x.humanize, class: 'badge bg-primary mx-1')
         end.join.html_safe))
-      end
-
-      unless attr['helpText'].nil?
-        help_text += render(FieldContainerComponent.new(label: t('submission_inputs.help_text'), value: help.html_safe))
       end
 
       help_text
