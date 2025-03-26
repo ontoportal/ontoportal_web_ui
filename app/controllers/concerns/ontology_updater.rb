@@ -50,9 +50,8 @@ module OntologyUpdater
 
     @submission = submission_from_params(params[:submission]) if params[:submission] && (@submission.nil? || @submission.errors)
     
-    # reset_agent_attributes
     if redirection.is_a?(Hash) && redirection[:id]
-      render_turbo_stream replace(redirection[:id], partial: redirection[:partial])
+      render_turbo_stream(replace(redirection[:id], partial: redirection[:partial]))
     else
       render redirection, status: 422
     end
