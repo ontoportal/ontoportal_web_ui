@@ -5,6 +5,9 @@
       = render_submission_inputs('', @submission)
       %hr#edit-ontology-actions-devider
       .edit-ontology-actions
+        - unless params[:container_id]
+          .cancel-button.mx-2{onClick: 'window.history.back();'}
+            = form_cancel_button
         .save-button
           = render Buttons::RegularButtonComponent.new(id:'save-button', value: t('submissions.save_button'), variant: "primary", size: "slim", type: "submit") do |btn|
             - btn.icon_left do
