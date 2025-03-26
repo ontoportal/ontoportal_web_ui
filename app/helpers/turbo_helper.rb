@@ -22,11 +22,13 @@ module TurboHelper
   end
 
   def prepend(id, options = {}, &block)
-    turbo_stream.prepend(id, options, &block)
+    options = { inline: options } if options.is_a?(String)
+    turbo_stream.prepend(id, **options, &block)
   end
 
   def replace(id, options = {}, &block)
-    turbo_stream.replace(id, options, &block)
+    options = { inline: options } if options.is_a?(String)
+    turbo_stream.replace(id, **options, &block)
   end
 
   def remove(id)
