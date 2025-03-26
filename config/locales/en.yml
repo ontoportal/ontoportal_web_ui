@@ -222,4 +222,5 @@ en:
     intro: Browse mappings between classes in different ontologies
   submissions:
     submission_updated_successfully: "Metadata updated successfully"
+    save_button: "Save"
   no_result_was_found: "No result found"
