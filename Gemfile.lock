@@ -192,8 +192,9 @@ GEM
     graphql-client (0.25.0)
       activesupport (>= 3.0)
       graphql (>= 1.13.0)
-    haml (5.2.2)
-      temple (>= 0.8.0)
+    haml (6.1.4)
+      temple (>= 0.8.2)
+      thor
       tilt
     haml-rails (2.1.0)
       actionpack (>= 5.1)
@@ -584,7 +585,7 @@ DEPENDENCIES
   flag-icons-rails (~> 3.4)
   graphql (~> 2.0.27)
   graphql-client
-  haml (~> 5.1)
+  haml (~> 6.1.1)
   haml-rails
   html2haml
   i18n
