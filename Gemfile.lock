@@ -1,7 +1,9 @@
-PATH
-  remote: /Users/jlvendetti/Development/GitHub/ncbo/ontologies_api_ruby_client
+GIT
+  remote: https://github.com/ncbo/ontologies_api_ruby_client.git
+  revision: 6e9b07f305ea2464147b2ac161f00ae64298e05f
+  tag: v2.5.3
   specs:
-    ontologies_api_client (2.5.2)
+    ontologies_api_client (2.5.3)
       activesupport (= 7.2.2.1)
       addressable (~> 2.8)
       excon

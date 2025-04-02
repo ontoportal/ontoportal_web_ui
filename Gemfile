@@ -107,8 +107,7 @@ gem 'flag-icons-rails', '~> 3.4'
 gem 'iso-639', '~> 0.3.6'
 
 # Custom API client
-# gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.5.2'
-gem 'ontologies_api_client', path: '/Users/jlvendetti/Development/GitHub/ncbo/ontologies_api_ruby_client'
+gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.5.3'
 
 gem 'rexml', '~> 3'
 
