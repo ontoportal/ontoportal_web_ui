@@ -3,6 +3,11 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Include BioPortal-specific configuration options
+  if File.exist?(Rails.root.join('config', "bioportal_config_#{Rails.env}.rb"))
+    require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
+  end
+
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
@@ -94,11 +99,6 @@ Rails.application.configure do
 
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
-
-  # Include the BioPortal-specific configuration options
-  if File.exist?(Rails.root.join('config', "bioportal_config_#{Rails.env}.rb"))
-    require Rails.root.join('config', "bioportal_config_#{Rails.env}.rb")
-  end
 
   # Add custom data attributes to sanitize allowed list
   config.action_view.sanitized_allowed_attributes = %w[id class style data-cls data-ont]

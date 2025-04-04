@@ -3,6 +3,9 @@ require "active_support/core_ext/integer/time"
 BioportalWebUi::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Include BioPortal-specific configuration options
+  require Rails.root.join('config', "bioportal_config_staging.rb")
+
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
@@ -96,9 +99,6 @@ BioportalWebUi::Application.configure do
 
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
-
-  # Include BioPortal-specific configuration options
-  require Rails.root.join('config', "bioportal_config_staging.rb")
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
