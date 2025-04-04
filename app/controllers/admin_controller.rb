@@ -34,15 +34,15 @@ class AdminController < ApplicationController
       @update_info = update_info.symbolize_keys
 
       # Only treat it as a blocking error if no useful data exists
-      if update_info['error']
+      if @update_info[:error]
         # Log or surface the error, but don't block downstream access to valid fields
-        response[:errors] = update_info['error']
+        response[:errors] = @update_info[:error]
       else
         response[:success] = 'Update info successfully retrieved'
       end
 
-      response[:notices] = update_info['notes'] if update_info['notes']
-      response[:update_info] = update_info
+      response[:notices] = update_info['notes'] if @update_info[:notes]
+      response[:update_info] = @update_info
     rescue StandardError => e
       @update_info = {}
       response[:errors] = "Problem retrieving update info - #{e.message}"
