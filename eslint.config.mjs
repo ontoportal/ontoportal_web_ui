@@ -21,6 +21,11 @@ export default defineConfig(
     },
   ],
   {
-    ignores: ['app/assets/**', 'vendor/**', 'node_modules/**'],
+    ignores: [
+      'app/assets/**',
+      'public/browse/**',
+      'vendor/**',
+      'node_modules/**'
+    ],
   },
 );
