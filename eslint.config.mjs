@@ -6,7 +6,10 @@ import prettierPlugin from 'eslint-plugin-prettier';
 export default defineConfig(
   [
     {
-      files: ['app/javascript/**/*.{js,mjs,cjs}'],
+      files: [
+        'app/javascript/**/*.{js,mjs,cjs}',
+        'app/components/**/*.{js,mjs,cjs}',
+      ],
       plugins: {
         js,
         prettier: prettierPlugin,
@@ -25,7 +28,7 @@ export default defineConfig(
       'app/assets/**',
       'public/browse/**',
       'vendor/**',
-      'node_modules/**'
+      'node_modules/**',
     ],
   },
 );
