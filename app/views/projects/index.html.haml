@@ -4,6 +4,7 @@
 %p.tab_description
   = t(".intro", site: "#{$SITE}")
   = link_to(Rails.configuration.settings.links[:help_projects], id: 'projects-help',
+            data: {controller: 'popup', action: 'click->popup#open'},
             'aria-label': 'View projects help') do
     %i.fas.fa-question-circle.fa-lg.pl-1{'aria-hidden': 'true'}
 
