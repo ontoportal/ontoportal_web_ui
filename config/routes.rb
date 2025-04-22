@@ -60,6 +60,10 @@ Rails.application.routes.draw do
   get 'analytics/search_result_clicked', to: 'analytics#search_result_clicked'
   post 'analytics', to: 'analytics#track'
 
+  # Cookies
+  get 'cookies', to: 'cookies#index'
+  post 'cookies/consent', to: 'cookies#consent', as: 'cookie_consent'
+
   # Robots.txt
   get '/robots.txt' => 'robots#index'
 

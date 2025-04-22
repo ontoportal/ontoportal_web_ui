@@ -220,7 +220,16 @@ en:
 
   mappings:
     intro: Browse mappings between classes in different ontologies
+
   submissions:
     submission_updated_successfully: "Metadata updated successfully"
     save_button: "Save"
   no_result_was_found: "No result found"
+
+  cookies:
+    index:
+      message:
+        html: >
+          We use cookies to enhance your experience: essential cookies for login and preferences, and optional 
+          analytics cookies to improve our site. Accepting cookies allows analytics tracking. Rejecting disables 
+          analytics. See "<a href="%{cookies}" target="_blank">use of cookies</a>" for more information.

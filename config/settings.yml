@@ -2,16 +2,15 @@ shared:
   links:
     about: 'https://www.bioontology.org/about-us/'
     cite: 'https://www.bioontology.org/about-us/#cite-bioportal'
-    cookies: 'https://www.bioontology.org/terms/#use-of-cookies'
     facebook: 'https://www.facebook.com/National-Center-for-Biomedical-Ontology-127444774011153/'
     github: 'http://github.com/ncbo'
     help: 'https://www.bioontology.org/wiki/BioPortal_Help'
-    help_annotator: 'https://www.bioontology.org/wiki/BioPortal_Help#Annotator_Tab'
-    help_mappings: 'https://www.bioontology.org/wiki/BioPortal_Help#Mappings_Tab'
-    help_ontology_browse: 'https://www.bioontology.org/wiki/BioPortal_Help#Browse_Tab'
-    help_projects: 'https://www.bioontology.org/wiki/BioPortal_Help#Projects_Tab'
-    help_recommender: 'https://www.bioontology.org/wiki/BioPortal_Help#Recommender_Tab'
-    help_search: 'https://www.bioontology.org/wiki/BioPortal_Help#Search_Tab'
+    help_annotator: 'https://www.bioontology.org/wiki/BioPortal_Help#Annotator'
+    help_mappings: 'https://www.bioontology.org/wiki/BioPortal_Help#Mappings'
+    help_ontology_browse: 'https://www.bioontology.org/wiki/BioPortal_Help#Ontologies'
+    help_projects: 'https://www.bioontology.org/wiki/BioPortal_Help#Projects'
+    help_recommender: 'https://www.bioontology.org/wiki/BioPortal_Help#Recommender'
+    help_search: 'https://www.bioontology.org/wiki/BioPortal_Help#Search'
     help_slice: 'https://www.bioontology.org//wiki/BioPortal_Help#slice_definition'
     metrics: 'https://www.bioontology.org/wiki/Ontology_Metrics'
     mission: 'https://www.bioontology.org/about-us/#mission'
@@ -23,11 +22,12 @@ shared:
     virtual_appliance: 'https://ontoportal.github.io/documentation/administration'
     widgets: 'http://www.bioontology.org/wiki/NCBO_Widgets'
     wiki: 'https://www.bioontology.org/wiki/'
-    mappings: 'https://www.bioontology.org/wiki/BioPortal_Help#Mappings_Tab'
-    metadata_help: 'https://doc.jonquetlab.lirmm.fr/share/32c082ff-97f5-45f4-bafe-05f41c9a5ce4'
 
 development:
+  google_analytics:
+    tag_id: null
   links:
+    cookies: 'https://www.bioontology.org/terms/#use-of-cookies'
     release_notes: 'https://github.com/ncbo/bioportal_web_ui/releases'
   purl:
     enabled: true
@@ -35,13 +35,18 @@ development:
     prefix: 'https://purl.bioontology.org/ontology'
 
 test:
+  google_analytics:
+    tag_id: null
   purl:
     enabled: false
     host: 'stagepurl.bioontology.org'
     prefix: 'https://stagepurl.bioontology.org/ontology'
 
 staging:
+  google_analytics:
+    tag_id: 'G-KF3SKHPEGW'
   links:
+    cookies: 'https://www.bioontology.org/terms/#use-of-cookies'
     release_notes: 'https://github.com/ncbo/bioportal_web_ui/releases'
   purl:
     enabled: true
@@ -49,7 +54,10 @@ staging:
     prefix: 'https://stagepurl.bioontology.org/ontology'
 
 production:
+  google_analytics:
+    tag_id: 'G-KF3SKHPEGW'
   links:
+    cookies: 'https://www.bioontology.org/terms/#use-of-cookies'
     release_notes: 'https://github.com/ncbo/bioportal_web_ui/releases'
   purl:
     enabled: true
@@ -57,7 +65,10 @@ production:
     prefix: 'https://purl.bioontology.org/ontology'
 
 appliance:
+  google_analytics:
+    tag_id: null
   links:
+    cookies: 'https://www.bioontology.org/terms/#use-of-cookies'
     release_notes: 'https://www.bioontology.org/wiki/BioPortal_Virtual_Appliance_Release_Notes'
   purl:
     # Set enabled to true if you're running a PURL server to provide PURLs for ontologies and concepts
