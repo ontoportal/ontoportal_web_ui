@@ -16,7 +16,7 @@ environment rails_env
 if %w[production staging appliance].include?(rails_env)
 
   # Define Puma socket (for Nginx)
-  bind "unix:///opt/ontoportal/bioportal_web_ui/shared/tmp/sockets/puma.sock"
+  bind "unix:///run/puma-ui/puma.sock"
 
   # Specifies the number of `workers` to boot in clustered mode.
   # Workers are forked webserver processes. If using threads and workers together
@@ -58,11 +58,11 @@ if %w[production staging appliance].include?(rails_env)
   end
 
   # PID & state file locations
-  pidfile "tmp/pids/puma.pid"
-  state_path "tmp/pids/puma.state"
+  pidfile "/run/puma-ui/puma.pid"
+  state_path "/run/puma-ui/puma.state"
 
   # Logging setup
-  stdout_redirect "log/puma.stdout.log", "log/puma.stderr.log", true
+  stdout_redirect "/var/log/ontoportal/ui/puma.stdout.log", "/var/log/ontoportal/ui/puma.stderr.log", true
 else
   # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
   port ENV.fetch("PORT") { 3000 }
