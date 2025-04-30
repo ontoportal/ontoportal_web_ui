@@ -68,6 +68,12 @@ Rails.application.routes.draw do
   get '/robots.txt' => 'robots#index'
 
   # Ontologies
+  resources :ontologies do
+    resources :submissions do
+      get 'edit_properties'
+    end
+  end
+
   get '/ontologies/success/:id' => 'ontologies#submit_success'
   match '/ontologies/:acronym' => 'ontologies#update', via: [:get, :post]
   match '/ontologies/:acronym/submissions/:id' => 'submissions#update', via: [:get, :post]

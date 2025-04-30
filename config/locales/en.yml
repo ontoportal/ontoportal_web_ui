@@ -43,6 +43,12 @@ en:
         other:
           This installation of the OntoPortal Appliance is a trial license, which will expire in %{count} days.
 
+  application:
+    ontology_not_found: Ontology %{acronym} not found
+    error_load: "Error: load failed"
+    not_found_message: Not Found
+    errors_in_fields: "Errors in fields: %{errors}"
+
   home:
     index:
       find_ontology_placeholder: Start typing ontology name, then choose from list
@@ -62,6 +68,51 @@ en:
         To receive notices of new releases or site outages, please subscribe to the 
         <a href="https://mailman.stanford.edu/mailman/listinfo/bioontology-support" target="_blank">bioontology-support list</a>.
 
+    ontology_upload_button: "Submit Ontology"
+
+  submission_inputs:
+    edit_ontology_title: Edit Ontology Metadata
+    metadata_selector_label: "Filter properties to show"
+    metadata_selector_placeholder: "Start typing to select properties"
+    administrators: Administrators
+    ontology_skos_language_link: Please refer to the documentation for more details.
+    ontology_skos_language_help: >
+      SKOS vocabularies submitted to %{portal_name} shall follow a few constraints (e.g., contain a minimum of one skos:ConceptScheme also typed as owl:Ontology) 
+      and top concept assertion. %{link}
+    ontology_obo_language_link: the OBOinOWL parser.
+    ontology_obo_language_help: >
+      OBO ontologies submitted to %{portal_name} will be parsed by the OWL-API which integrates %{link} 
+      The resulting RDF triples will then be loaded in %{portal_name} triple-store.
+    ontology_owl_language_link: the Protégé
+    ontology_owl_language_help: >
+      OWL ontologies submitted to %{portal_name} will be parsed by the OWL-API. An easy way to verify if your ontology will parse is to open it with
+      %{link}
+      software which does use the same component.
+
+    ontology_umls_language_link: by the UMLS2RDF tool.
+    ontology_umls_language_help: >
+      UMLS-RRF resources are usually produced %{link}
+
+    groups: Groups
+    visibility: Visibility
+    accounts_allowed: Add or remove accounts that are allowed to see this ontology in %{portal_name}.
+    ontology_view_of_another_ontology: Is this ontology a view of another ontology?
+    contact: Contact
+    equivalents: Equivalents
+    validators: Validators
+    help_text: Help text
+    contact_name: "%{name} Name"
+    contact_email: "%{name} Email"
+    edit_metadata_instruction: "Edit the metadata of your ontology here. Some of these values are used by %{portal_name} functionalities, including for FAIRness assessment. %{link}"
+    edit_metadata_instruction_link: "See guidelines and recommendations for metadata here."
+    license_help: "%{portal_name} requires an URI for the license. If you do not find your choice here, %{link}"
+    license_help_link: "Please pick up an URI from here."
+    deprecated_help: "An ontology with status retired shall necessarily be also deprecated, but not the opposite."
+    known_usage_help: "Consider also declaring %{metadata_knownUsage_help}"
+    known_usage_help_link: "the projects that are using the ontology"
+    help_creator: "The following properties take for value an 'agent' in %{portal_name} (either a person or an organization). These agents are shared over all the ontologies and suggested with autocompletion if they already exist. Editing an agent here will change it to all the ontologies that agent is involved in."
+    version_help: "For more information on how to encode versioning information in an ontology, see %{link}"
+    version_helper_link: "guidelines and recommendations."
   annotator:
     index:
       intro: Get annotations for biomedical text with classes from the ontologies
@@ -156,9 +207,24 @@ en:
 
   ontologies:
     intro: Browse the library of ontologies
+    submit_new_ontology: "Submit new ontology"
+    details: "Details"
+    general_information: "General"
+    dates_and_contacts: "Date and contacts"
+    add_new_submission: "Add new submission"
+    change_notes: "Changes notes"
+    uri: "URI"
+    date_of_original_creation: "Release date"
+    modification_date: "Modification date"
+    edit_metadata: "Edit metadata"
 
   mappings:
     intro: Browse mappings between classes in different ontologies
+
+  submissions:
+    submission_updated_successfully: "Metadata updated successfully"
+    save_button: "Save"
+  no_result_was_found: "No result found"
 
   cookies:
     index:
@@ -167,4 +233,3 @@ en:
           We use cookies to enhance your experience: essential cookies for login and preferences, and optional 
           analytics cookies to improve our site. Accepting cookies allows analytics tracking. Rejecting disables 
           analytics. See "<a href="%{cookies}" target="_blank">use of cookies</a>" for more information.
-

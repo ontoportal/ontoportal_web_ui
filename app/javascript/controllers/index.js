@@ -42,3 +42,9 @@ application.register("turbo-frame", TurboFrameController)
 
 import TurboFrameErrorController from "./turbo_frame_error_controller"
 application.register("turbo-frame-error", TurboFrameErrorController)
+
+import Tooltip_controller from "./tooltip_controller";
+application.register("tooltip", Tooltip_controller);
+
+import TextTruncateController from "./text_truncate_controller"
+application.register("text-truncate", TextTruncateController)

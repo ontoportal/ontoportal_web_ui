@@ -22,7 +22,7 @@ class TableRowComponent < ViewComponent::Base
     self.cell(type: 'th', width: width, colspan: colspan, &block)
   end
 
-  def td(width: nil, colspan: nil, &block)
-    self.cell(type: 'td', width: width, colspan: colspan, &block)
+  def td(width: nil, colspan: nil, style: nil, &block)
+    self.cell(type: 'td', width: width, colspan: colspan, style: style, &block)
   end
 end

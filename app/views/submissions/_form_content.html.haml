@@ -1,0 +1,15 @@
+- unless @errors.nil?
+  = turbo_frame_tag 'test', target: '_top' do
+    = error_message_alert
+    = form_for :submission, url: ontology_submission_path(params["ontology_id"], params["id"]), html: { id: "ontology_submission_form", method: :put, multipart: true, 'data-turbo': true, novalidate: 'true'} do
+      = render_submission_inputs('', @submission)
+      %hr#edit-ontology-actions-devider
+      .edit-ontology-actions
+        - unless params[:container_id]
+          .cancel-button.mx-2{ onClick: 'window.location=\'' + ontology_path(@ontology.acronym) + '\''}
+            = form_cancel_button
+        .save-button
+          = render Buttons::RegularButtonComponent.new(id:'save-button', value: t('submissions.save_button'), variant: "primary", size: "slim", type: "submit") do |btn|
+            - btn.icon_left do
+              - inline_svg_tag "check.svg"
+

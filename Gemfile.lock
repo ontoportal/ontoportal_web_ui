@@ -8,11 +8,14 @@ GIT
       addressable (~> 2.8)
       excon
       faraday
-      faraday-excon
+      faraday-excon (~> 2.0.0)
       faraday-multipart
       lz4-ruby
       multi_json
       oj
+      parallel
+      request_store
+      spawnling (= 2.1.5)
 
 GEM
   remote: https://rubygems.org/
@@ -169,17 +172,15 @@ GEM
     excon (1.2.5)
       logger
     execjs (2.10.0)
-    faraday (2.12.2)
-      faraday-net_http (>= 2.0, < 3.5)
-      json
-      logger
-    faraday-excon (2.3.0)
-      excon (>= 1.0.0)
-      faraday (>= 2.11.0, < 3)
+    faraday (2.0.1)
+      faraday-net_http (~> 2.0)
+      ruby2_keywords (>= 0.0.4)
+    faraday-excon (2.0.0)
+      excon (>= 0.27.4)
+      faraday (~> 2.0.0.alpha.pre.2)
     faraday-multipart (1.1.0)
       multipart-post (~> 2.0)
-    faraday-net_http (3.4.0)
-      net-http (>= 0.5.0)
+    faraday-net_http (2.1.0)
     ffi (1.17.1)
     ffi (1.17.1-aarch64-linux-gnu)
     ffi (1.17.1-arm64-darwin)
@@ -425,6 +426,8 @@ GEM
     regexp_parser (2.10.0)
     reline (0.6.0)
       io-console (~> 0.5)
+    request_store (1.7.0)
+      rack (>= 1.4)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -463,6 +466,7 @@ GEM
     rubocop-ast (1.38.0)
       parser (>= 3.3.1.0)
     ruby-progressbar (1.13.0)
+    ruby2_keywords (0.0.5)
     ruby_parser (3.21.1)
       racc (~> 1.5)
       sexp_processor (~> 4.16)
@@ -495,6 +499,7 @@ GEM
       simplecov (~> 0.19)
     simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
+    spawnling (2.1.5)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
