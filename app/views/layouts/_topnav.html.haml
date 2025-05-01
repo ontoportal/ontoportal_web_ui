@@ -32,7 +32,7 @@
               = session[:user].username
             %ul.dropdown-menu.dropdown-menu-end
               %li
-                = link_to("Account settings", "/account", class: "dropdown-item")
+                = link_to("Account settings", user_path(session[:user].username), class: "dropdown-item")
               - unless session[:ontologies].nil?
                 %li
                   %hr.dropdown-divider
@@ -51,7 +51,8 @@
             Support
           %ul.dropdown-menu.dropdown-menu-end
             %li
-              = link_to("Submit feedback", feedback_path, id: "submitFeedbackMenuItem", class: "dropdown-item pop_window")
+              = link_to("Submit feedback", feedback_path, id: "submitFeedbackMenuItem", class: "dropdown-item",
+                        data: {controller: 'popup', action: 'click->popup#open'})
             %li
               %hr.dropdown-divider
             %li

@@ -108,9 +108,7 @@ class LoginController < ApplicationController
     return unless user
 
     session[:user] = user
-    custom_ontologies_text = session[:user].customOntology && !session[:user].customOntology.empty? ? "The display is now based on your <a href='/account#custom_ontology_set'>Custom Ontology Set</a>." : ""
-    notice = "Welcome <b>" + user.username.to_s + "</b>! " + custom_ontologies_text
-    flash[:success] = notice.html_safe
+    flash[:success] = helpers.welcome_message(user)
   end
 
   def validate(params)
