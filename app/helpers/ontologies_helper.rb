@@ -97,7 +97,7 @@ module OntologiesHelper
   end
 
   def download_button
-    return unless (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
+    return if (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
 
     down_link = @submissions.first.id + "/download?apikey=#{get_apikey}"
     render RoundedButtonComponent.new(link: down_link, icon: 'summary/download.svg',
