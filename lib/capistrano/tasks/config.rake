@@ -10,15 +10,26 @@ namespace :config do
         execute "rm -rf #{tmp_path}"
       end
 
-    elsif ENV['LOCAL_CONFIG_PATH']
+    elsif fetch(:local_config_path, nil)
       on roles(:app) do
         info "Fetching configuration from local path"
-        execute "rsync -a #{ENV['LOCAL_CONFIG_PATH']}/#{fetch(:application)}/ #{release_path}/"
+        execute "rsync -a #{fetch(:local_config_path)}/#{fetch(:application)}/ #{release_path}/"
       end
 
     else
       on roles(:app) do
-        warn "No PRIVATE_CONFIG_REPO or LOCAL_CONFIG_PATH provided. Skipping configuration injection."
+        warn <<~MSG
+          Skipping configuration injection: no configuration source defined.
+          To fix this, set one of the following:
+
+          - Capistrano variable :private_config_repo (e.g. in stage file or via -s)
+          - Capistrano variable :local_config_path (or set LOCAL_CONFIG_PATH env var)
+
+          Example usage:
+            CONFIG_PATH=/path/to/config cap appliance deploy
+            or
+            cap appliance deploy -s local_config_path=/path/to/config
+        MSG
       end
     end
   end
