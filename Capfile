@@ -23,10 +23,11 @@ install_plugin Capistrano::SCM::Git
 #require 'capistrano/rails/assets'
 #require 'capistrano/rails/migrations'
 require 'capistrano/rails'
+# locally is needed for the appliance deployments
 require 'capistrano/locally'
 require 'capistrano/yarn'
 
 # announce deployments in NewRelic
 require 'new_relic/recipes'
-# Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
-Dir.glob('lib/capistrano/tasks/*.cap').each { |r| import r }
+# Load custom tasks from `lib/capistrano/tasks` if you have any defined
+Dir.glob("lib/capistrano/tasks/*.rake").each { |r| import r } # W
