@@ -59,6 +59,9 @@ set :keep_assets, 3
 set :rbenv_type, :system
 set :rbenv_ruby, File.read('.ruby-version').strip
 
+# announce deployments in newrelic
+set :newrelic_enabled, false
+
 desc "Check if agent forwarding is working"
 task :forwarding do
   on roles(:all) do |h|
@@ -106,6 +109,10 @@ namespace :deploy do
 
   after :updating, :get_config
   after :publishing, :restart
+
+  if fetch(:newrelic_enabled, true)
+    after :restart, 'newrelic:notice_deployment'
+  end
 
   after :restart, :clear_cache do
     on roles(:app), in: :groups, limit: 3, wait: 10 do
