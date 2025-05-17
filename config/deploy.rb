@@ -59,6 +59,9 @@ set :keep_assets, 3
 set :rbenv_type, :system
 set :rbenv_ruby, File.read('.ruby-version').strip
 
+# announce deployments in newrelic
+set :newrelic_notice_enabled, false
+
 desc "Check if agent forwarding is working"
 task :forwarding do
   on roles(:all) do |h|
@@ -79,24 +82,6 @@ namespace :deploy do
     end
   end
 
-  desc 'Incorporate the bioportal_conf private repository content'
-  # Get cofiguration from repo if PRIVATE_CONFIG_REPO env var is set
-  # or get config from local directory if LOCAL_CONFIG_PATH env var is set
-  task :get_config do
-    if defined?(PRIVATE_CONFIG_REPO)
-      TMP_CONFIG_PATH = "/tmp/#{SecureRandom.hex(15)}".freeze
-      on roles(:app) do
-        execute "git clone -q #{PRIVATE_CONFIG_REPO} #{TMP_CONFIG_PATH}"
-        execute "rsync -a #{TMP_CONFIG_PATH}/#{fetch(:application)}/ #{release_path}/"
-        execute "rm -rf #{TMP_CONFIG_PATH}"
-      end
-    elsif defined?(LOCAL_CONFIG_PATH)
-      on roles(:app) do
-        execute "rsync -a #{LOCAL_CONFIG_PATH}/#{fetch(:application)}/ #{release_path}/"
-      end
-    end
-  end
-
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
@@ -104,8 +89,10 @@ namespace :deploy do
     end
   end
 
-  after :updating, :get_config
+  after :updating, 'config:sync'
   after :publishing, :restart
+
+  after :restart, 'newrelic:report_deployment'
 
   after :restart, :clear_cache do
     on roles(:app), in: :groups, limit: 3, wait: 10 do

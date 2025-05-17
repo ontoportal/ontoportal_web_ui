@@ -120,7 +120,6 @@ gem 'ffi'
 gem 'net-ftp', require: false
 gem 'net-http'
 
-
 # Multi-Provider Authentication
 gem 'omniauth'
 gem 'omniauth-rails_csrf_protection'
@@ -131,7 +130,7 @@ gem 'omniauth-rails_csrf_protection'
 # gem 'omniauth-keycloak'
 # gem 'omniauth-orcid'
 
-group :staging, :production, :appliance do
+group :staging, :production do
   # Application performance monitoring
   gem 'newrelic_rpm'
 
