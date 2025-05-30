@@ -26,8 +26,10 @@ en:
         Copyright &copy; 2005‑2025, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
       free_access: "%{site} is free and open to all users, with no login required."
       grant_html: >
-        The <strong>National Center for Biomedical Ontology</strong> was founded as one of the National Centers for Biomedical 
-        Computing, supported by the NHGRI, the NHLBI, and the NIH Common Fund under grant U54-HG004028.
+        The <strong>National Center for Biomedical Ontology</strong> was founded as one of the National Centers for 
+        Biomedical Computing, supported by the National Human Genome Research Institute, the National Heart Lung Blood 
+        Institute, and the NIH Common Fund under grant U54-HG004028. The resource is now supported in part by grant 
+        5U24-GM143402 from the National Institute of General Medical Sciences.
     notices:
       license_contact: >
         For more information, email <a href="mailto:support@ontoportal.org">support@ontoportal.org</a> or 
