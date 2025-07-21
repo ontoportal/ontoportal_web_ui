@@ -14,6 +14,7 @@ require 'ontologies_api_client'
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   helper_method :bp_config_json, :current_license, :using_captcha?
+  include MultiLanguagesHelper
 
   # Pull configuration parameters for REST connection.
   REST_URI = $REST_URL
