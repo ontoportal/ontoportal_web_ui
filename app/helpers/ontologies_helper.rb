@@ -363,14 +363,43 @@ module OntologiesHelper
     submission&.hasOntologyLanguage == 'SKOS' ? 'concepts' : 'classes'
   end
 
+  def tree_container_component(id:, placeholder:, frame_url:, tree_url:)
+    content_tag(:div, class: 'search-page-input-container', data: { controller: "turbo-frame history browse-filters", "turbo-frame-url-value": frame_url, action: "changed->turbo-frame#updateFrame" }) do
+      # concat(concept_search_input(placeholder))
+      concat(content_tag(:div, class: 'tree-container') do
+        render(TurboFrameComponent.new(
+          id: id,
+          src: tree_url,
+          data: { 'turbo-frame-target': 'frame' }
+        ))
+      end)
+    end
+  end
+
+
+  def ontology_object_details_component(frame_id: , ontology_id:, objects_title:, object:, &block)
+    render TurboFrameComponent.new(id: frame_id, data: {"turbo-frame-target": "frame"}) do
+      return unless object.present?
+
+      if object.errors
+        alert_component(object.errors.join)
+      else
+        ontology_object_tabs_component(ontology_id: ontology_id, objects_title: objects_title, object_id: object["@id"]) do |tabs|
+          tab_item_component(container_tabs: tabs, title: t('concepts.details'), path: '#details', selected: true) do
+            capture(&block)
+          end
+        end
+      end
+    end
+  end
+
   def sections_to_show
     sections = ['summary']
     if !@ontology.summaryOnly && (submission_ready?(@submission_latest) || @old_submission_ready)
       sections += ['classes']
       sections += %w[properties]
-      # sections += %w[schemes collections] if skos?
-      # sections += %w[instances] unless skos?
-      # sections += %w[notes mappings widgets sparql]
+      sections += %w[schemes collections] if skos?
+      sections += %w[instances] unless skos?
       sections += %w[notes mappings widgets]
     end
     sections
