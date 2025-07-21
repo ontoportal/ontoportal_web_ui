@@ -1,6 +1,7 @@
 require 'cgi'
 
 module NotesHelper
+  include ERB::Util
 
   NOTES_TAGS = %w(a br b em strong i)
 
@@ -39,28 +40,28 @@ module NotesHelper
         <table class="proposal">
           <tr>
             <th>Reason for Change</th>
-            <td>#{note.proposal.reasonForChange}</td>
+            <td>#{h note.proposal.reasonForChange}</td>
           <tr>
             <th>Contact Info</th>
-            <td>#{note.proposal.contactInfo}</td>
+            <td>#{h note.proposal.contactInfo}</td>
           </tr>
           <tr>
             <th>Preferred Name</th>
-            <td>#{note.proposal.label}</td>
+            <td>#{h note.proposal.label}</td>
           <tr>
             <th>Provisional id</th>
-            <td>#{note.proposal.classId}</td>
+            <td>#{h note.proposal.classId}</td>
           <tr>
             <th>Parent</th>
-            <td>#{note.proposal.parent}</td>
+            <td>#{h note.proposal.parent}</td>
           </tr>
           <tr>
             <th>Synonyms</th>
-            <td>#{note.proposal.synonym.join(", ")}</td>
+            <td>#{h note.proposal.synonym.join(", ")}</td>
           </tr>
           <tr>
             <th>Definition</th>
-            <td>#{note.proposal.definition.join(", ")}</td>
+            <td>#{h note.proposal.definition.join(", ")}</td>
           </tr>
         </table>
       html
@@ -69,22 +70,22 @@ module NotesHelper
         <table class="proposal">
           <tr>
             <th>Relationship Type</th>
-            <td>#{note.proposal.newRelationshipType.join(", ")}</td>
+            <td>#{h note.proposal.newRelationshipType.join(", ")}</td>
           </tr>
           <tr>
             <th>New Relationship Target</th>
-            <td colspan="3">#{note.proposal.newTarget}</td>
+            <td colspan="3">#{h note.proposal.newTarget}</td>
           </tr>
           <tr>
             <th>Old Relationship Target</th>
-            <td colspan="3">#{note.proposal.oldTarget}</td>
+            <td colspan="3">#{h note.proposal.oldTarget}</td>
           </tr>
           <tr>
             <th>Reason for Change</th>
-            <td>#{note.proposal.reasonForChange}</td>
+            <td>#{h note.proposal.reasonForChange}</td>
           <tr>
             <th>Contact Info</th>
-            <td>#{note.proposal.contactInfo}</td>
+            <td>#{h note.proposal.contactInfo}</td>
           </tr>
         </table>
       html
@@ -93,22 +94,22 @@ module NotesHelper
         <table class="proposal">
           <tr>
             <th>Property id</th>
-            <td>#{note.proposal.propertyId}</td>
+            <td>#{h note.proposal.propertyId}</td>
           </tr>
           <tr>
             <th>New Property Value</th>
-            <td colspan="3">#{note.proposal.newValue}</td>
+            <td colspan="3">#{h note.proposal.newValue}</td>
           </tr>
           <tr>
             <th>Old Property Value</th>
-            <td colspan="3">#{note.proposal.oldValue}</td>
+            <td colspan="3">#{h note.proposal.oldValue}</td>
           </tr>
           <tr>
             <th>Reason for Change</th>
-            <td>#{note.proposal.reasonForChange}</td>
+            <td>#{h note.proposal.reasonForChange}</td>
           <tr>
             <th>Contact Info</th>
-            <td>#{note.proposal.contactInfo}</td>
+            <td>#{h note.proposal.contactInfo}</td>
           </tr>
         </table>
       html

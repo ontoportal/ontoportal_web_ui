@@ -45,8 +45,5 @@ set :branch, "#{BRANCH}"
 # install gems into a common direcotry shared across ui, api and ncbo_cron to reduce disk usage
 set :bundle_path, '/opt/ontoportal/.bundle'
 
-#private git repo for configuraiton
-#PRIVATE_CONFIG_REPO = ENV.include?('PRIVATE_CONFIG_REPO') ? ENV['PRIVATE_CONFIG_REPO'] : 'git@github.com:your_org/private-config-repo.git'
-
-#location of configuration files
-LOCAL_CONFIG_PATH = ENV.include?('LOCAL_CONFIG_PATH') ? ENV['LOCAL_CONFIG_PATH'] : '/opt/ontoportal/virtual_appliance/appliance_config'
+# location of configuration files
+set :local_config_path, ENV['LOCAL_CONFIG_PATH'] || '/opt/ontoportal/virtual_appliance/appliance_config'

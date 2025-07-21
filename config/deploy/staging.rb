@@ -46,4 +46,4 @@ set :ssh_options, {
 }
 
 #private git repo for configuraiton
-PRIVATE_CONFIG_REPO = ENV.include?('PRIVATE_CONFIG_REPO') ? ENV['PRIVATE_CONFIG_REPO'] : 'git@github.com:author/private_config_repo.git'
+set :private_config_repo, ENV['PRIVATE_CONFIG_REPO'] || 'git@github.com:your_org/your_private_config_repo.git'

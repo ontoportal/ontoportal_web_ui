@@ -908,18 +908,18 @@ button.fg-button-menu, button.fg-button {
 div#topNavigationToggler {
   justify-content: space-between;
   a.btn.btn-login {
-    color: #C58612;
-    border-color: #C58612;
+    color: var(--login-btn-color);
+    border-color: var(--login-btn-color);
 
     &:hover {
-      color: #234979;
-      background-color: #C58612;
+      color: var(--primary-color);
+      background-color: var(--login-btn-hover-bg-color);
     }
   }
 }
 
 .navbar-custom {
-  background-color: #234979;
+  background-color: var(--primary-color);
 }
 
 /************************************

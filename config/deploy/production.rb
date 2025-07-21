@@ -44,6 +44,7 @@ set :ssh_options, {
   # use ssh proxy if UI servers are on a private network
   proxy: Net::SSH::Proxy::Command.new('ssh deployer@sshproxy.ontoportal.org -W %h:%p')
 }
-
+# enable production deploymnet announcements in NewRelic
+set :newrelic_notice_enabled, true
 #private git repo for configuraiton
-PRIVATE_CONFIG_REPO = ENV.include?('PRIVATE_CONFIG_REPO') ? ENV['PRIVATE_CONFIG_REPO'] : 'git@github.com:author/private_config_repo.git'
+set :private_config_repo, ENV['PRIVATE_CONFIG_REPO'] || 'git@github.com:your_org/your_private_config_repo.git'

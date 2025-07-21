@@ -65,6 +65,7 @@ module OntologyUpdater
   def new_submission_hash(ontology, submission = nil)
     @submission = submission
     new_submission_params = submission_params(params[:submission])
+    new_submission_params['released'] = Date.today.to_s
 
     if @submission
       old_submission_values = @submission.to_hash.delete_if {  |k, v| !copyable_submission_params?(k, v)}
