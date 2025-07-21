@@ -13,7 +13,7 @@ class OntologiesController < ApplicationController
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
 
-  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties", "instances", "schemes", "collections"])
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties", "schemes", "collections"])
 
 
   include ActionView::Helpers::NumberHelper
@@ -123,12 +123,6 @@ class OntologiesController < ApplicationController
     if @submission.hasOntologyLanguage == 'SKOS'
       @schemes = get_schemes(@ontology)
       @collections = get_collections(@ontology, add_colors: true)
-    else
-      @instance_details, type = get_instance_and_type(params[:instanceid])
-      unless @instance_details.empty? || type.nil? || concept_id_param_exist?(params)
-        params[:conceptid] = type # set class id from the type of the specified instance id
-      end
-      @instances_concept_id = get_concept_id(params, @concept, @root)
     end
 
     if ["application/ld+json", "application/json"].include?(request.accept)

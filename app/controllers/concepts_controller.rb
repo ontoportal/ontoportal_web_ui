@@ -24,7 +24,6 @@ class ConceptsController < ApplicationController
 
     @submission = get_ontology_submission_ready(@ontology)
     @concept = @ontology.explore.single_class({ full: true, language: request_lang }, params[:id])
-    @instances_concept_id = @concept.id
 
     concept_not_found(params[:id]) if @concept.nil?
     @notes = @concept.explore.notes
