@@ -51,3 +51,9 @@
     text-decoration: underline;
   }
 }
+
+.administered-objects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 7px;
+}

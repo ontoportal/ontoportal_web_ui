@@ -23,7 +23,7 @@ class ConceptDetailsComponent < ViewComponent::Base
   end
 
   def add_sections(keys, &block)
-    scheme_set = properties_set_by_keys(keys, concept_properties)
+    scheme_set = properties_set_by_keys(keys,concept_properties)
     rows = row_hash_properties(scheme_set, concept_properties, &block)
 
     rows.each do |row|
@@ -31,6 +31,7 @@ class ConceptDetailsComponent < ViewComponent::Base
         table_row.create(*row)
       end
     end
+
   end
 
   def row_hash_properties(properties_set, ontology_acronym, &block)
@@ -40,15 +41,14 @@ class ConceptDetailsComponent < ViewComponent::Base
 
       values = data[:values]
       url = data[:key]
-
-      is_list = values.is_a?(Array) && values.size > 1
+      style_as_badge = values.is_a?(Array) && values.size > 1 && short_values(values)
 
       ajax_links = Array(values).map do |v|
         if block_given?
           capture(v, &block)
         else
           if v.is_a?(String)
-            get_link_for_cls_ajax(v, ontology_acronym, '_blank', is_list)
+            get_link_for_cls_ajax(v, ontology_acronym, '_blank', style_as_badge)
           else
             display_in_multiple_languages([v].to_h, style_as_badge: true)
           end
@@ -61,6 +61,18 @@ class ConceptDetailsComponent < ViewComponent::Base
       ]
     end
     out
+  end
+
+  def short_values(vals)
+    vals.each do |str|
+      word_count = str.split.count
+      character_count = str.length
+
+      unless word_count < 10 && character_count < 100
+        return false
+      end
+    end
+    true
   end
 
   def properties_set_by_keys(keys, concept_properties, exclude_keys = [])

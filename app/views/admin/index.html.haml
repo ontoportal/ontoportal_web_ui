@@ -56,15 +56,11 @@
         %div#site-admin-appliance-id.mb-5
           %div.site-admin-page-header
             APPLIANCE ID
-          %dive.site-admin-page-section
-            %div{'data-controller': 'clipboard'}
-              %div#appliance-id
-                %span{'data-clipboard-target': 'source'}
-                %div{class: 'd-flex align-items-center mt-2'}
-                  = tag.button('Copy to clipboard', 'data-action': 'clipboard#copy',
-                               class: 'btn btn-sm btn-outline-secondary')
-                  %span{'data-clipboard-target': 'copiedIndicator',
-                        class: 'hidden text-success fw-semibold ms-2'} Copied!
+          %div.site-admin-page-section
+            %div#appliance-id
+              %span
+              = content_tag(:span, style: 'display: inline-block;') do
+                = render ClipboardComponent.new(message: @update_info[:appliance_id], title: 'Copy Appliance ID', show_content: false)
 
       -# Ontology Administration tab
       %div.tab-pane.fade{id: "ontology-admin", role: "tabpanel", aria: { labelledby: "ontology-admin-tab" }}

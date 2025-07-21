@@ -1,3 +1,28 @@
+/* Basic styling for disabled inputs */
+input:disabled {
+  background-color: #f2f2f2;
+  color: #999999;
+  cursor: not-allowed;
+  border: 1px solid #cccccc;
+  opacity: 0.7;
+}
+
+/* Remove hover effects on disabled inputs */
+input:disabled:hover {
+  border-color: #cccccc;
+}
+
+/* Style for disabled text input specifically */
+input[type="text"]:disabled {
+  background-color: #ebebeb;
+}
+
+/* Add a subtle indication of disabled state */
+input:disabled::placeholder {
+  color: #b3b3b3;
+  font-style: italic;
+}
+
 .turbo-progress-bar {
   height: 10px;
   background-color: #ffffff;
@@ -883,18 +908,18 @@ button.fg-button-menu, button.fg-button {
 div#topNavigationToggler {
   justify-content: space-between;
   a.btn.btn-login {
-    color: #C58612;
-    border-color: #C58612;
+    color: var(--login-btn-color);
+    border-color: var(--login-btn-color);
 
     &:hover {
-      color: #234979;
-      background-color: #C58612;
+      color: var(--primary-color);
+      background-color: var(--login-btn-hover-bg-color);
     }
   }
 }
 
 .navbar-custom {
-  background-color: #234979;
+  background-color: var(--primary-color);
 }
 
 /************************************
@@ -988,12 +1013,6 @@ div#topNavigationToggler {
 
 .matched_in .popup_container #matched_filter_list {
   width: 120px;
-}
-
-/************************************
- * Help Links
- ************************************/
-.pop_window {
 }
 
 /************************************
@@ -1107,4 +1126,18 @@ turbo-frame[busy] > .hide-if-loading, .show-if-loading {
 }
 turbo-frame[busy] ~ .show-if-loading {
   display: inline-block;
+}
+
+.cookie-banner {
+  position: fixed;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  top: initial;
+  left: initial;
+  bottom: 2em;
+  right: 2em;
+  z-index: 9999;
+  background: white;
+  max-width: 1024px;
 }

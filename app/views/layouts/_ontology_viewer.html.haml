@@ -79,30 +79,17 @@
                 Last uploaded:
                 = l(Date.parse(sub.creationDate), format: :monthfull_day_year)
         %div{class: 'ont-info-links d-flex gap-2'}
-          - unless (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
-            = link_to(@submissions.first.id + "/download?apikey=#{get_apikey}", class: 'btn btn-outline-secondary',
-                      'aria-label': 'Download latest submission', title: 'Download latest submission') do
-              %i.fas.fa-lg.fa-file-download{"aria-hidden": true}
+          = download_button
           - if details_available
-            - if Rails.configuration.settings.purl[:enabled]
-              = link_to(@ontology.purl, class: 'btn btn-outline-secondary', 'aria-label': "#{$SITE} PURL",
-                        title: "#{$SITE} PURL", target: "_blank") do
-                %i.fas.fa-lg.fa-link{"aria-hidden": true}
-            = link_to(sub.homepage, class: 'btn btn-outline-secondary', 'aria-label': 'Ontology homepage',
-                      title: 'Ontology homepage', target: "_blank") do
-              %i.fas.fa-lg.fa-home{"aria-hidden": true}
-            - unless sub.documentation.nil?
-              = link_to(sub.documentation, class: 'btn btn-outline-secondary', "aria-label": "Documentation",
-                        title: "Documentation", target: "_blank") do
-                %i.fas.fa-lg.fa-book-reader{"aria-hidden": true}
-            - unless sub.publication.nil?
-              = link_to(sub.publication, class: 'btn btn-outline-secondary', "aria-label": "Publications",
-                        title: "Publications", target: "_blank") do
-                %i.far.fa-lg.fa-newspaper{"aria-hidden": true}
-          - if @ontology.admin?(session[:user])
-            = link_to(edit_ontology_path(@ontology.acronym), class: 'btn btn-outline-secondary',
-                      "aria-label": "Edit ontology details", title: "Edit ontology details") do
-              %i.fas.fa-lg.fa-user-edit{"aria-hidden": true}
+            = ontology_purl_button(@ontology.purl)
+            = homepage_button(sub.homepage)
+            = documentation_button(sub.documentation)
+            - publication = Array(sub.publication).first
+            - if publication
+              = publication_button(publication)
+            = new_submission_button
+            - if @submission_latest
+              = ontology_edit_button
 
   %div.row.pb-4
     %div.col

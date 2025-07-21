@@ -4,6 +4,7 @@ set :application, "bioportal_web_ui"
 set :repo_url, "https://github.com/#{fetch(:author)}/#{fetch(:application)}.git"
 
 set :deploy_via, :remote_cache
+# set :deploy_via, :copy
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
@@ -14,7 +15,7 @@ set :deploy_via, :remote_cache
 set :branch, ENV.include?('BRANCH') ? ENV['BRANCH'] : 'master'
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, "/srv/ontoportal/#{fetch(:application)}"
+set :deploy_to, "/opt/ontoportal/#{fetch(:application)}"
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -29,12 +30,11 @@ set :deploy_to, "/srv/ontoportal/#{fetch(:application)}"
 # set :pty, true
 
 # Default value for :linked_files is []
-# set :linked_files, %w{config/bioportal_config.rb config/database.yml public/robots.txt}
+# set :linked_files, %w{tmp/restart.txt}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache public/system public/assets config/locales}
 set :linked_dirs, %w{log tmp/pids tmp/cache public/system public/assets}
-
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
@@ -48,8 +48,8 @@ set :assets_roles, [:web, :app]
 set :keep_assets, 3
 
 # If you want to restart using `touch tmp/restart.txt`, add this to your config/deploy.rb:
+# set :passenger_restart_with_touch, true
 
-set :passenger_restart_with_touch, true
 # If you want to restart using `passenger-config restart-app`, add this to your config/deploy.rb:
 # set :passenger_restart_with_touch, false # Note that `nil` is NOT the same as `false` here
 # If you don't set `:passenger_restart_with_touch`, capistrano-passenger will check what version of passenger you are running
@@ -58,6 +58,9 @@ set :passenger_restart_with_touch, true
 # rbenv ruby version
 set :rbenv_type, :system
 set :rbenv_ruby, File.read('.ruby-version').strip
+
+# announce deployments in newrelic
+set :newrelic_notice_enabled, false
 
 desc "Check if agent forwarding is working"
 task :forwarding do
@@ -79,34 +82,17 @@ namespace :deploy do
     end
   end
 
-  desc 'Incorporate the bioportal_conf private repository content'
-  # Get cofiguration from repo if PRIVATE_CONFIG_REPO env var is set
-  # or get config from local directory if LOCAL_CONFIG_PATH env var is set
-  task :get_config do
-    if defined?(PRIVATE_CONFIG_REPO)
-      TMP_CONFIG_PATH = "/tmp/#{SecureRandom.hex(15)}".freeze
-      on roles(:app) do
-        execute "git clone -q #{PRIVATE_CONFIG_REPO} #{TMP_CONFIG_PATH}"
-        execute "rsync -a #{TMP_CONFIG_PATH}/#{fetch(:application)}/ #{release_path}/"
-        execute "rm -rf #{TMP_CONFIG_PATH}"
-      end
-    elsif defined?(LOCAL_CONFIG_PATH)
-      on roles(:app) do
-        execute "rsync -a #{LOCAL_CONFIG_PATH}/#{fetch(:application)}/ #{release_path}/"
-      end
-    end
-  end
-
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      # Your restart mechanism here, for example:
-      execute :touch, release_path.join('tmp/restart.txt')
+      execute 'sudo /bin/systemctl restart ui.service'
     end
   end
 
-  after :updating, :get_config
+  after :updating, 'config:sync'
   after :publishing, :restart
+
+  after :restart, 'newrelic:report_deployment'
 
   after :restart, :clear_cache do
     on roles(:app), in: :groups, limit: 3, wait: 10 do

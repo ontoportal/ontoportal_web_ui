@@ -45,7 +45,6 @@ Rails.application.routes.draw do
 
   # Top-level pages
   match '/feedback', to: 'home#feedback', via: [:get, :post]
-  get '/account' => 'home#account'
   get '/help' => 'home#help'
   get '/site_config' => 'home#site_config'
   get '/validate_ontology_file' => 'home#validate_ontology_file_show'
@@ -61,10 +60,20 @@ Rails.application.routes.draw do
   get 'analytics/search_result_clicked', to: 'analytics#search_result_clicked'
   post 'analytics', to: 'analytics#track'
 
+  # Cookies
+  get 'cookies', to: 'cookies#index'
+  post 'cookies/consent', to: 'cookies#consent', as: 'cookie_consent'
+
   # Robots.txt
   get '/robots.txt' => 'robots#index'
 
   # Ontologies
+  resources :ontologies do
+    resources :submissions do
+      get 'edit_properties'
+    end
+  end
+
   get '/ontologies/success/:id' => 'ontologies#submit_success'
   match '/ontologies/:acronym' => 'ontologies#update', via: [:get, :post]
   match '/ontologies/:acronym/submissions/:id' => 'submissions#update', via: [:get, :post]

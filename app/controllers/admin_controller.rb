@@ -14,32 +14,41 @@ class AdminController < ApplicationController
 
   def index
     @users = LinkedData::Client::Models::User.all
+
     if session[:user].nil? || !session[:user].admin?
       redirect_to controller: 'login', action: 'index', redirect: '/admin'
     else
+      update_info(render_response: false)
       render action: 'index'
     end
   end
 
-  def update_info
+  def update_info(render_response: true)
     response = { update_info: {}, errors: '', success: '', notices: '' }
-    json = LinkedData::Client::HTTP.get("#{ADMIN_URL}update_info", params, raw: true)
 
     begin
+      json = LinkedData::Client::HTTP.get("#{ADMIN_URL}update_info", params, raw: true)
       update_info = JSON.parse(json)
 
-      if update_info['error']
-        response[:errors] = update_info['error']
-        response[:update_info] = update_info
+      # Always store @update_info, even if an error is present
+      @update_info = update_info.symbolize_keys
+
+      # Only treat it as a blocking error if no useful data exists
+      if @update_info[:error]
+        # Log or surface the error, but don't block downstream access to valid fields
+        response[:errors] = @update_info[:error]
       else
-        response[:update_info] = update_info
-        response[:notices] = update_info['notes'] if update_info['notes']
         response[:success] = 'Update info successfully retrieved'
       end
+
+      response[:notices] = update_info['notes'] if @update_info[:notes]
+      response[:update_info] = @update_info
     rescue StandardError => e
+      @update_info = {}
       response[:errors] = "Problem retrieving update info - #{e.message}"
     end
-    render json: response
+
+    render json: response if render_response
   end
 
   def update_check_enabled
@@ -227,7 +236,7 @@ class AdminController < ApplicationController
       else
         response.merge!(ontologies_data_parsed)
         response[:success] = "Report successfully regenerated on #{ontologies_data_parsed[:report_date_generated]}"
-        LOG.add :debug, "Ontologies Report - retrieved #{response[:ontologies].length} ontologies in #{Time.now - start}s"
+        Log.add :debug, "Ontologies Report - retrieved #{response[:ontologies].length} ontologies in #{Time.now - start}s"
       end
     rescue StandardError => e
       response[:errors] = "Problem retrieving ontologies report - #{e.message}"
@@ -300,7 +309,7 @@ class AdminController < ApplicationController
       response[:users] = JSON.parse(LinkedData::Client::HTTP.get(USERS_URL, { include: 'all' }, raw: true))
 
       response[:success] = "users successfully retrieved in  #{Time.now - start}s"
-      LOG.add :debug, "Users - retrieved #{response[:users].length} users in #{Time.now - start}s"
+      Log.add :debug, "Users - retrieved #{response[:users].length} users in #{Time.now - start}s"
     rescue StandardError => e
       response[:errors] = "Problem retrieving users  - #{e.message}"
     end

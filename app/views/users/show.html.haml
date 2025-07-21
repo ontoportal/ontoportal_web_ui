@@ -29,11 +29,9 @@
   -# User's API key
   %h4{class: 'pb-2 my-4 border-bottom'} API Key
   = tag.p("Your API key can be used to access the #{$SITE} RESTful API and services", class: 'text-muted')
-  %div{'data-controller': 'clipboard'}
-    %span{'data-clipboard-target': 'source'}= session[:user].apikey
-    %div{class: 'd-flex align-items-center mt-2'}
-      = tag.button 'Copy to clipboard', 'data-action': 'clipboard#copy',  class: 'btn btn-sm btn-outline-secondary'
-      %span{'data-clipboard-target': 'copiedIndicator', class: 'hidden text-success fw-semibold ms-2'} Copied!
+  = session[:user].apikey
+  = content_tag(:span, style: 'display: inline-block;') do
+    = render ClipboardComponent.new(message: session[:user].apikey, title: 'Copy API Key', show_content: false)
 
   -# User's subscriptions
   - unless @user.subscription.blank?
@@ -63,19 +61,17 @@
   - unless @user_projects.blank?
     %h4{class: 'pb-2 mt-5 mb-4 border-bottom'} Projects
     = tag.p("Projects you created in #{$SITE}", class: 'text-muted')
-    %ul.list-unstyled
+    %div{class: 'administered-objects'}
       - @user_projects.each do |p|
-        %li
-          = link_to(p.name, project_path(p.acronym))
+        = render ChipButtonComponent.new(url: project_path(p.acronym), text: p.name, type: 'clickable')
 
   -# Ontologies this user administers
   - unless @admin_ontologies.blank?
     %h4{class: 'pb-2 mt-5 mb-4 border-bottom'} Ontologies
     = tag.p("Ontologies you have administrative access to in #{$SITE}", class: 'text-muted')
-    %ul.list-unstyled
+    %div{class: 'administered-objects'}
       - @admin_ontologies.each do |ont|
-        %li
-          = link_to(ont.name, ontology_path(ont.acronym))
+        = render ChipButtonComponent.new(url: ontology_path(ont.acronym), text: ont.name, type: 'clickable')
 
   :javascript
     jQuery(document).ready(function(){

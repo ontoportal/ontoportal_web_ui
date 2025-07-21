@@ -22,9 +22,10 @@
     <h1 style="font-size: 3em;">Browse</h1>
     <p>
       <%= t('ontologies.intro').html_safe %>
-      <%= link_to(Rails.configuration.settings.links[:help_ontology_browse], id: 'ontology-browse-help',
+      <%= link_to(Rails.configuration.settings.links[:help_ontology_browse],
+                  data: {controller: 'popup', action: 'click->popup#open'},
                   'aria-label': 'View ontology browse help') do %>
-        <i class='fas fa-question-circle fa-lg' aria-hidden='true'></i>
+        <i class='fas fa-question-circle fa-lg ps-1' aria-hidden='true'></i>
       <% end %>
     </p>
 
@@ -44,15 +45,9 @@
       </div>
 
       <div id="facets" class="grid-20">
-        <%if session[:user].nil?%>
-          <a class="new_ontology_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="/login?redirect=/ontologies/new">
-            <span class="ui-button-text">Submit New Ontology</span>
-          </a>
-        <%else%>
-          <a class="new_ontology_button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" href="/ontologies/new">
-            <span class="ui-button-text">Submit New Ontology</span>
-          </a>
-        <%end%>
+        <div >
+          <%= upload_ontology_button %>
+        </div>
 
         <div id="ont_view_facet" class="facet">
           <h4>Entry Type</h4>

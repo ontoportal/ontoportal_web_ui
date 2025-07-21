@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 # Main Rails gem
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '7.0.8'
+gem 'rails', '7.2.2.1'
 
 # JavaScript bundling for Rails
 gem 'jsbundling-rails'
@@ -35,7 +35,7 @@ gem 'sprockets-rails'
 
 # Use the Puma web server
 # [https://github.com/puma/puma]
-gem 'puma', '~> 5.0'
+gem 'puma', '~> 6.0'
 
 # Use JavaScript with ESM import maps
 # [https://github.com/rails/importmap-rails]
@@ -72,7 +72,7 @@ gem 'graphql', '~> 2.0.27'
 gem 'graphql-client'
 
 # Haml template engine for Ruby on Rails
-gem 'haml', '~> 5.1'
+gem 'haml', '~> 6.1.1'
 
 # Internationalization (i18n)
 gem 'i18n'
@@ -107,10 +107,8 @@ gem 'flag-icons-rails', '~> 3.4'
 gem 'iso-639', '~> 0.3.6'
 
 # Custom API client
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.4.0'
+gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.5.3'
 
-# compatibilty pin https://github.com/ncbo/bioportal_web_ui/issues/293
-gem 'base64', '0.1.0'
 gem 'rexml', '~> 3'
 
 # Ruby 2.7.8 pinned gems (to remove when migrating to Ruby >= 3.0)
@@ -122,7 +120,6 @@ gem 'ffi'
 gem 'net-ftp', require: false
 gem 'net-http'
 
-
 # Multi-Provider Authentication
 gem 'omniauth'
 gem 'omniauth-rails_csrf_protection'
@@ -133,7 +130,7 @@ gem 'omniauth-rails_csrf_protection'
 # gem 'omniauth-keycloak'
 # gem 'omniauth-orcid'
 
-group :staging, :production, :appliance do
+group :staging, :production do
   # Application performance monitoring
   gem 'newrelic_rpm'
 
@@ -147,7 +144,6 @@ group :development do
   gem 'capistrano', '~> 3.17', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-locally', require: false
-  gem 'capistrano-passenger', require: false
   gem 'capistrano-rails', '~> 1.4', require: false
   gem 'capistrano-rbenv', require: false
   gem 'capistrano-yarn', require: false

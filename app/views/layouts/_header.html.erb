@@ -44,6 +44,7 @@
   <header>
 		<%=render partial: 'layouts/topnav'%>
 	</header>
+	<%= turbo_frame_tag :cookie_consent, src: cookies_path if cookies[:allow_cookies].blank? %>
   
   <main class="flex-shrink-0">
 		<div class="container-fluid">

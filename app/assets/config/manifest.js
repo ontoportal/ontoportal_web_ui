@@ -4,6 +4,5 @@
 //= link bp_annotator.js
 //= link bp_annotatorplus.js
 //= link vendor.js
-//= link_tree ../images
 //= link_directory ../javascripts .js
 //= link_directory ../stylesheets .css

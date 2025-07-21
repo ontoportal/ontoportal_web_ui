@@ -1,8 +1,43 @@
-- @title = "Edit ontology submission"
+.edit-ontology-container.mx-auto.my-5
+  = turbo_frame_tag(params[:container_id] || 'test') do
+    = form_for :submission, url: ontology_submission_path(@ontology.acronym, params["id"]), html: { id: "ontology_submission_form", method: :put, multipart: true, 'data-turbo': true, 'data-turbo-frame': '_top', novalidate: 'true'} do
+      - sections = @categories_order
+      - selected = params[:section] || sections.first
+      = render Layout::VerticalTabsComponent.new(id:'metadata_by_ontology', header: t('submission_inputs.edit_ontology_title'), titles: sections, selected: selected, url_parameter: 'section') do |t|
+        - if @selected_attributes.empty?
+          - @categories_order.each_with_index  do |key, index|
+            - properties = @category_attributes[key]
+            - t.item_content do
+              = render TurboFrameComponent.new(id: "ontology-content-#{index}", loading:"lazy", src: "edit_properties?properties=#{properties.join(',')}&container_id=ontology-content-#{index}")
+        - else
+          - link  = ontology_submission_edit_properties_path(@ontology.acronym, params[:id], properties: @selected_attributes.join(','), container_id: 'ontology-content-0')
+          - t.item_content do
+            = render TurboFrameComponent.new(id: "ontology-content-0", loading:"lazy", src: link)
 
-%div.container.py-4.py-md-5
-  %h3.text-center.mb-4
-    Edit submission information
-    = acronym_from_submission_muted(@submission)
-  = form_for :submission, url: ontology_submission_path(@ontology.acronym, @submission.submissionId), html: { method: :put, multipart: true } do |f|
-    = render partial: "form", locals: {f: f, button_text: "Save submission"}
+      %hr#edit-ontology-actions-devider
+      .edit-ontology-actions
+        - unless params[:container_id]
+          .cancel-button.mx-2{ onClick: 'window.location=\'' + ontology_path(@ontology.acronym) + '\''}
+            = form_cancel_button
+        .save-button
+          = form_save_button
+
+
+  :javascript
+    function onMetadataChange(){
+      document.querySelector('.edit-ontology-tab-item.d-block.active.show')?.classList.remove('active', 'show')
+      document.querySelector('.edit-ontology-tab.tab-pane.fade.active.show')?.classList.remove('active', 'show')
+      document.getElementById('categories-tabs')?.classList.add('disabled')
+
+      let frame = document.getElementById('metadata_by_ontology')
+      let properties = document.getElementById('select_search_metadata')
+
+      let selectedProperties = "all"
+      if(properties && properties.selectedOptions.length > 0){
+        selectedProperties = Array.from(properties.selectedOptions).map(({ value }) => value).join(',')
+        frame.src = "./edit_properties?properties=" + selectedProperties
+      } else {
+        Turbo.visit(location.href)
+      }
+
+    }

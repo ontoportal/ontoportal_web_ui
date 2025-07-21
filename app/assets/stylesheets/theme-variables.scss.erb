@@ -19,11 +19,13 @@
   },
   "bioportal"   => {
     primary: "#234979",
-    hover: "#6B96B7",
+    hover: "#2B5892",
     secondary: "#ffc107",
     light: "#F0F5F6",
     bg_chip_button_container: "#777777" ,
-    text_chip_button_container: "#FFFFFF !important"
+    text_chip_button_container: "#FFFFFF !important",
+    login_btn: "#C58612",
+    login_btn_hover_bg: "#C58612",
   },
   "ontoportal"  => {
     primary: "#5499a4",
@@ -31,7 +33,9 @@
     secondary: "#ffc107",
     light: "#F1F6FA",
     bg_chip_button_container: "#777777" ,
-    text_chip_button_container: "#FFFFFF !important"
+    text_chip_button_container: "#FFFFFF !important",
+    login_btn: "#F1F6FA",
+    login_btn_hover_bg: "#CCCCCC",
   },
   "testportal"  => {
     primary: "#5499a4",
@@ -48,6 +52,7 @@
 <% selected_theme = themes[selected_theme_key] %>
 
 :root {
+  --active-theme: <%=  selected_theme_key %>;
   --primary-color: <%= selected_theme[:primary] %>;
   --hover-color: <%= selected_theme[:hover] %>;
   --secondary-color: <%= selected_theme[:secondary] %>;
@@ -64,4 +69,6 @@
   --bg-success-light-color: rgba(34, 197, 94, 0.1);
   --bg-chip-button: <%= selected_theme[:bg_chip_button_container] %>;
   --text-chip-button: <%= selected_theme[:text_chip_button_container] %>;
+  --login-btn-color: <%= selected_theme[:login_btn] %>;
+  --login-btn-hover-bg-color: <%= selected_theme[:login_btn_hover_bg] %>;
 }

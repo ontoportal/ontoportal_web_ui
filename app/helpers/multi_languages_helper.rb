@@ -24,7 +24,7 @@ module MultiLanguagesHelper
         languages.each do |lang, metadata|
           s.item do
             text = content_tag(:div, class: 'd-flex align-items-center') do
-              content_tag(:span, render(LanguageFieldComponent.new(value: lang, auto_label: true)), class: 'mr-1') + beta_badge(metadata[:badge])
+              content_tag(:span, render(LanguageFieldComponent.new(value: lang, auto_label: true)), class: 'me-1') + beta_badge(metadata[:badge])
             end
             link_options = { data: { turbo: false } }
 
@@ -143,6 +143,23 @@ module MultiLanguagesHelper
       code_out = 'jp'
     end
     code_out
+  end
+
+  def find_language_code_name(language)
+    original_lang = language.to_s.split('/').last.upcase
+    lang, country = original_lang.split('-')
+
+    if country
+      lang = ISO3166::Country.find_country_by_alpha2(country)
+      return nil unless lang
+
+      [original_lang, lang.nationality]
+    else
+      lang = ISO_639.find(lang.to_s.downcase)
+      return nil unless lang
+
+      [lang.alpha2, lang.english_name]
+    end
   end
 
   # @param label String | Array | OpenStruct
