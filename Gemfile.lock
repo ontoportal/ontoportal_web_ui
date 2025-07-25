@@ -1,20 +1,18 @@
 GIT
-  remote: https://github.com/ontoportal-lirmm/ontologies_api_ruby_client.git
-  revision: 016befc399a24252f7c9820c0271f674718712d9
-  tag: master
+  remote: https://github.com/ncbo/ontologies_api_ruby_client.git
+  revision: 233a03284cfd722f885f63ae09d9310496f1d5f9
+  branch: feature/enhanced_skos_support
   specs:
-    ontologies_api_client (2.2.0)
-      activesupport (~> 7.0.4)
-      excon (= 0.112.0)
+    ontologies_api_client (2.5.3)
+      activesupport (= 7.2.2.1)
+      addressable (~> 2.8)
+      excon
       faraday
-      faraday-excon (~> 2.0.0)
+      faraday-excon
       faraday-multipart
       lz4-ruby
       multi_json
       oj
-      parallel
-      request_store
-      spawnling (= 2.1.5)
 
 GEM
   remote: https://rubygems.org/
@@ -97,8 +95,10 @@ GEM
     ast (2.4.3)
     autoprefixer-rails (10.4.21.0)
       execjs (~> 2)
-    base64 (0.2.0)
+    base64 (0.3.0)
     bcrypt_pbkdf (1.1.1)
+    bcrypt_pbkdf (1.1.1-arm64-darwin)
+    benchmark (0.4.1)
     bigdecimal (3.2.2)
     bindex (0.8.1)
     bootsnap (1.18.6)
@@ -138,6 +138,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
+    cgi (0.5.0)
     chart-js-rails (0.1.7)
       railties (> 3.1)
     childprocess (5.1.0)
@@ -145,7 +146,7 @@ GEM
     coderay (1.1.3)
     color (1.8)
     concurrent-ruby (1.3.4)
-    connection_pool (2.5.0)
+    connection_pool (2.5.3)
     crack (1.0.0)
       bigdecimal
       rexml
@@ -162,22 +163,29 @@ GEM
     diff-lcs (1.6.2)
     docile (1.4.1)
     domain_name (0.6.20240107)
+    drb (2.2.3)
     ed25519 (1.4.0)
-    erb (5.0.2)
+    erb (4.0.4)
+      cgi (>= 0.3.3)
     erubi (1.13.1)
     erubis (2.7.0)
-    excon (0.112.0)
+    excon (1.2.8)
+      logger
     execjs (2.10.0)
-    faraday (2.0.1)
-      faraday-net_http (~> 2.0)
-      ruby2_keywords (>= 0.0.4)
-    faraday-excon (2.0.0)
-      excon (>= 0.27.4)
-      faraday (~> 2.0.0.alpha.pre.2)
+    faraday (2.13.4)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-excon (2.3.0)
+      excon (>= 1.0.0)
+      faraday (>= 2.11.0, < 3)
     faraday-multipart (1.1.1)
       multipart-post (~> 2.0)
-    faraday-net_http (2.1.0)
+    faraday-net_http (3.4.1)
+      net-http (>= 0.5.0)
     ffi (1.17.2-aarch64-linux-gnu)
+    ffi (1.17.2-arm64-darwin)
+    ffi (1.17.2-x86_64-linux-gnu)
     flag-icons-rails (3.4.6.1)
       sass-rails
     globalid (1.2.1)
@@ -323,6 +331,10 @@ GEM
     nio4r (2.7.4)
     nokogiri (1.18.9-aarch64-linux-gnu)
       racc (~> 1.4)
+    nokogiri (1.18.9-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.9-x86_64-linux-gnu)
+      racc (~> 1.4)
     oj (3.16.11)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
@@ -350,7 +362,7 @@ GEM
       date
       stringio
     public_suffix (6.0.2)
-    puma (5.6.9)
+    puma (6.6.0)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.17)
@@ -377,7 +389,7 @@ GEM
       activestorage (= 7.2.2.1)
       activesupport (= 7.2.2.1)
       bundler (>= 1.15.0)
-      railties (= 7.0.8)
+      railties (= 7.2.2.1)
     rails-dom-testing (2.3.0)
       activesupport (>= 5.0.0)
       minitest
@@ -410,8 +422,6 @@ GEM
     regexp_parser (2.10.0)
     reline (0.6.2)
       io-console (~> 0.5)
-    request_store (1.7.0)
-      rack (>= 1.4)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -451,7 +461,6 @@ GEM
       parser (>= 3.3.7.2)
       prism (~> 1.4)
     ruby-progressbar (1.13.0)
-    ruby2_keywords (0.0.5)
     ruby_parser (3.21.1)
       racc (~> 1.5)
       sexp_processor (~> 4.16)
@@ -484,7 +493,6 @@ GEM
       simplecov (~> 0.19)
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    spawnling (2.1.5)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -522,6 +530,7 @@ GEM
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
     uri (1.0.3)
+    useragent (0.16.11)
     view_component (2.83.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
@@ -545,10 +554,12 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.37)
-    zeitwerk (2.7.3)
+    zeitwerk (2.6.18)
 
 PLATFORMS
   aarch64-linux
+  arm64-darwin-24
+  x86_64-linux
 
 DEPENDENCIES
   bcrypt_pbkdf (>= 1.0, < 2.0)
@@ -622,4 +633,4 @@ DEPENDENCIES
   will_paginate (~> 3.0)
 
 BUNDLED WITH
-   2.4.19
+   2.6.3
