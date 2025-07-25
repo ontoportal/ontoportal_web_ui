@@ -1,6 +1,8 @@
 class OntologiesController < ApplicationController
   include MappingsHelper
   include MappingStatistics
+  include SchemesHelper, CollectionsHelper
+  include MultiLanguagesHelper
   include OntologyUpdater
 
   require "multi_json"
@@ -11,7 +13,7 @@ class OntologiesController < ApplicationController
 
   before_action :authorize_and_redirect, :only=>[:edit,:update,:create,:new]
 
-  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties"])
+  KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties", "schemes", "collections"])
 
 
   include ActionView::Helpers::NumberHelper
@@ -118,6 +120,11 @@ class OntologiesController < ApplicationController
     @submission = get_ontology_submission_ready(@ontology)
     get_class(params, @submission)
 
+    if @submission.hasOntologyLanguage == 'SKOS'
+      @schemes = get_schemes(@ontology)
+      @collections = get_collections(@ontology, add_colors: true)
+    end
+
     if ["application/ld+json", "application/json"].include?(request.accept)
       render plain: @concept.to_jsonld, content_type: request.accept and return
     end
@@ -131,9 +138,9 @@ class OntologiesController < ApplicationController
     update_tab(@ontology, @concept.id)
 
     if request.xhr?
-      render "visualize", layout: false
+      render "ontologies/sections/visualize", layout: false
     else
-      render "visualize", layout: "ontology_viewer"
+      render "ontologies/sections/visualize", layout: "ontology_viewer"
     end
   end
 
@@ -293,10 +300,31 @@ class OntologiesController < ApplicationController
       when "summary"
         self.summary
         return
+      when 'schemes'
+        self.schemes
+      when 'collections'
+        self.collections
       else
         self.summary
         return
     end
+  end
+
+  def schemes
+    @schemes = get_schemes(@ontology)
+    scheme_id = params[:schemeid] || @submission_latest.URI || nil
+    @scheme = scheme_id ? get_scheme(@ontology, scheme_id) : @schemes.first
+
+
+    render partial: 'ontologies/sections/schemes', layout: 'ontology_viewer'
+  end
+
+  def collections
+    @collections = get_collections(@ontology)
+    collection_id = params[:collectionid]
+    @collection = collection_id ? get_collection(@ontology, collection_id) : @collections.first
+
+    render partial: 'ontologies/sections/collections', layout: 'ontology_viewer'
   end
 
   def submit_success

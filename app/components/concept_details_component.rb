@@ -87,7 +87,7 @@ class ConceptDetailsComponent < ViewComponent::Base
     top_set = properties_set_by_keys(top_keys, concept_properties, exclude_keys)
     bottom_set = properties_set_by_keys(bottom_keys, concept_properties, exclude_keys)
     leftover = properties_set_by_keys(all_keys, concept_properties, exclude_keys)
-    leftover = leftover.reject { |key, _| top_set.key?(key) || bottom_set.key?(key) }
+    leftover = leftover&.reject { |key, _| top_set.key?(key) || bottom_set.key?(key) }
     [top_set, leftover, bottom_set]
   end
 
@@ -188,7 +188,7 @@ class ConceptDetailsComponent < ViewComponent::Base
   end
 
   def convert_dates(hash)
-    hash.transform_values do |property|
+    hash&.transform_values do |property|
       if property[:key].to_s.include?("modified") || property[:key].to_s.include?("created")
         value = property[:values].first
         parsed_date = l(Date.parse(value), format: :monthfull_day_year.to_sym) rescue value
