@@ -1,0 +1,17 @@
+= render TurboFrameComponent.new(id: "schemes", data: {"turbo-frame-target": "frame"} ) do
+  %div.ont-schemes{data:{controller: 'container-splitter'}}
+    %div#schemesTree.card.sidebar{data:{'container-splitter-target': 'container'}}
+      - if no_schemes?
+        = no_schemes_alert
+      - else
+        = tree_container_component(id: "schemes_sorted_list_view-page-1",
+                                 placeholder: t('ontologies.sections.schemes_search_placeholder',  acronym: @ontology.acronym),
+                                 frame_url:  "/ontologies/#{@ontology.acronym}/schemes?#{request.original_url.split('?')[1]}",
+                                 tree_url: "/ontologies/#{@ontology.acronym}/schemes?#{request.original_url.split('?')[1]}")
+
+    %div#scheme_contents{data:{'container-splitter-target': 'container'}}
+      = render TurboFrameComponent.new(id:'scheme') do
+        = render partial: 'schemes/show'
+
+
+

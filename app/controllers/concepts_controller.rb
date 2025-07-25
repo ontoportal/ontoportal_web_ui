@@ -1,136 +1,174 @@
-# frozen_string_literal: true
+require 'cgi'
 
 class ConceptsController < ApplicationController
-  include MappingsHelper, ConceptsHelper
+  include MappingsHelper
+  include ConceptsHelper
+  include TurboHelper
+  include TermsReuses
 
   layout 'ontology'
 
-  def show_concept
+  def show
     params[:id] = params[:id] ? params[:id] : params[:conceptid]
 
     if params[:id].nil? || params[:id].empty?
-      render text: 'Error: You must provide a valid concept id'
+      render :text => t('concepts.error_valid_concept')
       return
     end
 
     # Note that find_by_acronym includes views by default
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology_id]).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    ontology_not_found(params[:ontology]) if @ontology.nil?
+
+    redirect_to(ontology_path(id: params[:ontology], p: 'classes', conceptid: params[:id], lang: request_lang)) and return unless turbo_frame_request?
+
     @submission = get_ontology_submission_ready(@ontology)
-    @concept = @ontology.explore.single_class({ full: true, lang: helpers.request_lang(@submission) }, params[:id])
+    @concept = @ontology.explore.single_class({ full: true, language: request_lang }, params[:id])
 
-    @current_purl = @concept.purl if Rails.configuration.settings.purl[:enabled]
-
-    not_found if @concept.nil?
-    gather_details
+    concept_not_found(params[:id]) if @concept.nil?
+    @notes = @concept.explore.notes
     render partial: 'show'
   end
 
-  def show
-    params[:id] = params[:id] || params[:conceptid]
+  def index
+    # Handle multiple methods of passing concept ids
+    params[:id] = params[:id] ? params[:id] : params[:conceptid]
 
-    if params[:id].blank?
-      render text: 'Error: You must provide a valid concept id'
+    if params[:id].nil? || params[:id].empty?
+      render :text => t('concepts.error_valid_concept')
       return
     end
 
-    # find_by_acronym includes views by default
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    @submission = get_ontology_submission_ready(@ontology)
+    @submission = LinkedData::Client::Models::Ontology.explore(params[:ontology])
+                                                      .latest_submission
+                                                      .get(include: 'uriRegexPattern,preferredNamespaceUri')
+    @schemes = params[:concept_schemes].split(',')
 
-    if request.xhr?
-      display = params[:callback].eql?('load') ? { full: true } : { display: 'prefLabel' }
-      display[:language] = helpers.request_lang(@submission)
-      @concept = @ontology.explore.single_class(display, params[:id])
-      not_found if @concept.nil?
-      show_ajax_request(@submission)
-    else
-      render plain: 'Non-AJAX requests are not accepted at this URL', status: :forbidden
-    end
+    @concept = LinkedData::Client::Models::Class.new(values: { id: params[:id] })
+
+    @concept.children = LinkedData::Client::Models::Ontology.explore(params[:ontology])
+                                                            .classes(params[:id])
+                                                            .children
+                                                            .get(pagesize: 750, concept_schemes: Array(@schemes).join(','), language: request_lang, display: 'prefLabel,obsolete,hasChildren').collection || []
+    render turbo_stream: [
+      replace(helpers.child_id(@concept) + '_open_link') { TreeLinkComponent.tree_close_icon },
+      replace(helpers.child_id(@concept) + '_childs') do
+        helpers.concepts_tree_component(@concept, @concept, params[:ontology], Array(@schemes), request_lang, sub_tree: true, submission: @submission)
+      end
+    ]
   end
 
   def show_label
-    cls_id = params[:concept] || params[:id] # cls_id should be a full URI
-    ont_id = params[:ontology] # ont_id could be a full URI or an acronym
+    cls_id = params[:concept] || params[:id]
+    ont_id = params[:ontology]
+    pref_label = begin
+                   concept_label(ont_id, cls_id)
+                 rescue
+                   cls_id
+                 end
+    cls = @ontology.explore&.single_class({ language: request_lang, include: 'prefLabel' }, cls_id)
+    label = helpers.main_language_label(pref_label)
+    link = concept_path(cls_id, ont_id, request_lang)
 
-    render inline: helpers.main_language_label(concept_label(ont_id, cls_id))
+    render(inline: helpers.ajax_link_chip(cls_id, label, link, external: cls.nil? || cls.errors), layout: nil)
   end
 
   def show_definition
+
     @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
     cls = @ontology.explore.single_class(params[:concept])
-    render text: cls.definition
+    render :text => cls.definition
   end
 
   def show_tree
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    if @ontology.nil?
-      not_found
+    @submission = @ontology.explore.latest_submission(include: 'uriRegexPattern,preferredNamespaceUri')
+    if @ontology.nil? || @ontology.errors
+      ontology_not_found(params[:ontology])
     else
-      @submission = get_ontology_submission_ready(@ontology)
       get_class(params, @submission)
-      render partial: 'ontologies/treeview'
+
+      not_found(t('concepts.missing_roots')) if @root.nil?
+
+      render inline: helpers.concepts_tree_component(@root, @concept,
+                                                     @ontology.acronym, Array(params[:concept_schemes]&.split(',')), request_lang,
+                                                     id: 'concepts_tree_view', auto_click: params[:auto_click] || true)
     end
+  end
+
+  def show_date_sorted_list
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
+    if @ontology.nil?
+      ontology_not_found(params[:ontology])
+    else
+      @submission = @ontology.explore.latest_submission(include: 'uriRegexPattern,preferredNamespaceUri')
+      page = params[:page]
+      @last_date = params[:last_date]
+      auto_click = page.to_s.eql?('1')
+      params = {
+        page: page,
+        sortby: 'modified,created',
+        order: 'desc,desc',
+        display: 'prefLabel,modified,created',
+        language: request_lang
+      }
+      if @last_date
+        params.merge!(last_date: @last_date)
+        @last_date = Date.parse(@last_date)
+      end
+
+      @page = @ontology.explore.classes(params)
+      @concepts = filter_concept_with_no_date(@page.collection)
+      @concepts_year_month = concepts_to_years_months(@concepts)
+
+      render partial: 'concepts/date_sorted_list', locals: { auto_click: auto_click }
+    end
+
   end
 
   def property_tree
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    not_found if @ontology.nil?
+    ontology_not_found(params[:ontology]) if @ontology.nil?
     @root = @ontology.property_tree
     render json: LinkedData::Client::Models::Property.properties_to_hash(@root.children)
   end
 
+  # Renders a details pane for a given ontology/concept
   def details
-    not_found if params[:conceptid].blank?
+    concept_not_found(params[:conceptid]) if params[:conceptid].blank?
 
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    not_found if @ontology.nil?
+    ontology_not_found(params[:ontology]) if @ontology.nil?
 
     @concept = @ontology.explore.single_class({ full: true }, CGI.unescape(params[:conceptid]))
-    not_found if @concept.nil?
+    concept_not_found(CGI.unescape(params[:conceptid])) if @concept.nil? || @concept.errors
+    @container_id = params[:modal] ? 'application_modal_content' : 'concept_details'
 
-    if params[:styled].eql?('true')
-      render partial: 'details', layout: 'partial'
-    else
-      render partial: 'details'
-    end
+    render :partial => "details"
   end
 
   def biomixer
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology]).first
-    not_found if @ontology.nil?
+    ontology_not_found(params[:ontology]) if @ontology.nil?
 
     @concept = @ontology.explore.single_class({ full: true }, params[:conceptid])
-    not_found if @concept.nil?
+    concept_not_found(params[:conceptid]) if @concept.nil?
 
-    @immediate_load = true
-
-    render partial: 'biomixer', layout: false
+    render partial: "biomixer", layout: false
   end
 
   private
 
-  # Load data for a concept or retrieve a concept's children, depending on the value of the :callback parameter.
-  # Children are retrieved for drawing ontology class trees.
-  def show_ajax_request(submission)
-    case params[:callback]
-    when 'load'
-      gather_details
-      render partial: 'load'
-    when 'children'
-      @children = @concept.explore.children(pagesize: 750, language: helpers.request_lang(submission)).collection || []
-      @children.sort! do |x, y|
-        x.prefLabel = helpers.link_last_part(x.id) if x.prefLabel.to_s.empty?
-        y.prefLabel = helpers.link_last_part(y.id) if y.prefLabel.to_s.empty?
-        (x.prefLabel || '').downcase <=> (y.prefLabel || '').downcase
-      end
-      render partial: 'child_nodes'
-    end
+  def filter_concept_with_no_date(concepts)
+    concepts.filter { |c| !concept_date(c).nil? }
   end
 
-  def gather_details
-    @mappings = get_concept_mappings(@concept)
-    @notes = @concept.explore.notes
-    @delete_mapping_permission = check_delete_mapping_permission(@mappings)
-    update_tab(@ontology, @concept.id)
+  def concepts_to_years_months(concepts)
+    return unless concepts || concepts.nil?
+
+    concepts.group_by { |c| concept_date(c).year }
+            .transform_values do |items|
+      items.group_by { |c| concept_date(c).strftime('%B') }
+    end
   end
 end

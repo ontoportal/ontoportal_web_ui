@@ -25,3 +25,7 @@ application.register('progress-pages', Progress_pages_component_controller)
 application.register('reveal-component', Reveal_component_controller)
 application.register('table-component', Table_component_controller)
 application.register('clipboard', clipboard_component_controller)
+
+
+import Skos_collections_selector from "./skos_collections_selector"
+application.register("skos-collections-selector", Skos_collections_selector)
