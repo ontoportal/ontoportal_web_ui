@@ -164,7 +164,7 @@ class ConceptsController < ApplicationController
   end
 
   def concepts_to_years_months(concepts)
-    return unless concepts || concepts.nil?
+    return {} if concepts.nil? || concepts.empty?
 
     concepts.group_by { |c| concept_date(c).year }
             .transform_values do |items|
