@@ -1,4 +1,32 @@
 module ComponentsHelper
+  include TermsReuses
+
+  def tree_component(root, selected, target_frame:, sub_tree: false, id: nil, auto_click: false, submission: nil, &child_data_generator)
+    root.children.sort! { |a, b| (a.prefLabel || a.id).downcase <=> (b.prefLabel || b.id).downcase }
+
+    render TreeViewComponent.new(id: id, sub_tree: sub_tree, auto_click: auto_click) do |tree_child|
+      root.children.each do |child|
+        children_link, data, href = child_data_generator.call(child)
+
+        if children_link.nil? || data.nil? || href.nil?
+          raise ArgumentError, t('components.error_block')
+        end
+
+        tree_child.child(child: child, href: href,
+                         children_href: children_link, selected: child.id.eql?(selected&.id),
+                         muted: child.isInActiveScheme&.empty?,
+                         target_frame: target_frame,
+                         data: data, is_reused: concept_reused?(submission: submission, concept_id: child.id)) do
+          tree_component(child, selected, target_frame: target_frame, sub_tree: true,
+                         id: id, auto_click: auto_click, submission: submission, &child_data_generator)
+        end
+      end
+    end
+  end
+
+  def ajax_link_chip(id, label = nil, link = nil, external: false, open_in_modal: false, ajax_src: nil, target: '_blank')
+    render LabelFetcherComponent.new(id: id, label: label, link: link, open_in_modal: open_in_modal, ajax_src: ajax_src, target: target, external: external)
+  end
 
   def tab_item_component(container_tabs:, title:, path:, selected: false, json_link: "", &content)
     container_tabs.item(title: title.html_safe, path: path, selected: selected, json_link: json_link)

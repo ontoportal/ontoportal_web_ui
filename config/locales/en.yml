@@ -143,7 +143,6 @@ en:
       notes: Notes
       mappings: Mappings
       widgets: Widgets
-      sparql: Sparql
       concepts: Concepts
 
   concepts:
@@ -161,6 +160,22 @@ en:
     mappings: Mappings
     permanent_link_class: Get a permanent link to this class
     api_link_class: Go to class API
+
+  schemes:
+    error_valid_scheme_id: 'Error: You must provide a valid scheme id'
+    id: ID
+    no_main_scheme_alert: No main scheme defined in the URI property
+    no_schemes_alert: "%{acronym} does not contain schemes (skos:ConceptScheme)"
+    preferred_name: Preferred name
+    type: Type
+  
+  collections:
+    error_valid_collection: 'Error: You must provide a valid collection id'
+    id: ID
+    members_count: Members count
+    no_collections_alert: "%{acronym} does not contain collections (skos:Collection)"
+    preferred_name: Preferred name
+    type: Type
 
   components:
     check_resolvability: checking resolvability...
@@ -220,6 +235,14 @@ en:
     date_of_original_creation: "Release date"
     modification_date: "Modification date"
     edit_metadata: "Edit metadata"
+
+    concepts_browsers:
+      filter: Filter
+      label_jump: 'Jump to:'
+      missing_roots: Missing roots for %{acronym} (skos:topConceptOf)
+      placeholder_jump: Jump to
+      select_collection: Please select a collection to display
+      select_scheme: Please select a scheme to display
 
   mappings:
     intro: Browse mappings between classes in different ontologies

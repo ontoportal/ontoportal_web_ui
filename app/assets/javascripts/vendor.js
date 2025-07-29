@@ -26,7 +26,6 @@
 //= require jquery.cookie
 //= require autocomplete
 //= require jquery.hoverIntent
-//= require jquery.simple.tree
 //= require jquery.scrollTo-1.4.0-min
 //= require history/jquery.history
 //= require alertify

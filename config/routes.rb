@@ -19,6 +19,24 @@ Rails.application.routes.draw do
 
   resources :concepts
 
+  scope :ontologies do
+    get ':ontology/concepts' => 'concepts#index'
+    get ':ontology/concepts/show', to: 'concepts#show'
+
+
+    get ':ontology/instances', to: 'instances#index'
+    get ':ontology/instances/show', to: 'instances#show'
+
+    get ':ontology/properties', to: 'properties#index'
+    get ':ontology/properties/show', to: 'properties#show'
+
+    get ':ontology/schemes', to: 'schemes#index'
+    get ':ontology/schemes/show', to: 'schemes#show'
+
+    get ':ontology/collections', to: 'collections#index'
+    get ':ontology/collections/show', to: 'collections#show'
+  end
+
   get 'ontologies/:ontology_id/concepts', to: 'concepts#show_concept'
 
   resources :ontologies do
@@ -107,6 +125,11 @@ Rails.application.routes.draw do
   get '/ajax/classes/treeview' => 'concepts#show_tree'
   get '/ajax/properties/tree' => 'concepts#property_tree'
   get '/ajax/biomixer' => 'concepts#biomixer'
+
+  get 'ajax/schemes/label', to: 'schemes#show_label'
+  get '/ajax/classes/list' => 'collections#show_members'
+  get '/ajax/classes/date_sorted_list' => 'concepts#show_date_sorted_list'
+  get 'ajax/collections/label', to: 'collections#show_label'
 
   # User
   get '/logout' => 'login#destroy', :as => :logout
