@@ -313,7 +313,7 @@ class ApplicationController < ActionController::Base
   def check_delete_mapping_permission(mappings)
     # ensure mappings is an Array of mappings (some calls may provide only a single mapping instance)
     mappings = [mappings] if mappings.instance_of? LinkedData::Client::Models::Mapping
-    return false if mappings.all? {|m| m.id.to_s.empty?}
+    return false if mappings.nil? || mappings.all? {|m| m.id.to_s.empty?}
     delete_mapping_permission = false
     if session[:user]
       delete_mapping_permission = session[:user].admin?

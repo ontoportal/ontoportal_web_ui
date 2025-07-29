@@ -68,15 +68,16 @@ class ConceptsController < ApplicationController
                  end
     cls = @ontology.explore&.single_class({ language: request_lang, include: 'prefLabel' }, cls_id)
     label = helpers.main_language_label(pref_label)
-    link = concept_path(cls_id, ont_id, request_lang)
+    acronym = ont_id.split("/").last
+    link = concept_path(cls_id, acronym, request_lang)
 
     render(inline: helpers.ajax_link_chip(cls_id, label, link, external: cls.nil? || cls.errors), layout: nil)
   end
 
   def show_definition
-
     @ontology = LinkedData::Client::Models::Ontology.find(params[:ontology])
     cls = @ontology.explore.single_class(params[:concept])
+
     render :text => cls.definition
   end
 

@@ -61,7 +61,7 @@ class MappingsController < ApplicationController
     @mappings = @mapping_pages.collection
     @delete_mapping_permission = check_delete_mapping_permission(@mappings)
 
-    if @mapping_pages.nil? || @mapping_pages.collection.empty?
+    if @mapping_pages.nil? || @mapping_pages.collection.nil? || @mapping_pages.collection.empty?
       @mapping_pages = MappingPage.new
       @mapping_pages.page = 1
       @mapping_pages.pageCount = 1
