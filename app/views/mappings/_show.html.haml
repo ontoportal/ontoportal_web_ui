@@ -10,6 +10,9 @@
           %th #{@target_ontology.name}
           %th Source
         - for map in @mappings
+          - map.classes.sort_by! do |c|
+            - ontology_id = c.links["ontology"].split("/").last
+            - ontology_id == @ontology.acronym ? 0 : 1
           %tr
             - cls = map.classes.shift
             %td
