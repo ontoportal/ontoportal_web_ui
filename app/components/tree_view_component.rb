@@ -21,7 +21,7 @@ class TreeViewComponent < ViewComponent::Base
 
   def tree_container(&block)
     if sub_tree?
-      content_tag(:ul, capture(&block), class: 'pl-2 tree-border-left')
+      content_tag(:ul, capture(&block), class: 'ps-2 tree-border-left')
     else
       content_tag(:div, class: 'tree_wrapper hide-if-loading') do
         content_tag(:ul, capture(&block), class: 'simpleTree root', data: { controller: 'simple-tree',

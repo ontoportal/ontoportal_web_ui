@@ -41,7 +41,7 @@ class TreeLinkComponent < ViewComponent::Base
   end
 
   def border_left
-    !@child.hasChildren ? 'pl-3 tree-border-left' : ''
+    !@child.hasChildren ? 'ps-3 tree-border-left' : ''
   end
 
   def li_id
