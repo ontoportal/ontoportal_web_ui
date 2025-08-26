@@ -96,6 +96,23 @@ module OntologiesHelper
     end
   end
 
+
+
+
+
+
+  def ontology_admin_button
+    return unless @ontology.admin?(session[:user])
+    render RoundedButtonComponent.new(link: admin_ontology_path(@ontology.acronym), icon: 'icons/settings.svg',
+                                      size: 'medium', title: 'Ontology Admin')
+  end
+
+
+
+
+
+
+
   def download_button
     return if (@ontology.summaryOnly || @ont_restricted || @submissions.empty?)
 

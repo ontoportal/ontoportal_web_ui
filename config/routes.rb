@@ -43,6 +43,19 @@ Rails.application.routes.draw do
     resources :submissions
   end
 
+
+
+
+  resources :ontologies, param: :acronym do
+    member do
+      get 'admin', to: 'ontologies#admin', as: :admin
+    end
+  end
+
+
+
+
+
   resources :login
 
   resources :admin, only: [:index]

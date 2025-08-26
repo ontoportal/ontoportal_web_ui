@@ -193,6 +193,38 @@ class OntologiesController < ApplicationController
     end
   end
 
+
+
+  def admin
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym], {include: 'all'}).first
+    not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
+    redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
+
+    restrict_downloads = $NOT_DOWNLOADABLE
+    @ont_restricted = restrict_downloads.include? @ontology.acronym
+
+    # Retrieve submissions in descending submissionId order (should be reverse chronological order)
+    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    Log.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
+
+    # Get the latest submission (not necessarily the latest 'ready' submission)
+    @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
+
+    render template: 'ontologies/admin', layout: 'ontology_viewer'
+  end
+
+
+
+
+  
+
+
+
+
+
+
+
+
   def new
     @ontology = LinkedData::Client::Models::Ontology.new
     @ontology.viewOf = params.dig(:ontology, :viewOf)
