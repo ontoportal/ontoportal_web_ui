@@ -15,6 +15,7 @@ class OntologiesController < ApplicationController
 
   KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties", "schemes", "collections"])
 
+  USER_ONTOLOGY_ADMIN_URL = "#{LinkedData::Client.settings.rest_url}/ontologies/:acronym/admin"
 
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
@@ -216,7 +217,22 @@ class OntologiesController < ApplicationController
 
 
 
-  
+
+
+
+
+
+  def submission_log
+    acronym = params[:acronym]
+    uri = URI.parse("#{USER_ONTOLOGY_ADMIN_URL.sub(':acronym', acronym)}/log")
+    payload = LinkedData::Client::HTTP.get(uri, {severity: 'ERROR'}, raw: true)
+
+    text = fetch_log_text(payload)
+    render plain: text, content_type: 'text/plain'
+  rescue => e
+    render plain: "Failed to load log: #{e.message}", status: :bad_gateway
+  end
+
 
 
 
@@ -435,5 +451,58 @@ class OntologiesController < ApplicationController
     views.select!{ |view| view.access?(session[:user]) }
     views.sort{ |a,b| a.acronym.downcase <=> b.acronym.downcase }
   end
+
+
+
+
+
+
+
+
+
+  # Accepts an already-fetched payload (String or parsed JSON) and normalizes it to text
+  def fetch_log_text(payload)
+    # If the payload is a String, try to parse JSON; otherwise treat it as plain text
+    if payload.is_a?(String)
+      begin
+        json = JSON.parse(payload)
+      rescue StandardError
+        return payload # not JSON → assume it’s already text
+      end
+    else
+      json = payload
+    end
+
+    # Hash shapes
+    if json.is_a?(Hash)
+      return json['lines'].join("\n") if json['lines'].is_a?(Array)
+      return json['text'].to_s if json.key?('text')
+    end
+
+    # Array shapes: strings or objects
+    if json.is_a?(Array)
+      return json.map { |row|
+        if row.is_a?(Hash)
+          ts  = row['ts'] || row['timestamp'] || ''
+          lvl = row['level'] || row['lvl'] || ''
+          msg = row['msg'] || row['message'] || row['log'] || row.to_s
+          header = [ts, lvl].reject { |v| v.respond_to?(:empty?) ? v.empty? : !v }.join(' ')
+          header.empty? ? msg.to_s : (msg.to_s.empty? ? header : "#{header} #{msg}")
+        else
+          row.to_s
+        end
+      }.join("\n")
+    end
+
+    # Fallback for anything else
+    json.to_s
+  end
+
+
+
+
+
+
+
 
 end

@@ -49,9 +49,9 @@ Rails.application.routes.draw do
   resources :ontologies, param: :acronym do
     member do
       get 'admin', to: 'ontologies#admin', as: :admin
+      get :submission_log # /ontologies/:acronym/submission_log
     end
   end
-
 
 
 
