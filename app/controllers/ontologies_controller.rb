@@ -196,6 +196,10 @@ class OntologiesController < ApplicationController
 
 
 
+
+
+
+
   def admin
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym], {include: 'all'}).first
     not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
@@ -206,7 +210,7 @@ class OntologiesController < ApplicationController
 
     # Retrieve submissions in descending submissionId order (should be reverse chronological order)
     @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
-    Log.add :error, "No submissions for ontology: #{@ontology.id}" if @submissions.empty?
+    Log.add :error, "No submissions found for ontology: #{@ontology.id}" if @submissions.empty?
 
     # Get the latest submission (not necessarily the latest 'ready' submission)
     @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
@@ -214,20 +218,17 @@ class OntologiesController < ApplicationController
     render template: 'ontologies/admin', layout: 'ontology_viewer'
   end
 
-
-
-
-
-
-
-
-
   def submission_log
     acronym = params[:acronym]
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym, {include: 'all'}).first
+    not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
+    redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
+
     uri = URI.parse("#{USER_ONTOLOGY_ADMIN_URL.sub(':acronym', acronym)}/log")
     payload = LinkedData::Client::HTTP.get(uri, {severity: 'ERROR'}, raw: true)
 
-    text = fetch_log_text(payload)
+    text = fetch_log_text(payload).to_s
+    text = "Processing log not found for the latest submission of ontology #{acronym}" if text.strip.empty?
     render plain: text, content_type: 'text/plain'
   rescue => e
     render plain: "Failed to load log: #{e.message}", status: :bad_gateway

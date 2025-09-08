@@ -1,8 +1,91 @@
 - content_for :viewer_content do
   .row.g-3.pb-4
     .col-lg-8
+
+
+      / === Manage Submissions ===
+      - total_count = @submissions.size
+      - min_count   = 5
+      .card{ data: {
+              controller: 'submissions-list',
+              'submissions-list-total-value': total_count,
+              'submissions-list-step-value': 5,
+              'submissions-list-min-value': min_count
+            } }
+        .card-header Manage submissions
+        - if @submissions.blank?
+          .card-body
+            %p.text-muted.mb-0 No submissions found for this ontology.
+        - else
+          .card-body.p-0
+            %table.table.mb-0
+              %thead
+                %tr
+                  %th.w-1
+                    / Header checkbox wired in Stage 2 (visible-select-all), leave disabled for now
+                    %input.form-check-input{ type: "checkbox", disabled: true }
+                  %th Version
+                  %th Created
+                  %th Released
+                  %th Status
+              %tbody
+                - @submissions.each do |s|
+                  %tr{ data: { 'submissions-list-target': 'row', submission_id: s.submissionId } }
+                    %td
+                      %input.form-check-input{ type: "checkbox",
+                        data: { 'submissions-list-target': 'rowCheckbox', action: 'change->submissions-list#syncSelection' } }
+                    %td= s.submissionId
+                    %td
+                      - if s.respond_to?(:creationDate) && s.creationDate.present?
+                        - begin
+                          = l(Date.parse(s.creationDate), format: :monthfull_day_year)
+                        - rescue
+                          = s.creationDate
+                      - else
+                        = "—"
+                    %td
+                      - if s.respond_to?(:released) && s.released.present?
+                        - begin
+                          = l(Date.parse(s.released), format: :monthfull_day_year)
+                        - rescue
+                          = s.released
+                      - else
+                        = "—"
+                    %td= (s.respond_to?(:status) && s.status.present?) ? s.status : "—"
+
+        / Always render footer so the delete button is available.
+        // Links auto-hide when irrelevant; the divider only shows when both are visible.
+        .card-footer.d-flex.justify-content-end.align-items-center
+          %a.btn.btn-link.btn-sm.text-decoration-none{ href: "#",
+            role: "button",
+            data: { action: 'submissions-list#showLess',
+                    'submissions-list-target': 'lessLink' } }
+            Show fewer submissions…
+          %span.border-start.border-secondary.mx-3.d-inline-block.align-self-center.d-none{
+            style: "height: 1rem; opacity: .75;",
+            data: { 'submissions-list-target': 'divider' } }
+          %a.btn.btn-link.btn-sm.text-decoration-none{ href: "#",
+            role: "button",
+            data: { action: 'submissions-list#showMore',
+                    'submissions-list-target': 'moreLink' } }
+            Show more submissions…
+          %button.btn.btn-danger.btn-sm.ms-3{ type: "button", disabled: true,
+            data: { 'submissions-list-target': 'deleteBtn' } }
+            Delete selected
+
+
+
+
+
+
+
+
+
+
       / === Latest Submission Log ===
-      .card{ data: { controller: 'user-ontology-log', 'user-ontology-log-url-value': submission_log_ontology_path(@ontology.acronym) } }
+      .card.mt-3.d-flex.flex-column{ style: "height: calc(100vh - 550px);" ,
+                                data: { controller: 'user-ontology-log',
+                                'user-ontology-log-url-value': submission_log_ontology_path(@ontology.acronym) } }
         .card-header.d-flex.align-items-center.justify-content-between
           %span Latest submission log
           .d-flex.gap-2
@@ -11,15 +94,14 @@
             = link_to submission_log_ontology_path(@ontology.acronym),
                       class: 'btn btn-sm btn-outline-secondary',
                       data: { turbo: false } do
-              Download Full Log
-        .card-body.overflow-auto{ style: "max-height: 300px;" }
-          %pre.mb-0.font-monospace{ data: { 'user-ontology-log-target': 'content' } }
+              Download
+        .card-body.overflow-auto.flex-grow-1
+          %pre.mb-0.font-monospace.log-block{ data: { 'user-ontology-log-target': 'content' } }
             Loading…
-
     .col-lg-4
       / === Danger Zone ===
       .card.border-danger
-        .card-header.text-danger Danger zone
+        .card-header.text-danger Caution zone
         .card-body
           %p.small.text-muted
             Deleting the ontology removes submissions, notes, mappings and related data. This cannot be undone.

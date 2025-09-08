@@ -51,3 +51,6 @@ application.register("text-truncate", TextTruncateController)
 
 import UserOntologyLogController from "./user_ontology_log_controller"
 application.register("user-ontology-log", UserOntologyLogController)
+
+import SubmissionsListController from "./submissions_list_controller"
+application.register("submissions-list", SubmissionsListController)
