@@ -23,7 +23,9 @@
                 %tr
                   %th.w-1
                     / Header checkbox wired in Stage 2 (visible-select-all), leave disabled for now
-                    %input.form-check-input{ type: "checkbox", disabled: true }
+                    %input.form-check-input{ type: "checkbox",
+                      data: { 'submissions-list-target': 'headerCheckbox',
+                              action: 'change->submissions-list#toggleAllVisible' } }
                   %th Version
                   %th Created
                   %th Released

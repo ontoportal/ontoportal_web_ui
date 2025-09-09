@@ -2,7 +2,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-    static targets = ["row", "rowCheckbox", "moreLink", "lessLink", "divider", "deleteBtn"]
+    static targets = ["row", "rowCheckbox", "moreLink", "lessLink", "divider", "deleteBtn", "headerCheckbox"]
     static values  = { total: Number, step: Number, min: Number, shown: Number }
 
     connect() {
@@ -24,6 +24,7 @@ export default class extends Controller {
     // Stage 1: called when any row checkbox changes
     syncSelection() {
         this.updateDeleteButtonState()
+        this.updateHeaderCheckboxState()
     }
 
     // Internal
@@ -44,6 +45,7 @@ export default class extends Controller {
 
         // Recompute delete button state after any visibility change
         this.updateDeleteButtonState()
+        this.updateHeaderCheckboxState()
     }
 
     updateDeleteButtonState() {
@@ -71,5 +73,28 @@ export default class extends Controller {
                 if (cb && cb.checked) cb.checked = false
             }
         })
+    }
+
+    toggleAllVisible(e) {
+        if (!this.hasHeaderCheckboxTarget) return
+        const checked = this.headerCheckboxTarget.checked
+        this.visibleRowCheckboxes().forEach(cb => { cb.checked = checked })
+        this.updateDeleteButtonState()
+        this.updateHeaderCheckboxState()
+    }
+
+    updateHeaderCheckboxState() {
+        if (!this.hasHeaderCheckboxTarget) return
+        const boxes = this.visibleRowCheckboxes()
+        if (boxes.length === 0) {
+            this.headerCheckboxTarget.indeterminate = false
+            this.headerCheckboxTarget.checked = false
+            this.headerCheckboxTarget.disabled = true
+            return
+        }
+        this.headerCheckboxTarget.disabled = false
+        const checkedCount = boxes.filter(cb => cb.checked).length
+        this.headerCheckboxTarget.indeterminate = checkedCount > 0 && checkedCount < boxes.length
+        this.headerCheckboxTarget.checked = checkedCount > 0 && checkedCount === boxes.length
     }
 }
