@@ -2,7 +2,11 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-    static targets = ["row", "rowCheckbox", "moreLink", "lessLink", "divider", "deleteBtn", "headerCheckbox"]
+    static targets = [
+        "row","rowCheckbox","moreLink","lessLink",
+        "divider","deleteBtn","headerCheckbox",
+        "inlineConfirm","inlineConfirmList"
+    ]
     static values  = { total: Number, step: Number, min: Number, shown: Number }
 
     connect() {
@@ -106,20 +110,39 @@ export default class extends Controller {
         this.headerCheckboxTarget.checked = checkedCount > 0 && checkedCount === boxes.length
     }
 
-    confirmDelete(e) {
+    toggleInlineConfirm(e) {
         e.preventDefault()
+        // Gather selected IDs from visible checked boxes
         const selectedIds = this.visibleRowCheckboxes()
             .filter(cb => cb.checked)
-            .map(cb => cb.closest("tr").dataset.submission_id)
+            .map(cb => cb.closest("tr").dataset.submissionId)
+        this.pendingDeleteIds = selectedIds
 
-        if (selectedIds.length === 0) return
+        if (!this.hasInlineConfirmTarget) return
 
-        const message = `Are you sure you want to delete the submissions ${selectedIds.join(", ")}? This action cannot be undone!`
-        if (window.confirm(message)) {
-            // For now, just log to the console; Stage 4 will handle the actual delete call
-            console.log("Confirmed deletion for:", selectedIds)
-        } else {
-            console.log("Deletion cancelled")
+        // Fill in the dynamic IDs line
+        if (this.hasInlineConfirmListTarget) {
+            this.inlineConfirmListTarget.textContent = selectedIds.join(", ")
         }
+
+        // Finally, toggle the confirmation panel
+        this.inlineConfirmTarget.classList.toggle("d-none")
+    }
+
+    cancelInlineConfirm(e) {
+        e.preventDefault()
+        if (this.hasInlineConfirmTarget) {
+            this.inlineConfirmTarget.classList.add("d-none")
+        }
+    }
+
+    performDelete(e) {
+        e.preventDefault()
+        console.log("Confirmed deletion for:", this.pendingDeleteIds)
+        if (this.hasInlineConfirmTarget) {
+            this.inlineConfirmTarget.classList.add("d-none")
+        }
+
+        // trigger DELETE call
     }
 }
