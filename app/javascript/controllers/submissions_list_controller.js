@@ -7,19 +7,27 @@ export default class extends Controller {
 
     connect() {
         const total = this.hasTotalValue ? this.totalValue : this.rowTargets.length
-        const min   = this.hasMinValue ? this.minValue : 5
-        const step  = this.hasStepValue ? this.stepValue : 5
-
+        const min = this.hasMinValue ? this.minValue : 5
+        const step = this.hasStepValue ? this.stepValue : 5
         this.totalValue = total
-        this.minValue   = min
-        this.stepValue  = step
+        this.minValue = min
+        this.stepValue = step
         this.shownValue = Math.min(total, min)
         this.update()
     }
 
     // UI actions
-    showMore(e) { e.preventDefault(); this.shownValue = Math.min(this.totalValue, this.shownValue + this.stepValue); this.update() }
-    showLess(e) { e.preventDefault(); this.shownValue = Math.max(this.minValue, this.shownValue - this.stepValue); this.update() }
+    showMore(e) {
+        e.preventDefault();
+        this.shownValue = Math.min(this.totalValue, this.shownValue + this.stepValue);
+        this.update()
+    }
+
+    showLess(e) {
+        e.preventDefault();
+        this.shownValue = Math.max(this.minValue, this.shownValue - this.stepValue);
+        this.update()
+    }
 
     // Stage 1: called when any row checkbox changes
     syncSelection() {
@@ -96,5 +104,22 @@ export default class extends Controller {
         const checkedCount = boxes.filter(cb => cb.checked).length
         this.headerCheckboxTarget.indeterminate = checkedCount > 0 && checkedCount < boxes.length
         this.headerCheckboxTarget.checked = checkedCount > 0 && checkedCount === boxes.length
+    }
+
+    confirmDelete(e) {
+        e.preventDefault()
+        const selectedIds = this.visibleRowCheckboxes()
+            .filter(cb => cb.checked)
+            .map(cb => cb.closest("tr").dataset.submission_id)
+
+        if (selectedIds.length === 0) return
+
+        const message = `Are you sure you want to delete the submissions ${selectedIds.join(", ")}? This action cannot be undone!`
+        if (window.confirm(message)) {
+            // For now, just log to the console; Stage 4 will handle the actual delete call
+            console.log("Confirmed deletion for:", selectedIds)
+        } else {
+            console.log("Deletion cancelled")
+        }
     }
 }

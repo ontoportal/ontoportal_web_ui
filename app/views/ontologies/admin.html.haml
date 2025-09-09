@@ -63,8 +63,7 @@
             data: { action: 'submissions-list#showLess',
                     'submissions-list-target': 'lessLink' } }
             Show fewer submissions…
-          %span.border-start.border-secondary.mx-3.d-inline-block.align-self-center.d-none{
-            style: "height: 1rem; opacity: .75;",
+          %span.border-start.border-secondary.mx-3.d-inline-block.align-self-center.d-none{ style: "height: 1rem; opacity: .75;",
             data: { 'submissions-list-target': 'divider' } }
           %a.btn.btn-link.btn-sm.text-decoration-none{ href: "#",
             role: "button",
@@ -72,7 +71,7 @@
                     'submissions-list-target': 'moreLink' } }
             Show more submissions…
           %button.btn.btn-danger.btn-sm.ms-3{ type: "button", disabled: true,
-            data: { 'submissions-list-target': 'deleteBtn' } }
+            data: { 'submissions-list-target': 'deleteBtn', action: 'click->submissions-list#confirmDelete' } }
             Delete selected
 
 
