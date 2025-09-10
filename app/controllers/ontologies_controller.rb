@@ -15,7 +15,10 @@ class OntologiesController < ApplicationController
 
   KNOWN_PAGES = Set.new(["terms", "classes", "mappings", "notes", "widgets", "summary", "properties", "schemes", "collections"])
 
-  USER_ONTOLOGY_ADMIN_URL = "#{LinkedData::Client.settings.rest_url}/ontologies/:acronym/admin"
+  ONTOLOGY_REST_URL = "#{LinkedData::Client.settings.rest_url}/ontologies/:acronym"
+  SUBMISSIONS_REST_URL = "#{ONTOLOGY_REST_URL}/submissions"
+  USER_ONTOLOGY_ADMIN_URL = "#{ONTOLOGY_REST_URL}/admin"
+  BULK_DELETE_PROGRESS_URL = "#{SUBMISSIONS_REST_URL}/bulk_delete/:process_id"
 
   include ActionView::Helpers::NumberHelper
   include OntologiesHelper
@@ -184,64 +187,6 @@ class OntologiesController < ApplicationController
     end
   end
 
-  def mappings
-    @mapping_counts = mapping_counts(@ontology.acronym)
-
-    if request.xhr?
-      render partial: 'mappings', layout: false
-    else
-      render partial: 'mappings', layout: 'ontology_viewer'
-    end
-  end
-
-
-
-
-
-
-
-  def admin
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym], {include: 'all'}).first
-    not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
-    redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
-
-    restrict_downloads = $NOT_DOWNLOADABLE
-    @ont_restricted = restrict_downloads.include? @ontology.acronym
-
-    # Retrieve submissions in descending submissionId order (should be reverse chronological order)
-    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
-    Log.add :error, "No submissions found for ontology: #{@ontology.id}" if @submissions.empty?
-
-    # Get the latest submission (not necessarily the latest 'ready' submission)
-    @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
-
-    render template: 'ontologies/admin', layout: 'ontology_viewer'
-  end
-
-  def submission_log
-    acronym = params[:acronym]
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym, {include: 'all'}).first
-    not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
-    redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
-
-    uri = URI.parse("#{USER_ONTOLOGY_ADMIN_URL.sub(':acronym', acronym)}/log")
-    payload = LinkedData::Client::HTTP.get(uri, {severity: 'ERROR'}, raw: true)
-
-    text = fetch_log_text(payload).to_s
-    text = "Processing log not found for the latest submission of ontology #{acronym}" if text.strip.empty?
-    render plain: text, content_type: 'text/plain'
-  rescue => e
-    render plain: "Failed to load log: #{e.message}", status: :bad_gateway
-  end
-
-
-
-
-
-
-
-
-
   def new
     @ontology = LinkedData::Client::Models::Ontology.new
     @ontology.viewOf = params.dig(:ontology, :viewOf)
@@ -254,19 +199,6 @@ class OntologiesController < ApplicationController
     @groups = LinkedData::Client::Models::Group.all
     @user_select_list = LinkedData::Client::Models::User.all(include: 'username').map { |u| [u.username, u.id] }
     @user_select_list.sort! { |a, b| a[1].downcase <=> b[1].downcase }
-  end
-
-  def notes
-    @notes = @ontology.explore.notes
-    @notes_deletable = false
-    # TODO_REV: Handle notes deletion
-    # @notes.each {|n| @notes_deletable = true if n.deletable?(session[:user])} if @notes.kind_of?(Array)
-    @note_link = "/ontologies/#{@ontology.acronym}/notes/"
-    if request.xhr?
-      render :partial => 'notes', :layout => false
-    else
-      render :partial => 'notes', :layout => "ontology_viewer"
-    end
   end
 
   # GET /ontologies/1
@@ -292,7 +224,7 @@ class OntologiesController < ApplicationController
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:ontology], include: 'all').first
     not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
 
-    # Handle the case where an ontology is converted to summary only. 
+    # Handle the case where an ontology is converted to summary only.
     # See: https://github.com/ncbo/bioportal_web_ui/issues/133.
     if @ontology.summaryOnly && params[:p].present?
       pages = KNOWN_PAGES - ["summary", "notes"]
@@ -356,6 +288,103 @@ class OntologiesController < ApplicationController
       else
         self.summary
         return
+    end
+  end
+
+  def mappings
+    @mapping_counts = mapping_counts(@ontology.acronym)
+
+    if request.xhr?
+      render partial: 'mappings', layout: false
+    else
+      render partial: 'mappings', layout: 'ontology_viewer'
+    end
+  end
+
+  def admin
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym], {include: 'all'}).first
+    not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
+    redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
+
+    restrict_downloads = $NOT_DOWNLOADABLE
+    @ont_restricted = restrict_downloads.include? @ontology.acronym
+
+    # Retrieve submissions in descending submissionId order (should be reverse chronological order)
+    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    Log.add :error, "No submissions found for ontology: #{@ontology.id}" if @submissions.empty?
+
+    # Get the latest submission (not necessarily the latest 'ready' submission)
+    @submission_latest = @ontology.explore.latest_submission rescue @ontology.explore.latest_submission(include: "")
+
+    render template: 'ontologies/admin', layout: 'ontology_viewer'
+  end
+
+  def submission_log
+    acronym = params[:acronym]
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym, {include: 'all'}).first
+    not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
+    redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
+
+    uri = URI.parse("#{USER_ONTOLOGY_ADMIN_URL.sub(':acronym', acronym)}/log")
+    payload = LinkedData::Client::HTTP.get(uri, {severity: 'ERROR'}, raw: true)
+
+    text = fetch_log_text(payload).to_s
+    text = "Processing log not found for the latest submission of ontology #{acronym}" if text.strip.empty?
+    render plain: text, content_type: 'text/plain'
+  rescue => e
+    render plain: "Failed to load log: #{e.message}", status: :bad_gateway
+  end
+
+  def submissions
+    acronym = params[:acronym]
+    ids = Array(params[:ontology_submission_ids]).map(&:to_s).reject(&:blank?).uniq
+    return render json: { error: "ontology_submission_ids required" }, status: :unprocessable_entity if ids.empty?
+
+    unless ids.all? { |id| id =~ /\A\d+\z/ }
+      return render json: { error: "ontology_submission_ids must be integers" }, status: :unprocessable_entity
+    end
+
+    path = SUBMISSIONS_REST_URL.sub(':acronym', acronym)
+
+    begin
+      res = LinkedData::Client::HTTP.delete(path, { ontology_submission_ids: "[#{ids.join(',')}]" }, parse: true)
+    rescue StandardError => e
+      return render json: { error: "Delete request failed", detail: e.message }, status: :bad_gateway
+    end
+    process_id = res&.process_id
+
+    if process_id.blank?
+      # If the service returned a structured error, surface it
+      err_msg = (res.respond_to?(:error) && res.error) ? res.error : "process_id not returned"
+      return render json: { error: err_msg }, status: :bad_gateway
+    end
+    render json: { process_id: process_id }
+  end
+
+  def bulk_delete_status
+    acronym = params['acronym']
+    process_id = params['process_id']
+
+    begin
+      path = BULK_DELETE_PROGRESS_URL.sub(':acronym', acronym).sub(':process_id', process_id)
+      json = LinkedData::Client::HTTP.get(path, {}, raw: true)
+      payload = JSON.parse(json)
+      render json: payload
+    rescue StandardError => e
+      render json: { error: "Problem retrieving bulk delete status - #{e.message}" }, status: :bad_gateway
+    end
+  end
+
+  def notes
+    @notes = @ontology.explore.notes
+    @notes_deletable = false
+    # TODO_REV: Handle notes deletion
+    # @notes.each {|n| @notes_deletable = true if n.deletable?(session[:user])} if @notes.kind_of?(Array)
+    @note_link = "/ontologies/#{@ontology.acronym}/notes/"
+    if request.xhr?
+      render :partial => 'notes', :layout => false
+    else
+      render :partial => 'notes', :layout => "ontology_viewer"
     end
   end
 
@@ -437,7 +466,6 @@ class OntologiesController < ApplicationController
 
   private
 
-
   def determine_layout
     case action_name
     when 'index'
@@ -452,14 +480,6 @@ class OntologiesController < ApplicationController
     views.select!{ |view| view.access?(session[:user]) }
     views.sort{ |a,b| a.acronym.downcase <=> b.acronym.downcase }
   end
-
-
-
-
-
-
-
-
 
   # Accepts an already-fetched payload (String or parsed JSON) and normalizes it to text
   def fetch_log_text(payload)
@@ -498,12 +518,5 @@ class OntologiesController < ApplicationController
     # Fallback for anything else
     json.to_s
   end
-
-
-
-
-
-
-
 
 end

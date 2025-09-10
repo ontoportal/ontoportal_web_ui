@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/ncbo/ontologies_api_ruby_client.git
-  revision: fbf0efd0d1c54257dc7932f1ea130ef54a31cf87
-  tag: v2.6.0
+  revision: 48f934a05e6e7e0b87ed3f71a7f6fad73999dcb8
+  branch: feature/enhanced-http-delete
   specs:
     ontologies_api_client (2.5.3)
       activesupport (= 7.2.2.1)

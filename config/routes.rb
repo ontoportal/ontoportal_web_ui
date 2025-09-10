@@ -23,7 +23,6 @@ Rails.application.routes.draw do
     get ':ontology/concepts' => 'concepts#index'
     get ':ontology/concepts/show', to: 'concepts#show'
 
-
     get ':ontology/instances', to: 'instances#index'
     get ':ontology/instances/show', to: 'instances#show'
 
@@ -43,18 +42,14 @@ Rails.application.routes.draw do
     resources :submissions
   end
 
-
-
-
   resources :ontologies, param: :acronym do
     member do
       get 'admin', to: 'ontologies#admin', as: :admin
       get :submission_log # /ontologies/:acronym/submission_log
+      delete :submissions # DELETE /ontologies/:acronym/submissions
+      get 'submissions/bulk_delete/:process_id', to: 'ontologies#bulk_delete_status', as: :bulk_delete_status
     end
   end
-
-
-
 
   resources :login
 
