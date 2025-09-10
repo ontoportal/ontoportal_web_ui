@@ -76,7 +76,7 @@
               Delete selected
             %div.d-none.position-absolute.bg-white.border.rounded.shadow.p-2.text-center{ style: "left: 50%; transform: translateX(-50%); bottom:calc(100% + .5rem); z-index:1055; min-width: 420px;",
               data: { 'submissions-list-target': 'inlineConfirm' } }
-              %p.mb-1.fw-semibold Are you sure you want to delete the submissions:
+              %p.mb-1.fw-semibold{ data: { 'submissions-list-target': 'inlineConfirmLabel' } }
               %p.mb-1.fw-bold{ data: { 'submissions-list-target': 'inlineConfirmList' } }
               %p.mb-2.text-danger This action cannot be undone!
               %button.btn.btn-sm.btn-secondary.me-2{ type: "button",

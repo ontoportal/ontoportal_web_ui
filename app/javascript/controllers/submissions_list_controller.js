@@ -5,7 +5,7 @@ export default class extends Controller {
     static targets = [
         "row","rowCheckbox","moreLink","lessLink",
         "divider","deleteBtn","headerCheckbox",
-        "inlineConfirm","inlineConfirmList"
+        "inlineConfirm","inlineConfirmLabel","inlineConfirmList"
     ]
     static values  = { total: Number, step: Number, min: Number, shown: Number }
 
@@ -115,18 +115,32 @@ export default class extends Controller {
         // Gather selected IDs from visible checked boxes
         const selectedIds = this.visibleRowCheckboxes()
             .filter(cb => cb.checked)
-            .map(cb => cb.closest("tr").dataset.submissionId)
+            .map(cb => cb.closest("tr").dataset.submissionId || cb.closest("tr").getAttribute("data-submission-id"))
         this.pendingDeleteIds = selectedIds
 
         if (!this.hasInlineConfirmTarget) return
 
-        // Fill in the dynamic IDs line
+        // If none selected, hide the panel and stop
+        if (selectedIds.length === 0) {
+            this.inlineConfirmTarget.classList.add("d-none")
+            return
+        }
+
+        // 1) First line: singular vs plural
+        if (this.hasInlineConfirmLabelTarget) {
+            this.inlineConfirmLabelTarget.textContent =
+                selectedIds.length === 1
+                    ? "Are you sure you want to delete the submission:"
+                    : "Are you sure you want to delete the submissions:"
+        }
+
+        // 2) Second line: always list the IDs (even for a single selection)
         if (this.hasInlineConfirmListTarget) {
             this.inlineConfirmListTarget.textContent = selectedIds.join(", ")
         }
 
-        // Finally, toggle the confirmation panel
-        this.inlineConfirmTarget.classList.toggle("d-none")
+        // Show the inline confirmation panel
+        this.inlineConfirmTarget.classList.remove("d-none")
     }
 
     cancelInlineConfirm(e) {
