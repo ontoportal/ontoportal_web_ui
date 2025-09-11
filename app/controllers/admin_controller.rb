@@ -2,7 +2,6 @@
 
 class AdminController < ApplicationController
   layout :determine_layout
-  before_action :cache_setup
 
   DEBUG_BLACKLIST = [:"$,", :$ADDITIONAL_ONTOLOGY_DETAILS, :$rdebug_state, :$PROGRAM_NAME, :$LOADED_FEATURES, :$KCODE, :$-i, :$rails_rake_task, :$$, :$gems_build_rake_task, :$daemons_stop_proc, :$VERBOSE, :$DAEMONS_ARGV, :$daemons_sigterm, :$DEBUG_BEFORE, :$stdout, :$-0, :$-l, :$-I, :$DEBUG, :$', :$gems_rake_task, :$_, :$CODERAY_DEBUG, :$-F, :$", :$0, :$=, :$FILENAME, :$?, :$!, :$rdebug_in_irb, :$-K, :$TESTING, :$fileutils_rb_have_lchmod, :$EMAIL_EXCEPTIONS, :$binding, :$-v, :$>, :$SAFE, :$/, :$fileutils_rb_have_lchown, :$-p, :$-W, :$:, :$__dbg_interface, :$stderr, :$\, :$&, :$<, :$debug, :$;, :$~, :$-a, :$DEBUG_RDOC, :$CGI_ENV, :$LOAD_PATH, :$-d, :$*, :$., :$-w, :$+, :$@, :$`, :$stdin, :$1, :$2, :$3, :$4, :$5, :$6, :$7, :$8, :$9]
   ADMIN_URL = "#{LinkedData::Client.settings.rest_url}/admin/"
@@ -89,32 +88,39 @@ class AdminController < ApplicationController
   def clearcache
     response = { errors: '', success: '' }
 
-    if @cache.respond_to?(:flush_all)
+    if Rails.cache.respond_to?(:clear)
       begin
-        @cache.flush_all
+        Rails.cache.clear
+        Rails.logger.info("Cleared cache for namespace: #{Rails.cache.options[:namespace]}")
         response[:success] = 'UI cache successfully flushed'
       rescue StandardError => e
-        response[:errors] = "Problem flushing the UI cache - #{e.class}: #{e.message}"
+        response[:errors] = "Problem flushing the UI cache: #{e.class}: #{e.message}"
       end
     else
-      response[:errors] = "The UI cache does not respond to the 'flush_all' command"
+      response[:errors] = "The UI cache doesn't support the 'clear' method"
     end
+
     render json: response
   end
 
   def resetcache
     response = { errors: '', success: '' }
 
-    if @cache.respond_to?(:reset)
-      begin
-        @cache.reset
-        response[:success] = 'UI cache connection successfully reset'
-      rescue StandardError => e
-        response[:errors] = "Problem resetting the UI cache connection - #{e.message}"
+    begin
+      connection_pool = Rails.cache.instance_variable_get("@data")
+      connection_pool.with do |client|
+        if client.respond_to?(:reset)
+          client.reset
+          Rails.logger.info("Memcached connection reset for namespace: #{Rails.cache.options[:namespace]}")
+          response[:success] = 'UI cache connection successfully reset'
+        else
+          response[:errors] = "The Dalli client doesn't respond to the 'reset' command"
+        end
       end
-    else
-      response[:errors] = "The UI cache does not respond to the 'reset' command"
+    rescue StandardError => e
+      response[:errors] = "Problem resetting the UI cache connection: #{e.class}: #{e.message}"
     end
+
     render json: response
   end
 
@@ -218,10 +224,6 @@ class AdminController < ApplicationController
   end
 
   private
-
-  def cache_setup
-    @cache = Rails.cache.instance_variable_get("@data")
-  end
 
   def _ontologies_report
     response = { ontologies: {}, report_date_generated: REPORT_NEVER_GENERATED, errors: '', success: '' }
