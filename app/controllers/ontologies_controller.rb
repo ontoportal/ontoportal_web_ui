@@ -306,7 +306,14 @@ class OntologiesController < ApplicationController
     not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
     redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
 
+
+
+
     restrict_downloads = $NOT_DOWNLOADABLE
+
+
+
+
     @ont_restricted = restrict_downloads.include? @ontology.acronym
 
     # Retrieve submissions in descending submissionId order (should be reverse chronological order)
@@ -367,8 +374,7 @@ class OntologiesController < ApplicationController
 
     begin
       path = BULK_DELETE_PROGRESS_URL.sub(':acronym', acronym).sub(':process_id', process_id)
-      json = LinkedData::Client::HTTP.get(path, {}, raw: true)
-      payload = JSON.parse(json)
+      payload = LinkedData::Client::HTTP.get(path)
       render json: payload
     rescue StandardError => e
       render json: { error: "Problem retrieving bulk delete status - #{e.message}" }, status: :bad_gateway

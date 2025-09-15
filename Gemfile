@@ -106,6 +106,8 @@ gem 'inline_svg'
 gem 'flag-icons-rails', '~> 3.4'
 gem 'iso-639', '~> 0.3.6'
 
+gem 'dotenv-rails', groups: [:test]
+
 # Custom API client
 # gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.6.0'
 gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', branch: 'feature/enhanced-http-delete'
