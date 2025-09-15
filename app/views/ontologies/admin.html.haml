@@ -1,8 +1,6 @@
 - content_for :viewer_content do
   .row.g-3.pb-4
     .col-lg-8
-
-
       / === Manage Submissions ===
       - total_count = @submissions.size
       - min_count   = 5
@@ -10,9 +8,13 @@
               controller: 'submissions-list',
               'submissions-list-total-value': total_count,
               'submissions-list-step-value': 5,
-              'submissions-list-min-value': min_count
+              'submissions-list-min-value': min_count,
+              'submissions-list-delete-url-value': submissions_ontology_path(@ontology.acronym),
+              'submissions-list-poll-url-template-value': bulk_delete_status_ontology_path(@ontology.acronym, ':process_id')
             } }
-        .card-header Manage submissions
+        .card-header.d-flex.justify-content-between.align-items-center
+          %span Manage submissions
+          %span.text-muted.small{ data: { 'submissions-list-target': 'status' } }
         - if @submissions.blank?
           .card-body
             %p.text-muted.mb-0 No submissions found for this ontology.

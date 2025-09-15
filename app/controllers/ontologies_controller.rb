@@ -177,7 +177,7 @@ class OntologiesController < ApplicationController
 
   def edit
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:id], {include: 'all', display_links: false, display_context: false}).first
-    redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
+    return unless authorize_ontology_admin(@ontology)
 
     submission = @ontology.explore.latest_submission(include: 'submissionId')
     if submission
@@ -304,16 +304,9 @@ class OntologiesController < ApplicationController
   def admin
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym], {include: 'all'}).first
     not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
-    redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
-
-
-
+    return unless authorize_ontology_admin(@ontology)
 
     restrict_downloads = $NOT_DOWNLOADABLE
-
-
-
-
     @ont_restricted = restrict_downloads.include? @ontology.acronym
 
     # Retrieve submissions in descending submissionId order (should be reverse chronological order)
@@ -330,7 +323,7 @@ class OntologiesController < ApplicationController
     acronym = params[:acronym]
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym, {include: 'all'}).first
     not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
-    redirect_to_home unless session[:user] && @ontology.administeredBy.include?(session[:user].id) || session[:user].admin?
+    return unless authorize_ontology_admin(@ontology)
 
     uri = URI.parse("#{USER_ONTOLOGY_ADMIN_URL.sub(':acronym', acronym)}/log")
     payload = LinkedData::Client::HTTP.get(uri, {severity: 'ERROR'}, raw: true)
