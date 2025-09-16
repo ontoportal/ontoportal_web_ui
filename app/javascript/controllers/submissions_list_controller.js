@@ -3,11 +3,11 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
     static targets = [
-        "row","rowCheckbox","moreLink","lessLink",
-        "divider","deleteBtn","headerCheckbox",
-        "inlineConfirm","inlineConfirmLabel","inlineConfirmList"
+        "row","rowCheckbox","moreLink","lessLink", "divider","deleteBtn","headerCheckbox",
+        "inlineConfirm","inlineConfirmLabel","inlineConfirmList", "status", "statusSpinner"
     ]
-    static values  = { total: Number, step: Number, min: Number, shown: Number }
+    static values = { total: Number, step: Number, min: Number,
+        shown: Number, deleteUrl: String, pollUrlTemplate: String }
 
     connect() {
         const total = this.hasTotalValue ? this.totalValue : this.rowTargets.length
@@ -152,11 +152,103 @@ export default class extends Controller {
 
     performDelete(e) {
         e.preventDefault()
-        console.log("Confirmed deletion for:", this.pendingDeleteIds)
-        if (this.hasInlineConfirmTarget) {
-            this.inlineConfirmTarget.classList.add("d-none")
+        const ids = this.pendingDeleteIds || []
+        if (ids.length === 0) return
+
+        // Hide inline confirm if present
+        if (this.hasInlineConfirmTarget) this.inlineConfirmTarget.classList.add("d-none")
+        // Disable delete while deleting
+        if (this.hasDeleteBtnTarget) this.deleteBtnTarget.disabled = true
+
+        this.showStatus("Processing… Please wait")
+        this.showSpinner()
+
+        // CSRF
+        const tokenEl = document.querySelector('meta[name="csrf-token"]')
+        const headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+        if (tokenEl) headers["X-CSRF-Token"] = tokenEl.content
+
+        // Kick off DELETE to Rails proxy
+        fetch(this.deleteUrlValue, {
+            method: "DELETE",
+            headers,
+            body: JSON.stringify({ ontology_submission_ids: ids })
+        })
+            .then(async (r) => {
+                if (!r.ok) {
+                    const txt = await r.text()
+                    throw new Error(`DELETE failed: ${r.status} ${txt}`)
+                }
+                return r.json()
+            })
+            .then((json) => {
+                const pid = json.process_id
+                if (!pid) throw new Error("Missing process_id in response")
+                // status already set above; keep spinner visible while polling
+                this.startPolling(pid)
+            })
+            .catch((err) => {
+                this.showStatus(`Error starting delete: ${err.message}`)
+                this.hideSpinner()
+                if (this.hasDeleteBtnTarget) this.deleteBtnTarget.disabled = false
+            })
+    }
+
+    // --- Stage 4: poll until not "processing"
+    startPolling(processId) {
+        const pollUrl = this.pollUrlTemplateValue.replace(":process_id", processId)
+
+        const tick = () => {
+            fetch(pollUrl, { headers: { "Accept": "application/json" } })
+                .then(async (r) => {
+                    if (!r.ok) {
+                        const txt = await r.text()
+                        throw new Error(`Polling failed: ${r.status} ${txt}`)
+                    }
+                    return r.json()
+                })
+                .then((json) => {
+                    const status = (json && json.status) || "done"
+                    if (status === "processing") {
+                        this.showStatus("Processing… Please wait")
+                        this._pollTimer = setTimeout(tick, 1500)
+                    } else {
+                        this.showStatus(String(status))
+                        this.hideSpinner()
+                        if (this.hasDeleteBtnTarget) this.deleteBtnTarget.disabled = false
+                        this._pollTimer = null
+                    }
+                })
+                .catch((err) => {
+                    this.showStatus(`Polling error: ${err.message}`)
+                    this.hideSpinner()
+                    if (this.hasDeleteBtnTarget) this.deleteBtnTarget.disabled = false
+                    this._pollTimer = null
+                })
         }
 
-        // trigger DELETE call
+        tick()
+    }
+
+    disconnect() {
+        if (this._pollTimer) {
+            clearTimeout(this._pollTimer)
+            this._pollTimer = null
+        }
+    }
+
+    showStatus(message) {
+        if (this.hasStatusTarget) this.statusTarget.textContent = message
+    }
+
+    showSpinner() {
+        if (this.hasStatusSpinnerTarget) this.statusSpinnerTarget.style.display = 'inline-block'
+    }
+
+    hideSpinner() {
+        if (this.hasStatusSpinnerTarget) this.statusSpinnerTarget.style.display = 'none'
     }
 }
