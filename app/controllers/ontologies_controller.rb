@@ -365,13 +365,12 @@ class OntologiesController < ApplicationController
     acronym = params['acronym']
     process_id = params['process_id']
 
-    begin
-      path = BULK_DELETE_PROGRESS_URL.sub(':acronym', acronym).sub(':process_id', process_id)
-      payload = LinkedData::Client::HTTP.get(path)
-      render json: payload
-    rescue StandardError => e
-      render json: { error: "Problem retrieving bulk delete status - #{e.message}" }, status: :bad_gateway
-    end
+    path = BULK_DELETE_PROGRESS_URL.sub(':acronym', acronym).sub(':process_id', process_id)
+    json = LinkedData::Client::HTTP.get(path, {}, raw: true)
+    payload = JSON.parse(json)
+    render json: payload
+  rescue StandardError => e
+    render json: { error: "Problem retrieving bulk delete status - #{e.message}" }, status: :bad_gateway
   end
 
   def notes

@@ -216,8 +216,28 @@ export default class extends Controller {
                         this.showStatus("Processing… Please wait")
                         this._pollTimer = setTimeout(tick, 1500)
                     } else {
-                        this.showStatus(String(status))
-                        this.hideSpinner()
+                        const deletedIds = json.deleted_ids || json.deleted || json.ids || []
+
+                        // Collect error text (if any)
+                        let errText = ""
+                        if (json.errors && Array.isArray(json.errors) && json.errors.length > 0) {
+                            // Prefer a compact summary like: "7: not found; 9: forbidden"
+                            errText = json.errors
+                                .map(e => (e && (e.message || e.error)) ? `${e.id ?? ""}${e.id ? ": " : ""}${e.message || e.error}` : "")
+                                .filter(Boolean)
+                                .join("; ")
+                        } else if (json.error) {
+                            errText = String(json.error)
+                        } else if (json.message && String(json.status).toLowerCase() === "error") {
+                            errText = String(json.message)
+                        }
+
+                        if (String(status).toLowerCase() === "error" || errText) {
+                            this.showErrorMessage(errText || "Unknown error")
+                        } else {
+                            this.showSuccessDeleted(deletedIds)
+                        }
+
                         if (this.hasDeleteBtnTarget) this.deleteBtnTarget.disabled = false
                         this._pollTimer = null
                     }
@@ -250,5 +270,25 @@ export default class extends Controller {
 
     hideSpinner() {
         if (this.hasStatusSpinnerTarget) this.statusSpinnerTarget.style.display = 'none'
+    }
+
+    // Friendly “2, 5 and 7” formatting
+    formatIdList(ids = []) {
+        const a = (ids || []).map(String)
+        if (a.length <= 1) return a.join("")
+        if (a.length === 2) return a.join(" and ")
+        return `${a.slice(0, -1).join(", ")} and ${a[a.length - 1]}`
+    }
+
+    showSuccessDeleted(ids) {
+        const list = this.formatIdList(ids)
+        const label = ids.length === 1 ? "Submission" : "Submissions"
+        this.showStatus(`${label} ${list} successfully deleted`)
+        this.hideSpinner()
+    }
+
+    showErrorMessage(msg) {
+        this.showStatus(`Error: ${msg}`)
+        this.hideSpinner()
     }
 }
