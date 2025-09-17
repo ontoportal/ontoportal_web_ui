@@ -284,11 +284,19 @@ export default class extends Controller {
         const list = this.formatIdList(ids)
         const label = ids.length === 1 ? "Submission" : "Submissions"
         this.showStatus(`${label} ${list} successfully deleted`)
+        if (this.hasStatusTarget) {
+            this.statusTarget.classList.remove("text-danger")
+            this.statusTarget.classList.add("text-success")
+        }
         this.hideSpinner()
     }
 
     showErrorMessage(msg) {
         this.showStatus(`Error: ${msg}`)
+        if (this.hasStatusTarget) {
+            this.statusTarget.classList.remove("text-success")
+            this.statusTarget.classList.add("text-danger")
+        }
         this.hideSpinner()
     }
 }
