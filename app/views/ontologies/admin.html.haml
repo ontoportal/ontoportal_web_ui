@@ -112,9 +112,8 @@
             Deleting the ontology removes submissions, notes, mappings and related data. This cannot be undone.
           .mb-2
             %label.form-label{ for: "confirm_acronym" } Type the acronym to confirm:
-            %input#confirm_acronym.form-control.form-control-sm{ placeholder: "EPO" }
-          %button.btn.btn-outline-danger.btn-sm{ disabled: true } Delete ontology “EPO”
-
+            %input#confirm_acronym.form-control.form-control-sm{ placeholder: "#{@ontology.acronym}" }
+          %button.btn.btn-outline-danger.btn-sm{ disabled: true } Delete ontology “#{@ontology.acronym}”
       / === Quick actions ===
       .card.mt-3
         .card-header Actions
