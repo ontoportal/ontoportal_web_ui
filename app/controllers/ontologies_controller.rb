@@ -337,7 +337,7 @@ class OntologiesController < ApplicationController
     payload = LinkedData::Client::HTTP.get(uri, {severity: 'ERROR'}, raw: true)
 
     text = fetch_log_text(payload).to_s
-    text = "Processing log not found for the latest submission of ontology #{acronym}" if text.strip.empty?
+    text = "The processing log for the latest submission of ontology #{acronym} contains no errors" if text.strip.empty?
     render plain: text, content_type: 'text/plain'
   rescue => e
     render plain: "Failed to load log: #{e.message}", status: :bad_gateway
