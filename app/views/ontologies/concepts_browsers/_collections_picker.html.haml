@@ -1,6 +1,6 @@
 - if no_collections?
   = no_collections_alert
--else
+- else
   - collections_labels,_ = get_collections_labels(@collections)
   - selected_collection = @collections.select{|s| params[:concept_collections]&.split(',')&.include?(s['@id'])}
   - if selected_collection

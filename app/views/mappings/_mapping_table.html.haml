@@ -34,8 +34,8 @@
           - if map.id && !map.id.empty? && (session[:user].id.to_i == map.creator || session[:user].admin?)
             = check_box_tag :delete_mapping_checkbox, map.id
       %td
-        = link_to cls.id, ontology_path(id: ont_acronym, p: 'classes', conceptid: cls.id)
+        = link_to cls.id, ontology_path(id: ont_acronym, p: 'classes', conceptid: cls.id), target: "_top"
       %td
-        = link_to ont_acronym, ontology_path(ont_acronym)
+        = link_to ont_acronym, ontology_path(ont_acronym), target: "_top"
       %td
         #{map.source} #{(map.process || {})[:source_name]}

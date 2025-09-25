@@ -28,12 +28,12 @@ class OntologiesController < ApplicationController
     @development = Rails.env.development?
 
     submissions = LinkedData::Client::Models::OntologySubmission.all(include_views: true, display_links: false, display_context: false, include: "submissionStatus,hasOntologyLanguage,pullLocation,description,creationDate,status")
-    submissions_map = submissions.map do |sub|
-      ontology_id = sub.id.split("/")[0..-3].join("/")
-      ontology =  ontologies_hash[ontology_id]
-      [ontology.acronym, sub]
-    end.to_h
-
+    submissions_map = submissions.each_with_object({}) do |sub, h|
+      ontology_id = sub.id.sub(%r{/submissions/[^/]+$}, '')
+      if (ontology = ontologies_hash[ontology_id])
+        h[ontology.acronym] = sub
+      end
+    end
 
     @categories = LinkedData::Client::Models::Category.all(display_links: false, display_context: false)
     @categories_hash = Hash[@categories.map {|c| [c.id, c] }]
