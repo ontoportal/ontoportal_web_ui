@@ -327,18 +327,11 @@ class OntologiesController < ApplicationController
     render template: 'ontologies/admin', layout: 'ontology_viewer'
   end
 
-
-
-
-
   def submission_rows
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym]).first
     @submissions = @ontology.explore.submissions.sort { |a, b| b.submissionId.to_i <=> a.submissionId.to_i } || []
     render partial: "ontologies/submission_rows", formats: [:html]
   end
-
-
-
 
   def submission_log
     acronym = params[:acronym]
