@@ -10,7 +10,8 @@
               'submissions-list-step-value': 5,
               'submissions-list-min-value': min_count,
               'submissions-list-delete-url-value': submissions_ontology_path(@ontology.acronym),
-              'submissions-list-poll-url-template-value': bulk_delete_status_ontology_path(@ontology.acronym, ':process_id')
+              'submissions-list-poll-url-template-value': bulk_delete_status_ontology_path(@ontology.acronym, ':process_id'),
+              'submissions-list-rows-url-value': submission_rows_ontology_path(@ontology.acronym)
             } }
         .card-header.d-flex.justify-content-between.align-items-center
           %span Manage submissions
@@ -35,29 +36,7 @@
                   %th Released
                   %th Status
               %tbody
-                - @submissions.each do |s|
-                  %tr{ data: { 'submissions-list-target': 'row', submission_id: s.submissionId } }
-                    %td
-                      %input.form-check-input{ type: "checkbox",
-                        data: { 'submissions-list-target': 'rowCheckbox', action: 'change->submissions-list#syncSelection' } }
-                    %td= s.submissionId
-                    %td
-                      - if s.respond_to?(:creationDate) && s.creationDate.present?
-                        - begin
-                          = l(Date.parse(s.creationDate), format: :monthfull_day_year)
-                        - rescue
-                          = s.creationDate
-                      - else
-                        = "—"
-                    %td
-                      - if s.respond_to?(:released) && s.released.present?
-                        - begin
-                          = l(Date.parse(s.released), format: :monthfull_day_year)
-                        - rescue
-                          = s.released
-                      - else
-                        = "—"
-                    %td= (s.respond_to?(:status) && s.status.present?) ? s.status : "—"
+                = render partial: "ontologies/submission_rows"
         // Links auto-hide when irrelevant; the divider only shows when both are visible.
         .card-footer.d-flex.justify-content-end.align-items-center
           %a.btn.btn-link.btn-sm.text-decoration-none{ href: "#",

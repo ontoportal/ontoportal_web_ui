@@ -3,11 +3,18 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
     static targets = [
-        "row","rowCheckbox","moreLink","lessLink", "divider","deleteBtn","headerCheckbox",
-        "inlineConfirm","inlineConfirmLabel","inlineConfirmList", "status", "statusSpinner"
+        "row", "rowCheckbox", "moreLink", "lessLink", "divider", "deleteBtn", "headerCheckbox",
+        "inlineConfirm", "inlineConfirmLabel", "inlineConfirmList", "status", "statusSpinner"
     ]
-    static values = { total: Number, step: Number, min: Number,
-        shown: Number, deleteUrl: String, pollUrlTemplate: String }
+    static values = {
+        total: Number,
+        step: Number,
+        min: Number,
+        shown: Number,
+        deleteUrl: String,
+        pollUrlTemplate: String,
+        rowsUrl: String
+    }
 
     connect() {
         const total = this.hasTotalValue ? this.totalValue : this.rowTargets.length
@@ -175,7 +182,7 @@ export default class extends Controller {
         fetch(this.deleteUrlValue, {
             method: "DELETE",
             headers,
-            body: JSON.stringify({ ontology_submission_ids: ids })
+            body: JSON.stringify({ontology_submission_ids: ids})
         })
             .then(async (r) => {
                 if (!r.ok) {
@@ -197,7 +204,60 @@ export default class extends Controller {
             })
     }
 
-    // --- Stage 4: poll until not "processing"
+    // --- fetch fresh rows, rebind, and reapply windowing ---
+    async reloadTable() {
+        const tbody = this.element.querySelector("tbody")
+        if (!tbody) return
+        try {
+            const resp = await fetch(this.rowsUrlValue, {headers: {"Accept": "text/html"}})
+            if (!resp.ok) throw new Error(`Reload failed: ${resp.status}`)
+            const html = await resp.text()
+            tbody.innerHTML = html
+
+            // Stimulus will auto-pick up new targets inside this.element.
+            // Recompute counts and reset UI windowing / selection.
+            this.totalValue = this.rowTargets.length
+            this.resetWindow()
+            this.clearSelections()
+            this.updateLinksVisibility()
+            this.updateDeleteButtonState()
+            if (this.hasHeaderCheckboxTarget) this.headerCheckboxTarget.checked = false
+        } catch (e) {
+            this.showErrorMessage(e.message || "Failed to reload submissions")
+        }
+    }
+
+    // Show only min (or current shown) and hide the rest
+    resetWindow() {
+        // If shownValue not set, start from min
+        const showCount = this.shownValue || this.minValue || 5
+        this.rowTargets.forEach((tr, idx) => {
+            tr.classList.toggle("d-none", idx >= showCount)
+        })
+        this.shownValue = Math.min(showCount, this.rowTargets.length)
+    }
+
+    clearSelections() {
+        // Uncheck all visible/hidden row checkboxes
+        this.rowTargets.forEach(tr => {
+            const cb = tr.querySelector('input[type="checkbox"]')
+            if (cb) cb.checked = false
+        })
+        this.pendingDeleteIds = []
+    }
+
+    updateLinksVisibility() {
+        const total = this.rowTargets.length
+        const shown = this.shownValue || 0
+        const canMore = shown < total
+        const canLess = shown > (this.minValue || 5)
+
+        this.moreLinkTarget.classList.toggle("d-none", !canMore)
+        this.lessLinkTarget.classList.toggle("d-none", !canLess)
+        this.dividerTarget.classList.toggle("d-none", !(canMore && canLess))
+    }
+
+    // --- poll until not "processing"
     startPolling(processId) {
         const pollUrl = this.pollUrlTemplateValue.replace(":process_id", processId)
 
@@ -211,31 +271,34 @@ export default class extends Controller {
                     return r.json()
                 })
                 .then((json) => {
-                    const status = (json && json.status) || "done"
+                    const data = (json && json.table) ? json.table : json
+                    const status = (data && data.status) || "done"
+
                     if (status === "processing") {
                         this.showStatus("Processing… Please wait")
                         this._pollTimer = setTimeout(tick, 1500)
                     } else {
-                        const deletedIds = json.deleted_ids || json.deleted || json.ids || []
+                        const deletedIds = data.deleted_ids || data.deleted || data.ids || []
 
                         // Collect error text (if any)
                         let errText = ""
-                        if (json.errors && Array.isArray(json.errors) && json.errors.length > 0) {
+                        if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
                             // Prefer a compact summary like: "7: not found; 9: forbidden"
-                            errText = json.errors
+                            errText = data.errors
                                 .map(e => (e && (e.message || e.error)) ? `${e.id ?? ""}${e.id ? ": " : ""}${e.message || e.error}` : "")
                                 .filter(Boolean)
                                 .join("; ")
-                        } else if (json.error) {
-                            errText = String(json.error)
-                        } else if (json.message && String(json.status).toLowerCase() === "error") {
-                            errText = String(json.message)
+                        } else if (data.error) {
+                            errText = String(data.error)
+                        } else if (data.message && String(data.status).toLowerCase() === "error") {
+                            errText = String(data.message)
                         }
 
                         if (String(status).toLowerCase() === "error" || errText) {
                             this.showErrorMessage(errText || "Unknown error")
                         } else {
                             this.showSuccessDeleted(deletedIds)
+                            this.reloadTable()
                         }
 
                         if (this.hasDeleteBtnTarget) this.deleteBtnTarget.disabled = false
