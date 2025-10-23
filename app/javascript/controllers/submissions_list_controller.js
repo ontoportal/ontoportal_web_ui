@@ -169,6 +169,7 @@ export default class extends Controller {
 
         this.showStatus("Processing… Please wait")
         this.showSpinner()
+        this.markRowsPending(ids)
 
         // CSRF
         const tokenEl = document.querySelector('meta[name="csrf-token"]')
@@ -200,6 +201,7 @@ export default class extends Controller {
             .catch((err) => {
                 this.showStatus(`Error starting delete: ${err.message}`)
                 this.hideSpinner()
+                this.unmarkRowsPending(this.pendingDeleteIds || [])
                 if (this.hasDeleteBtnTarget) this.deleteBtnTarget.disabled = false
             })
     }
@@ -222,6 +224,10 @@ export default class extends Controller {
             this.updateLinksVisibility()
             this.updateDeleteButtonState()
             if (this.hasHeaderCheckboxTarget) this.headerCheckboxTarget.checked = false
+
+            // Done refreshing – stop spinner and clear the temporary message
+            this.hideSpinner()
+            this.showStatus("")
         } catch (e) {
             this.showErrorMessage(e.message || "Failed to reload submissions")
         }
@@ -298,6 +304,11 @@ export default class extends Controller {
                             this.showErrorMessage(errText || "Unknown error")
                         } else {
                             this.showSuccessDeleted(deletedIds)
+                            // remove immediately so the user sees instant change
+                            // this.removeRowsByIds(this.pendingDeleteIds || [])
+                            // show that we’re refreshing from server
+                            this.showStatus("Deleted. Refreshing submissions list…")
+                            this.showSpinner()
                             this.reloadTable()
                         }
 
@@ -308,6 +319,7 @@ export default class extends Controller {
                 .catch((err) => {
                     this.showStatus(`Polling error: ${err.message}`)
                     this.hideSpinner()
+                    this.unmarkRowsPending(this.pendingDeleteIds || [])
                     if (this.hasDeleteBtnTarget) this.deleteBtnTarget.disabled = false
                     this._pollTimer = null
                 })
@@ -362,4 +374,41 @@ export default class extends Controller {
         }
         this.hideSpinner()
     }
+
+    // mark rows as pending (dim + disable checkbox)
+    markRowsPending(ids) {
+        this.rowTargets.forEach(tr => {
+            const id = tr.dataset.submissionId
+            if (ids.includes(Number(id)) || ids.includes(String(id))) {
+                tr.classList.add("opacity-50")
+                const cb = tr.querySelector('input[type="checkbox"]')
+                if (cb) cb.disabled = true
+            }
+        })
+    }
+
+    unmarkRowsPending(ids) {
+        this.rowTargets.forEach(tr => {
+            const id = tr.dataset.submissionId
+            if (ids.includes(Number(id)) || ids.includes(String(id))) {
+                tr.classList.remove("opacity-50")
+                const cb = tr.querySelector('input[type="checkbox"]')
+                if (cb) cb.disabled = false
+            }
+        })
+    }
+
+    // remove rows immediately (optimistic)
+    // removeRowsByIds(ids) {
+    //     this.rowTargets.forEach(tr => {
+    //         const id = tr.dataset.submissionId
+    //         if (ids.includes(Number(id)) || ids.includes(String(id))) {
+    //             tr.remove()
+    //         }
+    //     })
+    //     // re-evaluate windowing and controls
+    //     this.totalValue = this.rowTargets.length
+    //     this.updateLinksVisibility()
+    //     this.updateDeleteButtonState()
+    // }
 }
