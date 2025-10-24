@@ -302,15 +302,7 @@ class OntologiesController < ApplicationController
   end
 
   def admin
-
-
-
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym], {include: 'all', bypass_cache: true}).first
-
-
-
-
-
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym], { include: 'all' }).first
     not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
     return unless authorize_ontology_admin(@ontology)
 
