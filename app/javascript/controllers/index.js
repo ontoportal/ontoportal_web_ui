@@ -54,3 +54,6 @@ application.register("user-ontology-log", UserOntologyLogController)
 
 import SubmissionsListController from "./submissions_list_controller"
 application.register("submissions-list", SubmissionsListController)
+
+import OntologyDeleteController from "./ontology_delete_controller"
+application.register("ontology-delete", OntologyDeleteController)
