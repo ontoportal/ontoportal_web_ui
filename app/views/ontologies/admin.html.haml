@@ -94,8 +94,16 @@
           %pre.mb-0.font-monospace.log-block{ data: { 'user-ontology-log-target': 'content' } }
             Loading…
     .col-lg-4
+      / === Quick actions ===
+      .card
+        .card-header Actions
+        .card-body
+          .d-flex.gap-2.flex-wrap
+            = link_to "New submission", new_ontology_submission_path(@ontology.acronym), class: "btn btn-primary btn-sm"
+            - if @submission_latest&.id.present?
+              = link_to "Edit metadata", edit_ontology_submission_path(ontology_id: @ontology.acronym, id: @submission_latest.id.split('/').last), class: "btn btn-outline-secondary btn-sm"
       / === Delete ontology ===
-      .card.border-danger{ data: {
+      .card.mt-3.border-danger{ data: {
           controller: 'ontology-delete',
           'ontology-delete-acronym-value': @ontology.acronym,
           'ontology-delete-url-value': ontology_path(@ontology.acronym), # DELETE /ontologies/:acronym
@@ -140,11 +148,3 @@
                 .d-flex.gap-2.justify-content-end
                   %button.btn.btn-sm.btn-secondary{ type: 'button', data: { action: 'click->ontology-delete#cancel' } } Cancel
                   %button.btn.btn-sm.btn-danger{ type: 'button', data: { action: 'click->ontology-delete#confirm' } } Delete
-      / === Quick actions ===
-      .card.mt-3
-        .card-header Actions
-        .card-body
-          .d-flex.gap-2.flex-wrap
-            = link_to "New submission", new_ontology_submission_path(@ontology.acronym), class: "btn btn-primary btn-sm"
-            - if @submission_latest&.id.present?
-              = link_to "Edit metadata", edit_ontology_submission_path(ontology_id: @ontology.acronym, id: @submission_latest.id.split('/').last), class: "btn btn-outline-secondary btn-sm"
