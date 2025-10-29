@@ -1,7 +1,7 @@
 - content_for :viewer_content do
   .row.g-3.pb-4
     .col-lg-8
-      / === Manage Submissions ===
+      / === Delete Submissions ===
       - total_count = @submissions.size
       - min_count = 5
       .card{ data: {
@@ -14,7 +14,7 @@
               'submissions-list-rows-url-value': submission_rows_ontology_path(@ontology.acronym)
             } }
         .card-header.d-flex.justify-content-between.align-items-center
-          %span Manage submissions
+          %span Delete submissions
           %span.text-muted.small.d-inline-flex.align-items-center
             %span.spinner-border.spinner-border-sm.me-1{ role: "status", "aria-hidden": "true", style: "display:none", data: { 'submissions-list-target': 'statusSpinner' } }
             %span{ data: { 'submissions-list-target': 'status' }, 'aria-live': 'polite' }
@@ -82,7 +82,9 @@
         .card-header.d-flex.align-items-center.justify-content-between
           %span Latest submission log
           .d-flex.gap-2
-            = link_to '#', class: 'btn btn-sm btn-outline-secondary', data: { action: 'user-ontology-log#refresh' } do
+            = link_to '#',
+                      class: 'btn btn-sm btn-outline-secondary',
+                      data: { action: 'user-ontology-log#refresh' } do
               Refresh
             = link_to submission_log_ontology_path(@ontology.acronym),
                       class: 'btn btn-sm btn-outline-secondary',
@@ -92,7 +94,7 @@
           %pre.mb-0.font-monospace.log-block{ data: { 'user-ontology-log-target': 'content' } }
             Loading…
     .col-lg-4
-      / === Ontology Deletion Box ===
+      / === Delete ontology ===
       .card.border-danger{ data: {
           controller: 'ontology-delete',
           'ontology-delete-acronym-value': @ontology.acronym,
@@ -100,7 +102,7 @@
           'ontology-delete-redirect-url-value': ontologies_path # GET /ontologies
         }
       }
-        .card-header.text-danger Caution zone
+        .card-header.text-danger Delete ontology - caution zone!
         .card-body
           %p.small.text-muted
             Deleting the ontology removes submissions, notes, mappings and related data. This cannot be undone.
@@ -142,5 +144,7 @@
       .card.mt-3
         .card-header Actions
         .card-body
-          %a.btn.btn-primary.btn-sm.me-2{ href: "#" } New submission
-          %a.btn.btn-outline-secondary.btn-sm{ href: "#" } Edit metadata
+          .d-flex.gap-2.flex-wrap
+            = link_to "New submission", new_ontology_submission_path(@ontology.acronym), class: "btn btn-primary btn-sm"
+            - if @submission_latest&.id.present?
+              = link_to "Edit metadata", edit_ontology_submission_path(ontology_id: @ontology.acronym, id: @submission_latest.id.split('/').last), class: "btn btn-outline-secondary btn-sm"
