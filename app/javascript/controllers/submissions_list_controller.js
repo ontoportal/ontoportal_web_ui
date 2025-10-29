@@ -167,7 +167,7 @@ export default class extends Controller {
         // Disable delete while deleting
         if (this.hasDeleteBtnTarget) this.deleteBtnTarget.disabled = true
 
-        this.showStatus("Processing… Please wait")
+        this.showStatus("Processing. Please wait…")
         this.showSpinner()
         this.markRowsPending(ids)
 
@@ -281,7 +281,7 @@ export default class extends Controller {
                     const status = (data && data.status) || "done"
 
                     if (status === "processing") {
-                        this.showStatus("Processing… Please wait")
+                        this.showStatus("Processing. Please wait…")
                         this._pollTimer = setTimeout(tick, 1500)
                     } else {
                         const deletedIds = data.deleted_ids || data.deleted || data.ids || []

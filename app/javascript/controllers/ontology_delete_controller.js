@@ -44,7 +44,7 @@ export default class extends Controller {
         if (this.hasButtonTarget) {
             this.buttonTarget.disabled = true
             this.buttonTarget.classList.add("disabled")
-            this.buttonTarget.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Deleting. Please wait…'
+            this.buttonTarget.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Deleting ontology ' + this.acronymValue + '. Please wait…'
         }
 
         // Fire DELETE to UI proxy (expects 200/202/204)
