@@ -20,4 +20,5 @@
           = s.released
       - else
         = "—"
-    %td= (s.respond_to?(:status) && s.status.present?) ? s.status : "—"
+    %td
+      = submission_status2string(s)

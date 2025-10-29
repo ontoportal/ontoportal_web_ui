@@ -103,7 +103,7 @@ class OntologiesController < ApplicationController
         o[:pullLocation]              = sub.pullLocation
         o[:description]               = sub.description
         o[:creationDate]              = sub.creationDate
-        o[:submissionStatusFormatted] = submission_status2string(sub).gsub(/\(|\)/, "")
+        o[:submissionStatusFormatted] = submission_status2string(sub)
 
         o[:format] = sub.hasOntologyLanguage
         @formats << sub.hasOntologyLanguage
