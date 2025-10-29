@@ -75,12 +75,12 @@
                 data: { action: 'submissions-list#cancelInlineConfirm' } } Cancel
               %button.btn.btn-sm.btn-danger{ type: "button",
                 data: { action: 'submissions-list#performDelete' } } Delete
-      / === Latest Submission Log ===
+      / === Latest submission error log ===
       .card.mt-3.d-flex.flex-column{ style: "height: calc(100vh - 550px);" ,
                                 data: { controller: 'user-ontology-log',
                                 'user-ontology-log-url-value': submission_log_ontology_path(@ontology.acronym) } }
         .card-header.d-flex.align-items-center.justify-content-between
-          %span Latest submission log
+          %span Latest submission error log
           .d-flex.gap-2
             = link_to '#',
                       class: 'btn btn-sm btn-outline-secondary',
