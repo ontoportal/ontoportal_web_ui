@@ -291,6 +291,37 @@ class OntologiesController < ApplicationController
     end
   end
 
+  def destroy
+    acronym = params[:acronym]
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(acronym, include: 'all').first
+    return unless authorize_ontology_admin(@ontology)
+
+    error_response = @ontology.delete
+
+    if response_error?(error_response)
+      respond_to do |format|
+        format.json { render json: { error: "Failed to delete ontology #{acronym}: #{response_errors(error_response)}" }, status: :unprocessable_entity }
+        format.html do
+          flash[:error] = "Failed to delete ontology #{acronym}: #{response_errors(error_response)}"
+          redirect_to admin_ontology_path(acronym)
+        end
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { redirect_url: ontologies_path }, status: :ok }
+        format.html { redirect_to ontologies_path, notice: "Ontology #{acronym} successfully deleted." }
+      end
+    end
+  rescue StandardError => e
+    respond_to do |format|
+      format.json { render json: { error: "Failed to delete ontology #{acronym}: #{e.message}" }, status: :bad_gateway }
+      format.html do
+        flash[:error] = "Failed to delete ontology #{acronym}: #{e.message}"
+        redirect_to admin_ontology_path(acronym)
+      end
+    end
+  end
+
   def mappings
     @mapping_counts = mapping_counts(@ontology.acronym)
 
@@ -302,7 +333,7 @@ class OntologiesController < ApplicationController
   end
 
   def admin
-    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym], { include: 'all' }).first
+    @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym], include: 'all').first
     not_found if @ontology.nil? || (@ontology.errors && [401, 403, 404].include?(@ontology.status))
     return unless authorize_ontology_admin(@ontology)
 

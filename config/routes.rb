@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   get 'ontologies/:ontology_id/concepts', to: 'concepts#show_concept'
 
   # Ontologies
-  resources :ontologies do
+  resources :ontologies, except: [:destroy] do
     resources :submissions, constraints: { id: /\d+/ } do
       get :edit_properties, on: :member
     end

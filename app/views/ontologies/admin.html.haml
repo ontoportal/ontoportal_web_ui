@@ -65,10 +65,6 @@
                 action: 'click->submissions-list#toggleInlineConfirm'
               }
             } Delete selected
-
-
-
-
             / === Delete submissions confirm dialog ===
             %div.d-none.position-absolute.bg-white.border.rounded.shadow.p-2.text-center{ style: "left: 50%; transform: translateX(-50%); bottom:calc(100% + .5rem); z-index:1055; min-width: 420px;",
               data: { 'submissions-list-target': 'inlineConfirm' } }
@@ -79,12 +75,6 @@
                 data: { action: 'submissions-list#cancelInlineConfirm' } } Cancel
               %button.btn.btn-sm.btn-danger{ type: "button",
                 data: { action: 'submissions-list#performDelete' } } Delete
-
-
-
-
-
-
       / === Latest Submission Log ===
       .card.mt-3.d-flex.flex-column{ style: "height: calc(100vh - 550px);" ,
                                 data: { controller: 'user-ontology-log',
@@ -101,13 +91,15 @@
         .card-body.overflow-auto.flex-grow-1
           %pre.mb-0.font-monospace.log-block{ data: { 'user-ontology-log-target': 'content' } }
             Loading…
-
-
-
-
     .col-lg-4
-      / === Danger Zone ===
-      .card.border-danger{ data: { controller: 'ontology-delete', 'ontology-delete-acronym-value': @ontology.acronym } }
+      / === Ontology Deletion Box ===
+      .card.border-danger{ data: {
+          controller: 'ontology-delete',
+          'ontology-delete-acronym-value': @ontology.acronym,
+          'ontology-delete-url-value': ontology_path(@ontology.acronym), # DELETE /ontologies/:acronym
+          'ontology-delete-redirect-url-value': ontologies_path # GET /ontologies
+        }
+      }
         .card-header.text-danger Caution zone
         .card-body
           %p.small.text-muted
@@ -122,11 +114,6 @@
                 action: "input->ontology-delete#sync"
               }
             }
-
-
-
-
-
           %div.position-relative.d-inline-block.mt-2
             %button.btn.btn-outline-danger.btn-sm{ type: 'button',
               disabled: true,
@@ -135,8 +122,7 @@
                 action: "click->ontology-delete#openConfirm"
               }
             } Delete ontology "#{@ontology.acronym}"
-
-            / === Delete ontology confirm dialog (anchored to the button)
+            / === Delete ontology confirm dialog ===
             %div.card.shadow.d-none{ data: { 'ontology-delete-target': 'confirm' },
               style: "position:absolute; left:50%; transform:translateX(-50%); bottom:calc(100% + .5rem); z-index:1055; min-width:360px;"
             }
@@ -152,11 +138,6 @@
                 .d-flex.gap-2.justify-content-end
                   %button.btn.btn-sm.btn-secondary{ type: 'button', data: { action: 'click->ontology-delete#cancel' } } Cancel
                   %button.btn.btn-sm.btn-danger{ type: 'button', data: { action: 'click->ontology-delete#confirm' } } Delete
-
-
-
-
-
       / === Quick actions ===
       .card.mt-3
         .card-header Actions
