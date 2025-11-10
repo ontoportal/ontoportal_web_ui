@@ -109,8 +109,7 @@ gem 'iso-639', '~> 0.3.6'
 gem 'dotenv-rails', groups: [:test]
 
 # Custom API client
-# gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.6.0'
-gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', branch: 'feature/enhanced-http-delete'
+gem 'ontologies_api_client', github: 'ncbo/ontologies_api_ruby_client', tag: 'v2.7.0'
 
 gem 'rexml', '~> 3'
 
