@@ -341,7 +341,7 @@ class OntologiesController < ApplicationController
     @ont_restricted = restrict_downloads.include? @ontology.acronym
 
     # Retrieve submissions in descending submissionId order (should be reverse chronological order)
-    @submissions = @ontology.explore.submissions.sort {|a,b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    @submissions = uncached_sorted_submissions_for(@ontology.acronym)
     Log.add :error, "No submissions found for ontology: #{@ontology.id}" if @submissions.empty?
 
     # Get the latest submission (not necessarily the latest 'ready' submission)
@@ -352,7 +352,7 @@ class OntologiesController < ApplicationController
 
   def submission_rows
     @ontology = LinkedData::Client::Models::Ontology.find_by_acronym(params[:acronym]).first
-    @submissions = @ontology.explore.submissions.sort { |a, b| b.submissionId.to_i <=> a.submissionId.to_i } || []
+    @submissions = uncached_sorted_submissions_for(@ontology.acronym)
     render partial: "ontologies/submission_rows", formats: [:html]
   end
 
@@ -499,6 +499,14 @@ class OntologiesController < ApplicationController
   end
 
   private
+
+  def uncached_sorted_submissions_for(acronym, include: 'all')
+    path = SUBMISSIONS_REST_URL.sub(':acronym', acronym)
+    res  = LinkedData::Client::HTTP.get(path, { include: include, invalidate_cache: true, _bust: Time.now.to_i })
+    Array(res).sort { |a, b| b.submissionId.to_i <=> a.submissionId.to_i }
+  rescue StandardError => _e
+    []
+  end
 
   def determine_layout
     case action_name
