@@ -132,10 +132,10 @@ class HomeController < ApplicationController
         stats.transform_values!(&:to_i)
         total_count = stats.values.sum
       end
-    rescue
+    rescue StandardError => e
       Log.add :error, e.message
     end
 
-    return total_count
+    total_count
   end
 end
