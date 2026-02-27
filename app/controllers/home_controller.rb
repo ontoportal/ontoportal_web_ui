@@ -119,8 +119,6 @@ class HomeController < ApplicationController
     @groups = others + agriculture
   end
 
-  private
-
   def total_mapping_count
     total_count = 0
 
