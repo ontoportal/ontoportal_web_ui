@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
+  include MappingStatistics
+
   layout :determine_layout
 
   def index
@@ -12,10 +14,10 @@ class HomeController < ApplicationController
     organize_groups
 
     # Calculate BioPortal summary statistics
-    @ont_count = @ontologies.length
-    @cls_count = LinkedData::Client::Models::Metrics.all.map { |m| m.classes.to_i }.sum
-    @prop_count = 36286
-    @map_count = total_mapping_count
+    ont_acronyms = @ontologies.map(&:acronym)
+    @statistics = OntologyStatisticsService.call(ont_acronyms)
+    @map_count = total_mapping_count(ont_acronyms)
+
     @analytics = LinkedData::Client::Analytics.last_month
 
     @ontology_names = @ontologies.map { |ont| ["#{ont.name} (#{ont.acronym})", ont.acronym] }
@@ -117,23 +119,5 @@ class HomeController < ApplicationController
 
     others, agriculture = @groups.partition { |g| g.acronym != 'CGIAR' }
     @groups = others + agriculture
-  end
-
-  def total_mapping_count
-    total_count = 0
-
-    begin
-      stats = LinkedData::Client::HTTP.get("#{REST_URI}/mappings/statistics/ontologies")
-      unless stats.blank?
-        stats = stats.to_h.compact
-        # Some of the mapping counts are erroneously stored as strings
-        stats.transform_values!(&:to_i)
-        total_count = stats.values.sum
-      end
-    rescue StandardError => e
-      Log.add :error, e.message
-    end
-
-    total_count
   end
 end
