@@ -32,7 +32,6 @@ module MappingStatistics
     return 0 if stats.blank?
 
     stats = stats.to_h.compact
-    temp = stats.reject { |k,v |ont_acronyms.include?(k.to_s) }
     stats = stats.select { |k, _| ont_acronyms.include?(k.to_s) }
     stats.transform_values!(&:to_i)
     stats.values.sum
