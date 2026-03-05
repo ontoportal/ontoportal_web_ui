@@ -3,7 +3,7 @@
 module MappingStatistics
   extend ActiveSupport::Concern
 
-  MAPPING_STATISTICS_URL = "#{LinkedData::Client.settings.rest_url}/mappings/statistics/ontologies/"
+  MAPPING_STATISTICS_URL = "#{LinkedData::Client.settings.rest_url}/mappings/statistics/ontologies"
 
   def mapping_counts(source_acronym)
     mapping_counts = []
@@ -15,7 +15,7 @@ module MappingStatistics
     )
     ontologies_by_acronym = ontologies.index_by(&:acronym)
 
-    statistics = LinkedData::Client::HTTP.get(MAPPING_STATISTICS_URL + source_acronym)
+    statistics = LinkedData::Client::HTTP.get("#{MAPPING_STATISTICS_URL}/#{source_acronym}")
     statistics&.each_pair do |target_acronym, count|
       ont = ontologies_by_acronym[target_acronym.to_s]
       # Handle the case where statistics are still present for a deleted ontology
