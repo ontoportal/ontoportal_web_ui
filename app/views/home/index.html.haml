@@ -75,17 +75,22 @@
               %div.d-flex.justify-content-between.align-items-center
                 Ontologies
                 %h4
-                  %span.badge.text-bg-secondary= number_with_delimiter(@ont_count)
+                  %span.badge.text-bg-secondary= number_with_delimiter(@statistics[:ontology_count])
             %li.list-group-item
               %div.d-flex.justify-content-between.align-items-center
                 Classes
                 %h4
-                  %span.badge.text-bg-secondary= number_with_delimiter(@cls_count)
+                  %span.badge.text-bg-secondary= number_with_delimiter(@statistics[:class_count])
             %li.list-group-item
               %div.d-flex.justify-content-between.align-items-center
                 Properties
                 %h4
-                  %span.badge.text-bg-secondary= number_with_delimiter(@prop_count)
+                  %span.badge.text-bg-secondary= number_with_delimiter(@statistics[:property_count])
+            %li.list-group-item
+              %div.d-flex.justify-content-between.align-items-center
+                Individuals
+                %h4
+                  %span.badge.text-bg-secondary= number_with_delimiter(@statistics[:individual_count])
             %li.list-group-item
               %div.d-flex.justify-content-between.align-items-center
                 Mappings
