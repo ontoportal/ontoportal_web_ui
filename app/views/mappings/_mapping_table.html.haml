@@ -1,7 +1,6 @@
 = check_box_tag "delete_mappings_permission", @delete_mapping_permission, @delete_mapping_permission, style: "display: none;"
-%div#concept_mappings_tables_div{data: {controller: 'auto-mapping-filter'}}
+%div#concept_mappings_tables_div
   = render_alerts_container(MappingsController)
-  = switch_input(id: 'hide_automatic_mappings', name: 'hide_automatic_mappings', label: t('mappings.mapping_table.hide_automatic_mappings'), data: {action: 'change->auto-mapping-filter#toggle'})
   %table#concept_mappings_table.table-content-stripped.table-content.table-mini
     %thead
       %tr

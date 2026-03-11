@@ -2,16 +2,18 @@
   = "#{@mappings.size}"
 
 = turbo_frame_tag @type.eql?('modal') ? 'application_modal_content' : 'concept_mappings' do
-  %div.p-1
-    - if session[:user].nil?
-      = link_to "Create New Mapping", "/login?redirect=/ontologies/#{@ontology.acronym}/?p=classes&t=mappings&conceptid=#{escape(@concept.id)}", :method => :get, :class => "btn btn-default mb-3"
-    - else
-      %div{style: 'width: 250px; margin: 0 0 10px 0;'}
-        = link_to_modal(nil,
-                  new_mapping_path(ontology_from: "#{@ontology.id}", conceptid_from: "#{@concept.id}"),
-                  data: { show_modal_title_value: "Create a new mapping for #{@concept.prefLabel}" },
-                  ) do
-          = render Buttons::RegularButtonComponent.new(id:'new_mapping_btn' , value:t('mappings.create_new_mapping'), variant: 'secondary', size: 'slim', state: 'no-anim')
-
+  %div.p-1{data: {controller: 'auto-mapping-filter'}}
+    %div.d-flex.justify-content-between.align-items-center.mb-3
+      - if session[:user].nil?
+        = link_to "Create New Mapping", "/login?redirect=/ontologies/#{@ontology.acronym}/?p=classes&t=mappings&conceptid=#{escape(@concept.id)}", :method => :get, :class => "btn btn-default"
+      - else
+        %div{style: 'width: 250px;'}
+          = link_to_modal(nil,
+                    new_mapping_path(ontology_from: "#{@ontology.id}", conceptid_from: "#{@concept.id}"),
+                    data: { show_modal_title_value: "Create a new mapping for #{@concept.prefLabel}" },
+                    ) do
+            = render Buttons::RegularButtonComponent.new(id:'new_mapping_btn' , value:t('mappings.create_new_mapping'), variant: 'secondary', size: 'slim', state: 'no-anim')
+      = switch_input(id: 'hide_automatic_mappings', name: 'hide_automatic_mappings', label: t('mappings.mapping_table.hide_automatic_mappings'), data: {action: 'change->auto-mapping-filter#toggle'})
     #mapping_details
       = render :partial => '/mappings/mapping_table'
+
