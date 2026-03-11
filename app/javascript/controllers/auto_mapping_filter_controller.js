@@ -6,7 +6,7 @@ export default class extends Controller {
   toggle(event) {
     const status_hide = event.target.checked 
 
-    const autoSources = ['LOOM']
+    const autoSources = ['LOOM','CUI', 'SAME_URI']
 
     this.element.querySelectorAll('tr').forEach((row) => {
       const isAutomatic = autoSources.some((type) =>
