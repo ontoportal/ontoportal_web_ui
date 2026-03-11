@@ -1,4 +1,4 @@
-%div.switch-filter
+%div.switch-filter{data: @data}
   - if content || !@label.empty?
     = content_tag(:div, content || @label, style: @style)
   - if @boolean_switch

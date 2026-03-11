@@ -837,6 +837,7 @@ en:
       relations: Relations
       source: Source
       type: Type
+      hide_automatic_mappings: Hide automatic mappings
     mapping_type_selector:
       class: Class
       class_uri_placeholder: Enter the class URI

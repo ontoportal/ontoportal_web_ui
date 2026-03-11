@@ -1,8 +1,9 @@
 = render_in_modal do
   #mappings.paginate_ajax{:style => "overflow: auto; max-height: 600px;"}
-    #mapping_results
+    #mapping_results{data: {controller: 'auto-mapping-filter'}}
       .mappings-table-pagination
         = will_paginate @page_results, :update => 'mappings', :params => { :target => params[:target] }
+        = switch_input(id: 'hide_automatic_mappings', name: 'hide_automatic_mappings', label: t('mappings.mapping_table.hide_automatic_mappings'), data: {action: 'change->auto-mapping-filter#toggle'})
       - if @mappings.nil? or @mappings.empty?
         = t("mappings.show.no_mappings_found")
       - else            
@@ -12,7 +13,7 @@
             %th #{@target_ontology_name}
             %th Source
           - for map in @mappings
-            %tr
+            %tr{class: map.source}
               - map.classes.each do |cls|
                 %td
                   - if internal_mapping?(cls)

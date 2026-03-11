@@ -2,7 +2,7 @@
 - cls_link, ont_link, source_tooltip = mapping_links(map, concept)
 - map_id = map.id.to_s.split("/").last
 
-%tr.human{:id => map_id}
+%tr.human{:id => map_id, class: map.source}
   %td.mappings-table-mapping-to
     = cls_link
   %td.mappings-table-mapping-to

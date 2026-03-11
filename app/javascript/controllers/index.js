@@ -105,3 +105,6 @@ application.register('concepts-json', ConceptsJsonButtonController)
 
 import ParentCategoriesSelectorController from "./parent_categories_selector_controller.js"
 application.register('parent-categories-selector', ParentCategoriesSelectorController)
+
+import AutoMappingFilterController from "./auto_mapping_filter_controller"
+application.register('auto-mapping-filter', AutoMappingFilterController)
