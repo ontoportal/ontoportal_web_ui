@@ -6,12 +6,8 @@ class HomeController < ApplicationController
   include FairScoreHelper, FederationHelper, MetricsHelper, AgentHelper
 
   def index
-    @analytics = Rails.cache.fetch("ontologies_analytics-#{Time.now.year}-#{Time.now.month}", expires_in: 2.hours) do
-      helpers.ontologies_analytics
-    end
-
+    @analytics = helpers.ontologies_analytics
     @slices = LinkedData::Client::Models::Slice.all
-
     @anal_ont_names = []
     @anal_ont_numbers = []
     unless @analytics.empty?
@@ -24,9 +20,7 @@ class HomeController < ApplicationController
 
   # Add a new action for the metrics frame
   def metrics
-    @analytics = Rails.cache.fetch("ontologies_analytics-#{Time.now.year}-#{Time.now.month}", expires_in: 2.hours) do
-      helpers.ontologies_analytics
-    end
+    @analytics = helpers.ontologies_analytics
     @metrics = portal_metrics(@analytics)
     respond_to do |format|
       format.html { render partial: 'metrics', layout: false }
@@ -39,7 +33,7 @@ class HomeController < ApplicationController
     require 'json'
 
     @agents_data = Rails.cache.fetch("agents_data_home_page", expires_in: 1.hour) do
-      api_url = agents_rest_url(page=1, pagesize=1000, display='name,agentType,usages')  + "&apikey=#{get_apikey}"
+      api_url = agents_rest_url(page=1, pagesize=2222, display='name,agentType,usages')  + "&apikey=#{get_apikey}"
       uri = URI(api_url)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
