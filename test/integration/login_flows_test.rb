@@ -85,4 +85,59 @@ class LoginFlowsTest < ActionDispatch::IntegrationTest
 
     assert_select '.flash.alert', /Welcome/
   end
+
+  test 'login with valid internal redirect preserves redirect path' do
+    get "#{login_index_url}?redirect=%2Fontologies"
+    assert_response :success
+
+    post login_index_url, params: {
+      user: { username: @user_bob.username, password: @user_bob.password }
+    }
+
+    assert_redirected_to '/ontologies'
+  end
+
+  test 'login with protocol-relative redirect falls back to root' do
+    get "#{login_index_url}?redirect=//evil.com"
+    assert_response :success
+
+    post login_index_url, params: {
+      user: { username: @user_bob.username, password: @user_bob.password }
+    }
+
+    assert_redirected_to '/'
+  end
+
+  test 'login with absolute external redirect falls back to root' do
+    get "#{login_index_url}?redirect=https://evil.com/phishing"
+    assert_response :success
+
+    post login_index_url, params: {
+      user: { username: @user_bob.username, password: @user_bob.password }
+    }
+
+    assert_redirected_to '/'
+  end
+
+  test 'login with encoded protocol-relative redirect falls back to root' do
+    get "#{login_index_url}?redirect=%2F%2Fevil.com"
+    assert_response :success
+
+    post login_index_url, params: {
+      user: { username: @user_bob.username, password: @user_bob.password }
+    }
+
+    assert_redirected_to '/'
+  end
+
+  test 'login with backslash redirect falls back to root' do
+    get "#{login_index_url}?redirect=\\\\evil.com"
+    assert_response :success
+
+    post login_index_url, params: {
+      user: { username: @user_bob.username, password: @user_bob.password }
+    }
+
+    assert_redirected_to '/'
+  end
 end
