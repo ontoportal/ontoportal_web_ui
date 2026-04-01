@@ -55,3 +55,6 @@ docker-sync.yml
 /config/credentials/production.key
 /config/credentials/appliance.key
 origin/
+
+# Claude Code
+.claude/
