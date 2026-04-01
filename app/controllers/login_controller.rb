@@ -25,7 +25,7 @@ class LoginController < ApplicationController
         redirect = '/'
 
         if session[:redirect]
-          redirect = CGI.unescape(session[:redirect])
+          redirect = safe_redirect_path(CGI.unescape(session[:redirect]))
         end
 
         redirect_to redirect
@@ -122,5 +122,28 @@ class LoginController < ApplicationController
     end
 
     errors
+  end
+
+  # Sanitize a redirect URL to prevent open redirect attacks.
+  # Returns only relative paths or same-host paths; falls back to '/'.
+  def safe_redirect_path(url)
+    return '/' if url.blank?
+    return '/' if url.match?(%r{\A[/\\]{2}})
+
+    uri = URI.parse(url)
+
+    if uri.scheme.present? || uri.host.present?
+      if uri.host == request.host
+        path = uri.path.presence || '/'
+        path += "?#{uri.query}" if uri.query.present?
+        path
+      else
+        '/'
+      end
+    else
+      url
+    end
+  rescue URI::InvalidURIError
+    '/'
   end
 end
