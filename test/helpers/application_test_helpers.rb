@@ -24,7 +24,7 @@ module ApplicationTestHelpers
 
     def create_user(user, admin: false)
       admin_user = LinkedData::Client::Models::User.authenticate('admin', 'password') if admin
-      existent_user = LinkedData::Client::Models::User.find_by_username(user.username).first
+      existent_user = LinkedData::Client::Models::User.get(user.username).first
 
       existent_user.delete if existent_user
 
@@ -47,7 +47,7 @@ module ApplicationTestHelpers
         end
         conn.post(existent_user.class.collection_path, existent_user.to_hash.to_json, 'Content-Type' => 'application/json')
       else
-        existent_user.save
+        existent_user.save(cache_refresh_all: false)
       end
 
       existent_user.password = user.password
@@ -61,7 +61,9 @@ module ApplicationTestHelpers
     end
 
     def delete_user(user)
-      LinkedData::Client::Models::User.find_by_username(user.username).first&.delete
+      u = LinkedData::Client::Models::User.get(user.username)
+      # Bypass the model method that refreshes the cache
+      LinkedData::Client::HTTP.delete(u.id) if u
     end
   end
 
