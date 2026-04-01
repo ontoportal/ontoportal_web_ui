@@ -54,12 +54,6 @@ module ApplicationTestHelpers
       existent_user
     end
 
-    def delete_users(users = LinkedData::Client::Models::User.all)
-      Array(users).each do |o|
-        LinkedData::Client::Models::Ontology.find_by_acronym(o.acronym).first&.delete
-      end
-    end
-
     def delete_user(user)
       u = LinkedData::Client::Models::User.get(user.username)
       # Bypass the model method that refreshes the cache
