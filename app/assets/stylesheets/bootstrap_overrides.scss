@@ -11,7 +11,7 @@ main > .container-fluid {
 }
 
 .footer {
-  height: 350px; /* Set the fixed height of the footer here */
+  height: 360px; /* Set the fixed height of the footer here */
   color: #757575;
   background-color: #ccc;
 }
@@ -36,10 +36,10 @@ footer.footer .list-inline-item:not(:last-child) {
 
 @media only screen and (max-width: 992px) {
   body {
-    margin-bottom: 370px;
+    margin-bottom: 380px;
   }
   .footer {
-    height: 370px;
+    height: 380px;
   }
 }
 
