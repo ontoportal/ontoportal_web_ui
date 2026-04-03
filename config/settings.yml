@@ -21,6 +21,7 @@ shared:
     twitter: 'http://twitter.com/bioontology'
     virtual_appliance: 'https://ontoportal.github.io/documentation/administration'
     widgets: 'http://www.bioontology.org/wiki/NCBO_Widgets'
+    allegrograph: 'https://franz.com/agraph/'
     wiki: 'https://www.bioontology.org/wiki/'
 
 development:
