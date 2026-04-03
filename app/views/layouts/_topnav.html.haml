@@ -52,7 +52,7 @@
           %ul.dropdown-menu.dropdown-menu-end
             %li
               = link_to("Submit feedback", feedback_path, id: "submitFeedbackMenuItem", class: "dropdown-item",
-                        data: {controller: 'popup', action: 'click->popup#open'})
+                        rel: 'nofollow', data: {controller: 'popup', action: 'click->popup#open'})
             %li
               %hr.dropdown-divider
             %li
