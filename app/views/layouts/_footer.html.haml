@@ -64,6 +64,9 @@
         = t('.free_access', site: "#{$SITE}")
     %div.row.pt-1.legal-text
       %div.col
+        = t('.allegrograph_html', url: Rails.configuration.settings.links[:allegrograph])
+    %div.row.pt-1.legal-text
+      %div.col
         = t('.copyright_html')
     %div.row.pt-2
       %div.col

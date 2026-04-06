@@ -22,6 +22,8 @@ en:
 
   layouts:
     footer:
+      allegrograph_html: >
+        Powered by <a href="%{url}" target="_blank">AllegroGraph</a>.
       copyright_html: >
         Copyright &copy; 2005‑2026, The Board of Trustees of Leland Stanford Junior University. All rights reserved.
       free_access: "%{site} is free and open to all users, with no login required."
