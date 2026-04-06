@@ -130,9 +130,9 @@ module SubmissionInputsHelper
         hidden_field_tag('ontology[hasDomain][]') +
           sorted_categories.map do |category|
             content_tag(:div) do
-              category_chip_component(id: category[:acronym], name: "ontology[hasDomain][]",
-                                      object: category, value: category[:id],
-                                      checked: ontology.hasDomain&.any? { |x| x.eql?(category[:id]) })
+              chips_component(id: category[:acronym], name: 'ontology[hasDomain][]',
+                              label: category[:name], value: category[:id],
+                              checked: ontology.hasDomain&.any? { |x| x.eql?(category[:id]) })
             end
           end.join.html_safe
       end

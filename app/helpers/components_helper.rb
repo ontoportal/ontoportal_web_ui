@@ -97,9 +97,6 @@ module ComponentsHelper
                     value: value, tooltip: title, disabled: disabled, &block)
   end
 
-  alias :category_chip_component :group_chip_component
-
-
   def form_save_button(enable_loading: true)
     render Buttons::RegularButtonComponent.new(id: 'save-button', value: t('components.save_button'), variant: "primary", size: "slim", type: "submit", state: enable_loading ? 'animate' : '') do |btn|
       btn.icon_left do
