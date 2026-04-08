@@ -83,7 +83,7 @@ gem 'recaptcha', '~> 5.9.0'
 gem 'rest-client'
 
 # View components framework for Rails
-gem 'lookbook', '~> 1.5.5'
+gem 'lookbook', '~> 2.3'
 
 gem 'view_component', '~> 3.23'
 
