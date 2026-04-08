@@ -47,9 +47,9 @@ class LabelFetcherComponent < ViewComponent::Base
 
   def link_with_icon
     if external_link?
-      ExternalLinkTextComponent.new(text: @label).call
+      render(ExternalLinkTextComponent.new(text: @label))
     else
-      InternalLinkTextComponent.new(text: @label).call
+      render(InternalLinkTextComponent.new(text: @label))
     end
   end
 end
