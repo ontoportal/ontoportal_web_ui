@@ -85,7 +85,7 @@ gem 'rest-client'
 # View components framework for Rails
 gem 'lookbook', '~> 2.3'
 
-gem 'view_component', '~> 3.23'
+gem 'view_component', '~> 4.6'
 
 # Pagination library for Rails
 gem 'will_paginate', '~> 3.0'
