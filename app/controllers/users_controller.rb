@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  before_action :unescape_id, only: [:edit, :show, :update]
   before_action :verify_owner, only: [:edit, :show]
   before_action :authorize_admin, only: [:index]
 
@@ -16,7 +15,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = LinkedData::Client::Models::User.get(params[:id], include: 'all')
+    @user = LinkedData::Client::Models::User.get(escaped_id, include: 'all')
     @user_ontologies = @user.customOntology
     @all_ontologies = LinkedData::Client::Models::Ontology.all(ignore_custom_ontologies: true, include_views: true)
     @admin_ontologies = @all_ontologies.filter { |o| o.administeredBy.include? @user.id }
@@ -30,7 +29,7 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = LinkedData::Client::Models::User.get(params[:id], include: 'all')
+    @user = LinkedData::Client::Models::User.get(escaped_id, include: 'all')
   end
 
   def create
@@ -54,7 +53,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = LinkedData::Client::Models::User.get(params[:id], include: 'all')
+    @user = LinkedData::Client::Models::User.get(escaped_id, include: 'all')
 
     @errors = validate_update(user_params)
     if @errors.empty?
@@ -86,7 +85,7 @@ class UsersController < ApplicationController
 
   def destroy
     response = { errors: String.new(''), success: String.new('') }
-    @user = LinkedData::Client::Models::User.get(params[:id])
+    @user = LinkedData::Client::Models::User.get(escaped_id)
     if session[:user].admin?
       @user.delete
       response[:success] << 'User deleted successfully '
@@ -98,7 +97,7 @@ class UsersController < ApplicationController
   end
 
   def custom_ontologies
-    @user = LinkedData::Client::Models::User.get(params[:id])
+    @user = LinkedData::Client::Models::User.get(escaped_id)
 
     custom_ontologies = params[:ontology] ? params[:ontology][:ontologyId] : []
     custom_ontologies.reject!(&:blank?)
@@ -127,8 +126,8 @@ class UsersController < ApplicationController
     p.to_h
   end
 
-  def unescape_id
-    params[:id] = CGI.unescape(params[:id])
+  def escaped_id
+    CGI.escape(params[:id])
   end
 
   def verify_owner
