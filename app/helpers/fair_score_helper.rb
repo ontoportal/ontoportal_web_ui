@@ -47,6 +47,115 @@ module FairScoreHelper
     get_fairness_json(ontologies_acronyms, apikey)['combinedScores']
   end
 
+  def get_foops_score(ontology)
+    # The ontology URI as defined in the UI
+    ontology_uri = "#{$UI_URL}/ontologies/#{ontology.acronym}"
+    cache_key = "foops-#{ontology.acronym}"
+
+    if Rails.cache.exist?(cache_key)
+      out = read_large_data(cache_key)
+    else
+      out = '{}'
+      begin
+        time = Benchmark.realtime do
+          conn = Faraday.new do |f|
+            f.options.timeout = 30
+            f.headers['Content-Type'] = 'application/json;charset=utf-8'
+          end
+          response = conn.post("https://foops.linkeddata.es/assessOntology", { ontologyUri: ontology_uri }.to_json)
+          if response.status.eql?(200)
+            out = response.body.force_encoding('ISO-8859-1').encode('UTF-8')
+            unless out.empty? || out.strip.eql?('{}')
+              cache_large_data(cache_key, out)
+            end
+          end
+        end
+        puts "Call FOOPS service for: #{ontology.acronym} (#{time}s)"
+      rescue StandardError => e
+        Rails.logger.warn "FOOPS unreachable: #{e.message}"
+      end
+    end
+    MultiJson.use :oj
+    MultiJson.load(out) rescue {}
+  end
+
+  def parse_foops_data(foops_res)
+    return nil if foops_res.nil? || foops_res.empty? || foops_res['checks'].nil?
+
+    parsed = {
+      overall_score: (foops_res['overall_score'].to_f * 100).round(2),
+      categories: {},
+      metadata: {
+        title: foops_res['ontology_title'],
+        license: foops_res['ontology_license'],
+        uri: foops_res['ontology_URI']
+      }
+    }
+
+    foops_res['checks'].each do |check|
+      cat = check['category_id']
+      parsed[:categories][cat] ||= { passed: 0, total: 0, checks: [] }
+      parsed[:categories][cat][:total] += 1
+      parsed[:categories][cat][:passed] += 1 if check['status'] == 'ok'
+      parsed[:categories][cat][:checks] << {
+        id: check['id'],
+        title: check['title'],
+        status: check['status'],
+        explanation: check['explanation'],
+        description: check['description'] || "",
+        principle: check['principle_id']
+      }
+    end
+
+    parsed
+  end
+
+  def calculate_foops_gauge_dash(score_percent)
+    circumference = 2 * Math::PI * 40
+    dash_val = (score_percent.to_f / 100) * circumference
+    gap_val = circumference - dash_val
+    "#{dash_val},#{gap_val}"
+  end
+
+  def calculate_foops_spider_data(categories)
+    # Axes: Findable (Up), Accessible (Right), Interoperable (Bottom), Reusable (Left)
+    # Center: (57, 50)
+    center_x = 57
+    center_y = 50
+    
+    # Max offsets from center
+    max_up = 35    # 50 - 15
+    max_right = 34 # 91 - 57
+    max_down = 35  # 85 - 50
+    max_left = 35  # 57 - 22
+
+    ratios = {
+      'Findable' => 0,
+      'Accessible' => 0,
+      'Interoperable' => 0,
+      'Reusable' => 0
+    }
+
+    categories.each do |name, data|
+      ratios[name] = data[:passed].to_f / data[:total] if data[:total] > 0
+    end
+
+    points = [
+      [center_x, center_y - (ratios['Findable'] * max_up)],
+      [center_x + (ratios['Accessible'] * max_right), center_y],
+      [center_x, center_y + (ratios['Interoperable'] * max_down)],
+      [center_x - (ratios['Reusable'] * max_left), center_y]
+    ]
+
+    path_d = "M #{points[0][0]} #{points[0][1]} "
+    path_d += "L #{points[1][0]} #{points[1][1]} "
+    path_d += "L #{points[2][0]} #{points[2][1]} "
+    path_d += "L #{points[3][0]} #{points[3][1]} "
+    path_d += "Z"
+
+    { path_d: path_d, ratios: ratios }
+  end
+
   
 
   def create_fair_scores_data(fair_scores, count = nil)
