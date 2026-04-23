@@ -49,7 +49,7 @@ module FairScoreHelper
 
   def get_foops_score(ontology)
     ontology_uri = "#{$UI_URL}/ontologies/#{ontology.acronym}"
-    cache_key = "foops-#{ontology.acronym}"
+    cache_key = "foops-v2-#{ontology.acronym}"
 
     if Rails.cache.exist?(cache_key)
       out = read_large_data(cache_key)
@@ -58,7 +58,8 @@ module FairScoreHelper
       begin
         time = Benchmark.realtime do
           conn = Faraday.new do |f|
-            f.options.timeout = 30
+            f.options.timeout = 300
+            f.options.open_timeout = 10
             f.headers['Content-Type'] = 'application/json;charset=utf-8'
           end
           response = conn.post("https://foops.linkeddata.es/assessOntology", { ontologyUri: ontology_uri }.to_json)
