@@ -48,7 +48,6 @@ module FairScoreHelper
   end
 
   def get_foops_score(ontology)
-    # The ontology URI as defined in the UI
     ontology_uri = "#{$UI_URL}/ontologies/#{ontology.acronym}"
     cache_key = "foops-#{ontology.acronym}"
 
@@ -118,16 +117,13 @@ module FairScoreHelper
   end
 
   def calculate_foops_spider_data(categories)
-    # Axes: Findable (Up), Accessible (Right), Interoperable (Bottom), Reusable (Left)
-    # Center: (57, 50)
     center_x = 57
     center_y = 50
     
-    # Max offsets from center
-    max_up = 35    # 50 - 15
-    max_right = 34 # 91 - 57
-    max_down = 35  # 85 - 50
-    max_left = 35  # 57 - 22
+    max_up = 35    
+    max_right = 34 
+    max_down = 35  
+    max_left = 35  
 
     ratios = {
       'Findable' => 0,
