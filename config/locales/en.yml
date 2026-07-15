@@ -357,6 +357,18 @@ en:
     submit: Submit
     type: Type
   check_resolvability:
+    errors:
+      url_required: 'Blocked unsafe URL: URL is required'
+      invalid_url: 'Blocked unsafe URL: invalid URL'
+      http_only: 'Blocked unsafe URL: only HTTP and HTTPS URLs are allowed'
+      host_required: 'Blocked unsafe URL: host is required'
+      credentials_forbidden: 'Blocked unsafe URL: credentials are not allowed'
+      single_label_host: 'Blocked unsafe URL: single-label hosts are not allowed'
+      non_public_host: 'Blocked unsafe URL: host is not public'
+      non_public_address: 'Blocked unsafe URL: host does not resolve to a public address'
+      invalid_port: 'Blocked unsafe URL: invalid port'
+      ip_pinning_unavailable: 'Blocked unsafe URL: HTTP client does not support IP pinning'
+      invalid_redirect: 'Blocked unsafe URL: invalid redirect'
     check_resolvability_message_1: 'The URL is resolvable and support the following
       formats: %{supported_format}'
     check_resolvability_message_2: 'The URL is resolvable but is not content negotiable,

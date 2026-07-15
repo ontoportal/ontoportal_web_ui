@@ -365,6 +365,18 @@ fr:
     submit: Soumettre
     type: Type
   check_resolvability:
+    errors:
+      url_required: "URL non fournie"
+      invalid_url: "URL invalide"
+      http_only: "Seules les URL HTTP et HTTPS sont autorisées"
+      host_required: "L'hôte est requis"
+      credentials_forbidden: "Les identifiants ne sont pas autorisés"
+      single_label_host: "Les hôtes à étiquette unique ne sont pas autorisés"
+      non_public_host: "L'hôte n'est pas public"
+      non_public_address: "L'hôte ne résout pas vers une adresse publique"
+      invalid_port: "Port invalide"
+      ip_pinning_unavailable: "Le client HTTP ne prend pas en charge l'association à une adresse IP"
+      invalid_redirect: "Redirection invalide"
     check_resolvability_message_1: 'L''URL est résolvable et supporte les formats
       suivants : %{supported_format}'
     check_resolvability_message_2: 'L''URL est résolvable mais sont contenu n''est
