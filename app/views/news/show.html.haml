@@ -1,0 +1,10 @@
+- @title = @news_entry.title
+.container.my-4.news-page
+  %p.mb-3= link_to '← News', news_index_path
+  %article.news-entry
+    %h1.mb-2= @news_entry.title
+    %p.text-muted.small
+      = (@news_entry.published_at || @news_entry.created_at)&.to_date
+      - if @news_entry.author_name.present?
+        = " · #{@news_entry.author_name}"
+    .news-entry-body= sanitize(@news_entry.body_html)

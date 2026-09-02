@@ -1,0 +1,34 @@
+= form_with model: [:admin, @news_entry], local: true do |form|
+  - if @news_entry.errors.any?
+    .alert.alert-danger
+      %ul.mb-0
+        - @news_entry.errors.full_messages.each do |message|
+          %li= message
+  .form-group
+    = form.label :title
+    = form.text_field :title, class: 'form-control', required: true
+  .form-group
+    = form.label :slug
+    = form.text_field :slug, class: 'form-control', pattern: '[a-z0-9]+(?:-[a-z0-9]+)*', required: true
+    %small.form-text.text-muted Lowercase letters, numbers, and hyphens only.
+  .form-group
+    = form.label :excerpt
+    = form.text_area :excerpt, class: 'form-control', rows: 2
+  .form-group
+    = form.label :body_html, 'Body'
+    = form.text_area :body_html, class: 'form-control', rows: 12, required: true
+  .form-row
+    .form-group.col-md-4
+      = form.label :status
+      = form.select :status, NewsEntry::STATUSES.map { |status| [status.titleize, status] }, {}, class: 'form-control'
+    .form-group.col-md-4
+      = form.label :published_at
+      = form.datetime_local_field :published_at, class: 'form-control'
+    .form-group.col-md-4
+      = form.label :expires_at
+      = form.datetime_local_field :expires_at, class: 'form-control'
+  .form-group.form-check
+    = form.check_box :pinned, class: 'form-check-input'
+    = form.label :pinned, class: 'form-check-label'
+  = form.submit class: 'btn btn-primary mr-2'
+  = link_to 'Cancel', admin_news_entries_path, class: 'btn btn-outline-secondary'

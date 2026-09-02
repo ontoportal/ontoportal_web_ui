@@ -13,6 +13,9 @@
         - navitems.each do |navItem|
           %li.nav-ul-li
             %a{href: navItem[0], class: ("active" if current_page?(navItem[0]))} #{navItem[1]}
+        - if news_cms_enabled?
+          %li.nav-ul-li
+            = link_to 'News', news_index_path, class: ("active" if current_page?(news_index_path))
         - if !session[:user].nil? && session[:user].admin?
           %li.nav-ul-li
             %a{href: "/admin", class: ("active" if current_page?("/admin"))} Admin

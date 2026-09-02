@@ -44,6 +44,12 @@ module ApplicationHelper
     user = current_user rescue nil
     Flipper.enabled?('SPARQL', user) && $SPARQL_ENDPOINT_URL
   end
+
+  def news_cms_enabled?
+    Flipper.enabled?(:news_cms)
+  rescue StandardError
+    false
+  end
   def sidekiq_enabled?
     user = current_user rescue nil
     Flipper.enabled?('SIDEKIQ_UI', user) && $SIDEKIQ_UI_URL

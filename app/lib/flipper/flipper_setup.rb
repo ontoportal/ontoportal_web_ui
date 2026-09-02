@@ -1,6 +1,7 @@
 # app/lib/flipper_setup.rb
 module FlipperSetup
   FEATURES = ["Agents", "SPARQL", "SIDEKIQ_UI", "FOOPS"].freeze
+  DISABLED_BY_DEFAULT_FEATURES = ["news_cms"].freeze
 
   def self.configure!
     Flipper.configure do |config|
@@ -17,6 +18,7 @@ module FlipperSetup
         # configured by an admin in the Flipper UI
         existing_features = primary_adapter.features
         FEATURES.each { |f| flipper.enable(f) unless existing_features.include?(f) }
+        DISABLED_BY_DEFAULT_FEATURES.each { |feature| flipper.add(feature) unless existing_features.include?(feature) }
 
         flipper
       end
@@ -27,5 +29,6 @@ module FlipperSetup
   end
   def self.test_configure!
     FEATURES.each { |feature| Flipper.enable(feature) }
+    DISABLED_BY_DEFAULT_FEATURES.each { |feature| Flipper.add(feature) }
   end
 end

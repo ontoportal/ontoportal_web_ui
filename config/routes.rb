@@ -27,6 +27,8 @@ Rails.application.routes.draw do
 
   resources :projects, constraints: { id: /[^\/]+/ }
 
+  resources :news, only: [:index, :show], param: :slug, constraints: { slug: /[a-z0-9-]+/ }
+
   resources :users, path: :accounts, constraints: { id: /[\d\w\.\@\-\%\+ ]+/ }
 
   get '/users/subscribe/:username', to: 'users#subscribe'
@@ -97,6 +99,7 @@ Rails.application.routes.draw do
     match 'groups/synchronize_groups' => 'groups#synchronize_groups', via: [:post]
     resources :groups, only: [:index, :create, :new, :edit, :update, :destroy]
     resources :categories, only: [:index, :create, :new, :edit, :update, :destroy]
+    resources :news_entries, only: [:index, :new, :create, :edit, :update, :destroy]
     resources :agents, only: [:index]
     resource :catalog_configuration, only: [:show, :update], controller: 'catalog_configuration'
     get 'catalog_configuration/edit_nested_form/:key', to: 'catalog_configuration#edit_nested_form', as: 'edit_nested_form_catalog_configuration'

@@ -1,0 +1,17 @@
+- @title = 'News'
+.container.my-4.news-page
+  .d-flex.justify-content-between.align-items-center.mb-3
+    %h1.mb-0 News
+    = link_to 'RSS', news_index_path(format: :rss), class: 'btn btn-outline-secondary btn-sm'
+  - if @news_entries.empty?
+    .alert.alert-info No news entries are available.
+  - else
+    .news-list
+      - @news_entries.each do |entry|
+        %article.news-entry.border-bottom.py-4
+          %h2.h4.mb-1= link_to entry.title, news_path(entry.slug)
+          %p.text-muted.small.mb-2
+            = (entry.published_at || entry.created_at)&.to_date
+            - if entry.author_name.present?
+              = " · #{entry.author_name}"
+          %p.mb-0= entry.excerpt

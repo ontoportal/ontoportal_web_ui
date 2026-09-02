@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_27_134110) do
+ActiveRecord::Schema[7.0].define(version: 2026_07_16_000000) do
   create_table "analytics", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "segment"
     t.string "action"
@@ -36,6 +36,24 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_27_134110) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true, length: { value: 255 }
+  end
+
+  create_table "news_entries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "slug", null: false
+    t.text "excerpt"
+    t.text "body_html", null: false
+    t.string "status", default: "draft", null: false
+    t.datetime "published_at"
+    t.datetime "expires_at"
+    t.boolean "pinned", default: false, null: false
+    t.string "author_id"
+    t.string "author_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pinned", "published_at"], name: "index_news_entries_on_pinned_and_published_at"
+    t.index ["slug"], name: "index_news_entries_on_slug", unique: true
+    t.index ["status", "published_at", "expires_at"], name: "index_news_entries_on_status_and_published_at_and_expires_at"
   end
 
   create_table "licenses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

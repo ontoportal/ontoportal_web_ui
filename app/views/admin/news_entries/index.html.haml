@@ -1,0 +1,28 @@
+= turbo_frame_tag 'news-entries-list' do
+  .d-flex.justify-content-between.align-items-center.mb-3
+    %h2.h4.mb-0 News
+    = link_to 'New entry', new_admin_news_entry_path, class: 'btn btn-primary', data: { turbo_frame: '_top' }
+  = render_alerts_container
+  - if @news_entries.empty?
+    .alert.alert-info No news entries yet.
+  - else
+    .table-responsive
+      %table.table.table-striped
+        %thead
+          %tr
+            %th Title
+            %th Status
+            %th Published
+            %th Author
+            %th Actions
+        %tbody
+          - @news_entries.each do |entry|
+            %tr
+              %td= entry.title
+              %td= entry.status
+              %td= entry.published_at || '—'
+              %td= entry.author_name.presence || '—'
+              %td
+                = link_to 'Edit', edit_admin_news_entry_path(entry), class: 'btn btn-sm btn-outline-primary mr-1', data: { turbo_frame: '_top' }
+                = button_to 'Delete', admin_news_entry_path(entry), method: :delete, class: 'btn btn-sm btn-outline-danger', form: { data: { turbo_confirm: 'Delete this news entry?' } }
+    = will_paginate @news_entries
