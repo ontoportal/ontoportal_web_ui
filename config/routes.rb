@@ -100,6 +100,7 @@ Rails.application.routes.draw do
     resources :agents, only: [:index]
     resource :catalog_configuration, only: [:show, :update], controller: 'catalog_configuration'
     get 'catalog_configuration/edit_nested_form/:key', to: 'catalog_configuration#edit_nested_form', as: 'edit_nested_form_catalog_configuration'
+    get 'catalog_configuration/validate_apikey', to: 'catalog_configuration#validate_apikey', as: 'validate_apikey_catalog_configuration'
     scope :search do
       get '/', to: 'search#index'
       post 'index_batch', to: 'search#index_batch'
@@ -153,7 +154,7 @@ Rails.application.routes.draw do
   get 'home/metrics', to: 'home#metrics'
   get 'home/agents', to: 'home#agents'
   get 'status/:portal_name', to: 'home#federation_portals_status'
-  
+
   # SPARQL 
   match 'sparql_proxy', to: 'admin#sparql_endpoint', via: [:get, :post]
   get 'sparql', to: 'sparql_endpoint#index', as: 'sparql_endpoint'

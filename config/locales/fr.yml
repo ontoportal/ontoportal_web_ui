@@ -132,6 +132,9 @@ fr:
       edit_button: Éditer
       configuration_updated_successfully: Configuration de l'API mise à jour avec succès
       configuration_update_error: 'Problème lors de la mise à jour de la configuration: %{error}'
+      federation_provide_apikey: Veuillez fournir une clé API pour l'utilisateur de fédération correspondant à chaque portail afin d'activer la fédération.
+      federation_not_allowed: Ce portail n'est pas autorisé à activer les fonctionnalités de fédération.
+      federation_invalid_apikeys: "Les portails suivants n'ont pas été ajoutés car leur clé API est invalide : %{portals}"
     licenses:
       create:
         success: Licence renouvelée
@@ -221,17 +224,28 @@ fr:
         type: Type
     site_administration:
       cache_management: Gestion du cache
+      cache_management_description:
+        Videz les caches sur lesquels %{portal_name} s'appuie pour servir ses pages, ou réinitialisez la connexion au serveur de cache.
       checking_for_updates: Vérification des mises à jour ...
       clear_cache: Vider le cache de l'UI
       clear_goo_cache: Vider le cache GOO
       clear_http_cache: Vider le cache HTTP
-      flipper_description: 
+      edit_federated_portals: Éditer les portails fédérés
+      federated_portals: Portails fédérés
+      federated_portals_description:
+        Choisissez les instances OntoPortal avec lesquelles %{portal_name} est fédéré, et fournissez la clé API de l'utilisateur de fédération de chacune d'elles.
+      flipper_description:
         Utilisez Flipper pour contrôler la visibilité des fonctionnalités spécifiques de %{portal_name} dans l'interface utilisateur.
+      flipper_ui: Interface Flipper
+      no_federated_portal: Aucun portail fédéré pour le moment.
       sidekiq_description:
         Utilisez Sidekiq pour surveiller et gérer le traitement des tâches en arrière-plan, les files d'attente et les tâches cron.
+      sidekiq_ui: Interface Sidekiq
       reset_cache: 'Réinitialiser la connexion au cache de l''UI '
       settings: Paramètres
       version_management: Gestion des versions
+      version_management_description:
+        La version d'OntoPortal utilisée par %{portal_name}, et les mises à jour disponibles.
     submission_deleted_successfully: Soumission %{id} pour l'ontologie %{ont} supprimée
     submission_not_found: Soumission %{id} pour l'ontologie %{ont} non trouvée
     turbo_confirm: Êtes-vous sûr de vouloir %{name} ?
@@ -264,7 +278,10 @@ fr:
     index:
       acronym: Acronyme
       actions: Actions
+      added: Ajouté
+      added_by: par %{user}
       create_new_agent: Créer un agent
+      date_unknown: date inconnue
       first_name: Prénom
       no_agents: Il n'y a actuellement aucun agent.
       usages: Utilisations
@@ -419,6 +436,7 @@ fr:
     cancel_button: Annuler
     check_resolvability: vérification de la résolvabilité...
     classes: classes
+    close: Fermer
     concepts: concepts
     copy_original_uri: Copier l'URI d'origine
     copy_portal_uri: Copier l'URI de %{portal_name}
@@ -513,6 +531,8 @@ fr:
       month_day_year: "%-d %b %Y"
       monthfull_day_year: "%-d %b %Y"
       year_month_day_concise: "%d-%m-%Y"
+  definitions:
+    raw_data: Afficher la source, les dates et les données brutes de cette définition
   errors:
     error_message: Nous sommes désolés mais quelque chose a mal tourné.
     go_home_button: Accueil
@@ -1283,6 +1303,7 @@ fr:
       set_the_variable: 'Vous pouvez régler la variable sur ''all'' pour rechercher
         dans toutes les ontologies de %{site} :'
       shortid: shortid
+      submissions: Soumissions
       uri: uri
       use_all_to_search: 'utilisez ''all'' pour rechercher dans toutes les ontologies
         de %{site} :'
@@ -1315,6 +1336,7 @@ fr:
       widgets: Les widgets ne sont disponibles que pour les ontologies stockées dans
         %{site}.
     see_details: Voir les détails
+    self: Ontologies
     showing: Affichage
     showing_ontologies_user_size: Affichage de %{ontologies_size} sur %{analytics_size} ontologie en %{time}s
     showing_ontologies_size: Affichage de %{ontologies_size} sur %{analytics_size} de %{portals}
@@ -1370,6 +1392,7 @@ fr:
       no_preferred_name_for_selected_language: Pas de nom préféré pour la langue sélectionnée.
       obsolete: Obsolète
       preferred_name: Nom préféré
+      show_all_synonyms: Afficher tous les synonymes
       synonyms: Synonymes
       type: Type
     header:
@@ -1557,6 +1580,10 @@ fr:
     preferred_name: Nom préféré
     type: Type
   search:
+    autocomplete:
+      agents: Agents
+      concepts: Concepts
+      ontologies: Ontologies
     advanced_options:
       include_in_search_title: Inclure dans la recherche
       include_in_search_values:
@@ -1644,6 +1671,7 @@ fr:
 
       '
     ontology_umls_language_link: par l'outil UMLS2RDF.
+    ontology_xlsx_language_help: 'Template Crop Ontology (TDv5). Le fichier doit contenir une feuille nommée "Template for submission" avec les colonnes Variable, Trait, Method et Scale. Le fichier TDv5 sera automatiquement converti en OWL par %{portal_name}.'
     ontology_view_of_another_ontology: Cette ontologie est-elle une vue d'une autre
       ontologie ?
     validators: Validateurs

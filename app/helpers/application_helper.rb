@@ -258,9 +258,13 @@ module ApplicationHelper
     end
   end
 
-  def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil)
+  # +parent_id+ is the resource this value was read from. It tells the label
+  # endpoint which namespace the value would have to share to be a node of this
+  # ontology rather than a URI borrowed from elsewhere. See ResourceLinksHelper.
+  def get_link_for_cls_ajax(cls_id, ont_acronym, target = nil, parent_id: nil)
     if cls_id.start_with?('http://') || cls_id.start_with?('https://')
       ajax_url = '/ajax/classes/label'
+      ajax_url += "?parent=#{escape(parent_id)}" if parent_id.present?
       label_ajax_link(cls_id, ont_acronym, ajax_url, target)
     else
       content_tag(:div, cls_id)
@@ -325,12 +329,13 @@ module ApplicationHelper
       userapikey: get_apikey,
       rest_url: LinkedData::Client.settings.rest_url,
       proxy_url: $PROXY_URL,
+      fairness_url: $FAIRNESS_URL,
       biomixer_url: $BIOMIXER_URL,
       annotator_url: $ANNOTATOR_URL,
       ncbo_annotator_url: $NCBO_ANNOTATOR_URL,
       ncbo_apikey: $NCBO_API_KEY,
       interportal_hash: $INTERPORTAL_HASH,
-      resolve_namespace: RESOLVE_NAMESPACE
+      resolve_namespace: RESOLVE_NAMESPACE,
     }
     config[:ncbo_slice] = @subdomain_filter[:acronym] if (@subdomain_filter[:active] && !@subdomain_filter[:acronym].empty?)
     config.to_json

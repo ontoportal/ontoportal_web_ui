@@ -86,11 +86,11 @@ class SearchController < ApplicationController
       # Columns: synonym
       json << "|#{(result.synonym || []).join(";")}"
       if params[:id] && params[:id].split(",").length == 1
-        json << "|#{CGI.escape((result.definition || []).join(". "))}#{separator}"
+        json << "|#{CGI.escape(definition_text(result.definition))}#{separator}"
       else
         json << "|#{acronym}"
         json << "|#{acronym}"
-        json << "|#{CGI.escape((result.definition || []).join(". "))}#{separator}"
+        json << "|#{CGI.escape(definition_text(result.definition))}#{separator}"
       end
 
       # Obsolete results go at the end
@@ -167,10 +167,27 @@ class SearchController < ApplicationController
                                         filter_by_types: type,
                                         show_ontologies: show_ontologies)
 
+    results += search_agents_content(query: params[:search].to_s) if show_agents?
+
     render json: results
   end
 
   private
+
+  # Opt-in per call site: only the site-wide box (homepage and navbar) asks for
+  # agents. The ontology-scoped and subjects pickers share this endpoint and
+  # must keep returning ontology content alone.
+  def show_agents?
+    params[:show_agents].eql?('true') && helpers.agents_enabled?
+  end
+
+  # The definitions of a result as one line. A reified definition arrives as the
+  # URI of the node holding the text, and nothing is resolved here - the caller
+  # is an autocomplete answering while the user types - so a node is left out
+  # rather than pasted in as the sentence it is not.
+  def definition_text(definitions)
+    Array(definitions).reject { |value| link?(value) }.join('. ')
+  end
 
   def check_params_query(params)
     params[:q] = params[:q].strip

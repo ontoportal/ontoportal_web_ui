@@ -126,6 +126,9 @@ en:
       edit_button: Edit
       configuration_updated_successfully: Configuration updated successfully
       configuration_update_error: 'Problem updating the configuration: %{error}'
+      federation_provide_apikey: Please provide an APIKEY for the federation user corresponding to each portal in order to enable the federation.
+      federation_not_allowed: This portal isn't allowed to activate federation features.
+      federation_invalid_apikeys: 'The following portals were not added because their API key is invalid: %{portals}'
     licenses:
       create:
         success: License renewed successfully
@@ -212,17 +215,28 @@ en:
         type: Type
     site_administration:
       cache_management: Cache management
+      cache_management_description:
+        Flush the caches %{portal_name} relies on to serve pages, or reset the connection to the cache server.
       checking_for_updates: Checking for updates ...
       clear_cache: Flush UI cache
       clear_goo_cache: Flush GOO cache
       clear_http_cache: Flush HTTP cache
-      flipper_description: 
+      edit_federated_portals: Edit federated portals
+      federated_portals: Federated portals
+      federated_portals_description:
+        Choose the OntoPortal instances %{portal_name} federates with, and provide the API key of the federation user of each of them.
+      flipper_description:
         Use Flipper to control the visibility of specific %{portal_name} features within the user interface.
+      flipper_ui: Flipper UI
+      no_federated_portal: No portal federated yet.
       sidekiq_description:
         Use Sidekiq to monitor and manage background job processing, queues, and cron jobs.
+      sidekiq_ui: Sidekiq UI
       reset_cache: Reset UI cache connection
       settings: Settings
       version_management: Version management
+      version_management_description:
+        The OntoPortal version %{portal_name} runs, and the updates available for it.
     submission_deleted_successfully: Submission %{id} for ontology %{ont} was deleted
       successfully
     submission_not_found: Submission %{id} for ontology %{ont} was not found
@@ -257,7 +271,10 @@ en:
     index:
       acronym: Acronym
       actions: Actions
+      added: Added
+      added_by: by %{user}
       create_new_agent: Create agent
+      date_unknown: date unknown
       first_name: First name
       no_agents: There are currently no  agents.
       usages: Usages
@@ -409,6 +426,7 @@ en:
     cancel_button: Cancel
     check_resolvability: checking resolvability...
     classes: classes
+    close: Close
     concepts: concepts
     copy_original_uri: Copy original URI
     copy_portal_uri: Copy %{portal_name} URI
@@ -501,6 +519,8 @@ en:
       month_day_year: "%b %-d, %Y"
       monthfull_day_year: "%B %-d, %Y"
       year_month_day_concise: "%Y-%m-%d"
+  definitions:
+    raw_data: Show this definition's source, dates and raw data
   errors:
     error_message: We're sorry but something has gone wrong.
     go_home_button: Go home
@@ -1241,6 +1261,7 @@ en:
       set_the_variable: 'You can set the variable to ''all'' to search all ontologies
         in %{site}:'
       shortid: shortid
+      submissions: Submissions
       uri: uri
       use_all_to_search: 'use ''all'' to search across all %{site} ontologies:'
       use_following_parameters: 'You can use the following parameters to select which
@@ -1268,6 +1289,7 @@ en:
       widget_block_component_title_4: Tree Widget
       widgets: Widgets are only available for ontologies stored in %{site}.
     see_details: See details
+    self: Ontologies
     showing: Showing
     showing_ontologies_user_size: Showing %{ontologies_size} of %{analytics_size} ontology in %{time}s
     showing_ontologies_size: Showing %{ontologies_size} of %{analytics_size} from %{portals}
@@ -1322,6 +1344,7 @@ en:
       no_preferred_name_for_selected_language: No preferred name for selected language.
       obsolete: Obsolete
       preferred_name: Preferred name
+      show_all_synonyms: Show all synonyms
       synonyms: Synonyms
       type: Type
     header:
@@ -1507,6 +1530,10 @@ en:
     preferred_name: Preferred name
     type: Type
   search:
+    autocomplete:
+      agents: Agents
+      concepts: Concepts
+      ontologies: Ontologies
     advanced_options:
       include_in_search_title: Include in search
       include_in_search_values:
@@ -1597,6 +1624,7 @@ en:
 
       '
     ontology_umls_language_link: by the UMLS2RDF tool.
+    ontology_xlsx_language_help: 'Crop Ontology Template (TDv5). The file must contain a sheet named "Template for submission" with Variable, Trait, Method, and Scale columns. The uploaded TDv5 template will be automatically converted to OWL by %{portal_name}.'
     ontology_view_of_another_ontology: Is this ontology a view of another ontology?
     validators: Validators
     version_help: For more information on how to encode versioning information in

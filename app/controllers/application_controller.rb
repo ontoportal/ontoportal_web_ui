@@ -164,12 +164,13 @@ class ApplicationController < ActionController::Base
         userapikey: get_apikey,
         rest_url: LinkedData::Client.settings.rest_url,
         proxy_url: $PROXY_URL,
+        fairness_url: $FAIRNESS_URL,
         biomixer_url: $BIOMIXER_URL,
         annotator_url: $ANNOTATOR_URL,
         ncbo_annotator_url: $NCBO_ANNOTATOR_URL,
         ncbo_apikey: $NCBO_API_KEY,
         interportal_hash: $INTERPORTAL_HASH,
-        resolve_namespace: RESOLVE_NAMESPACE
+        resolve_namespace: RESOLVE_NAMESPACE,
     }
     config[:ncbo_slice] = @subdomain_filter[:acronym] if (@subdomain_filter[:active] && !@subdomain_filter[:acronym].empty?)
     config.to_json
@@ -335,7 +336,7 @@ class ApplicationController < ActionController::Base
       if ignore_concept_param
         # get the top level nodes for the root
         # TODO_REV: Support views? Replace old view call: @ontology.top_level_classes(view)
-        @roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes]) rescue nil
+        @roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes], lang: lang) rescue nil
 
         if @roots.blank? || response_error?(@roots) || @roots.compact&.empty?
           LOG.add :debug, t('application.missing_roots_for_ontology', acronym: @ontology.acronym)
@@ -368,7 +369,7 @@ class ApplicationController < ActionController::Base
         # Create the tree
         rootNode = @concept.explore.tree(include: include, concept_schemes: params[:concept_schemes], lang: lang)
         if rootNode.nil? || rootNode.empty?
-          @roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes])
+          @roots = @ontology.explore.roots(concept_schemes: params[:concept_schemes], lang: lang)
           if @roots.nil? || response_error?(@roots) || @roots.compact&.empty?
             LOG.add :debug, t('application.missing_roots_for_ontology', acronym: @ontology.acronym)
             @concept = @ontology.explore.classes.collection.first.explore.self(full: true)
@@ -431,8 +432,11 @@ class ApplicationController < ActionController::Base
     @metadata ||= helpers.submission_metadata
   end
 
+  # `helpers` memoizes a view context built from the assigns available on its
+  # first call, so pass the submissions explicitly: they are usually loaded
+  # after that snapshot was taken.
   def request_lang
-    helpers.request_lang
+    helpers.request_lang(@submission, @submission_latest)
   end
 
   def json_link(url, optional_params)
@@ -444,6 +448,7 @@ class ApplicationController < ActionController::Base
 
   def set_federated_portals
     RequestStore.store[:federated_portals] =  params[:portals]&.split(',')
+    helpers.sync_federated_connections
   end
 
   private

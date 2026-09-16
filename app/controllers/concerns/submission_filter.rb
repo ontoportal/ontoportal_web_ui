@@ -7,6 +7,8 @@ module SubmissionFilter
                        'contact', 'released', 'naturalLanguage', 'hasOntologyLanguage',
                        'hasFormalityLevel', 'isOfType', 'deprecated', 'status', 'metrics']
 
+  ONTOLOGY_FORMATS = %w[OBO OWL SKOS UMLS XLSX].freeze
+
   def init_filters(params)
     @show_views = params[:show_views]&.eql?('true')
     @show_private_only = params[:private_only]&.eql?('true')
@@ -31,8 +33,8 @@ module SubmissionFilter
 
     @ontologies, @errors = @ontologies.partition { |x| !x.errors }
 
-    # get fair scores of all ontologies
-    @fair_scores = fairness_service_enabled? ? get_fair_score('all') : nil
+    # get fair scores of all ontologies, including from the selected federated portals
+    @fair_scores = fairness_service_enabled? ? get_fair_score_with_federation('all') : nil
 
     @total_ontologies = @ontologies.size
 
@@ -319,7 +321,7 @@ module SubmissionFilter
       { 'id' => id, 'name' => helpers.link_last_part(id), 'acronym' => name, 'value' => helpers.link_last_part(id) }
     end
 
-    @formats = [[t("submissions.filter.all_formats"), ''], 'OBO', 'OWL', 'SKOS', 'UMLS']
+    @formats = [[t("submissions.filter.all_formats"), '']] + ONTOLOGY_FORMATS
     @sorts_options = [
       [t("submissions.filter.sort"), ''],
       [t("submissions.filter.sort_by_name"), 'ontology_name'],
