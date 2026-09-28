@@ -7,7 +7,7 @@ class MappingsController < ApplicationController
   include MappingsHelper
   include TurboHelper
   layout :determine_layout
-  before_action :authorize_and_redirect, only: [:create, :new, :destroy]
+  before_action :authorize_and_redirect, only: [:create, :new, :loader_process, :update, :destroy]
 
   EXTERNAL_URL_PARAM_STR = "mappings:external"
   INTERPORTAL_URL_PARAM_STR = "interportal:"
