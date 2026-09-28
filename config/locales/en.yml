@@ -506,6 +506,18 @@ en:
     visualization: Visualization
   cookies_modal:
     accept_button: Accept
+    accept_analytics_button: Accept analytics cookies
+    analytics_description: Optional analytics cookies help us understand aggregate usage and improve the service. Analytics tracking is not loaded unless you accept this category.
+    analytics_title: Analytics cookies
+    essential_description: Required for login, security, language, and other core site features. These cookies cannot be switched off in this banner.
+    essential_title: Essential cookies
+    extended_paragraph1: '%{portal} uses essential cookies to provide core site features.'
+    extended_paragraph2: Optional analytics cookies are used only after you actively consent to analytics tracking.
+    extended_title: Cookie preferences
+    manage_preferences_link: Manage cookie preferences
+    reject_optional_button: Reject optional cookies
+    required_label: Always active
+    save_preferences_button: Save preferences
     paragraph1: '%{portal} uses cookies to help you navigate efficiently and for audience
       measurement. You will find detailed information about all cookies in the "Privacy
       policy" link'

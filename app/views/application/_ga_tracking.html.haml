@@ -1,10 +1,40 @@
--# Google tag
-- tag_id = Rails.application.credentials.dig(:google_analytics, :tag_id) || $ANALYTICS_ID
-- if tag_id.present?
-  <script async src="https://www.googletagmanager.com/gtag/js?id=#{tag_id}"></script>
-  %script
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', '#{tag_id}');
+- if analytics_tracking_enabled?
+  - case resolved_analytics_provider
+  - when 'google'
+    - tag_id = google_analytics_tag_id
+    - if tag_id.present?
+      %script{async: true, src: "https://www.googletagmanager.com/gtag/js?id=#{ERB::Util.url_encode(tag_id)}"}
+      %script
+        :plain
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', #{tag_id.to_json.html_safe});
+  - when 'matomo'
+    - matomo_base = matomo_tracking_base_url
+    - site_id = matomo_site_id
+    - if matomo_base.present? && site_id.present?
+      %script
+        :plain
+          var _paq = window._paq = window._paq || [];
+      - if analytics_consent_required?
+        %script
+          :plain
+            _paq.push(['requireCookieConsent']);
+            _paq.push(['rememberCookieConsentGiven']);
+      %script
+        :plain
+          _paq.push(['trackPageView']);
+          _paq.push(['enableLinkTracking']);
+          (function() {
+            var u = #{matomo_base.to_json.html_safe} + '/';
+            _paq.push(['setTrackerUrl', u + 'matomo.php']);
+            _paq.push(['setSiteId', #{site_id.to_json.html_safe}]);
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.async = true;
+            g.src = u + 'matomo.js';
+            s.parentNode.insertBefore(g, s);
+          })();
+      %noscript
+        %p
+          %img{src: "#{ERB::Util.html_escape(matomo_base)}/matomo.php?idsite=#{ERB::Util.url_encode(site_id)}&rec=1", style: 'border:0;', alt: ''}

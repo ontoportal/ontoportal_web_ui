@@ -110,8 +110,22 @@ $RELEASE_VERSION = ENV['RELEASE_VERSION']
 # Enable Slices, filtering of ontologies based on subdomain and ontology groups
 $ENABLE_SLICES = false
 
+# Optional browser analytics. Set ANALYTICS_PROVIDER to google, matomo, or none.
+# When unset, existing Google configuration wins; Matomo is inferred only when
+# both MATOMO_URL and MATOMO_SITE_ID are configured.
+$ANALYTICS_PROVIDER = ENV['ANALYTICS_PROVIDER']
+
 # Google Analytics ID (optional)
 $ANALYTICS_ID = ENV['ANALYTICS_ID']
+
+# Matomo URL and site ID (optional)
+$MATOMO_URL = ENV['MATOMO_URL']
+$MATOMO_SITE_ID = ENV['MATOMO_SITE_ID']
+
+# Set true to require explicit analytics consent (default: false for compatibility).
+# For portal/slice sharing, use ANALYTICS_CONSENT_COOKIE_DOMAIN=.stage.matportal.org.
+$ANALYTICS_REQUIRE_CONSENT = ENV['ANALYTICS_REQUIRE_CONSENT']
+$ANALYTICS_CONSENT_COOKIE_DOMAIN = ENV['ANALYTICS_CONSENT_COOKIE_DOMAIN']
 
 # Enable client request caching
 $CLIENT_REQUEST_CACHING = true

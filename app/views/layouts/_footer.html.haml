@@ -25,7 +25,9 @@
               - anchor = I18n.t("layout.footer.#{section}_anchor", default: "")
               %a{:href => "#{link}#{anchor}", :target => "_blank"}
                 = t("layout.footer."+section.to_s)
-          
+    - if extended_cookie_consent_enabled?
+      %p.cookie-preferences-link
+        = link_to t('cookies_modal.manage_preferences_link'), cookie_consent_path
 
 
 

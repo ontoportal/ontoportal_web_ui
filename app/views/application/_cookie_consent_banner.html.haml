@@ -1,0 +1,30 @@
+.cookie-consent-banner{role: 'dialog', 'aria-labelledby' => 'cookie-consent-title', 'aria-describedby' => 'cookie-consent-description', data: { cookie_consent_banner: true }}
+  .cookie-consent-banner__content
+    %h2#cookie-consent-title.cookie-consent-banner__title= t('cookies_modal.extended_title')
+    #cookie-consent-description.cookie-consent-banner__description
+      %p= t('cookies_modal.extended_paragraph1', portal: portal_name)
+      %p= t('cookies_modal.extended_paragraph2')
+      %p.cookie-consent-banner__privacy-link
+        = link_to t('cookies_modal.privacy_link'), "#{$FOOTER_LINKS.dig(:sections, :agreements, :privacy_policy)}#{t('cookies_modal.privacy_policy_anchor')}"
+
+    .cookie-consent-banner__category
+      %h3= t('cookies_modal.essential_title')
+      %p= t('cookies_modal.essential_description')
+      %p.cookie-consent-banner__required= t('cookies_modal.required_label')
+
+    .cookie-consent-banner__category
+      .cookie-consent-banner__checkbox
+        %input#analytics-preference{type: 'checkbox', checked: cookies[analytics_consent_cookie_name].to_s == 'true', data: { cookie_consent_preference: 'analytics' }}
+        %label{for: 'analytics-preference'}= t('cookies_modal.analytics_title')
+      %p= t('cookies_modal.analytics_description')
+
+    .cookie-consent-banner__actions
+      = form_with url: cookie_consent_path, method: :post, local: true, html: { class: 'cookie-consent-banner__form', data: { cookie_consent_form: 'accept' } } do
+        = hidden_field_tag :analytics_consent, 'true', id: 'analytics-consent-accept'
+        %button.btn.btn-primary{type: 'submit', data: { cookie_consent_submit: 'accept' }}= t('cookies_modal.accept_analytics_button')
+      = form_with url: cookie_consent_path, method: :post, local: true, html: { class: 'cookie-consent-banner__form', data: { cookie_consent_form: 'reject' } } do
+        = hidden_field_tag :analytics_consent, 'false', id: 'analytics-consent-reject'
+        %button.btn.btn-secondary{type: 'submit', data: { cookie_consent_submit: 'reject' }}= t('cookies_modal.reject_optional_button')
+      = form_with url: cookie_consent_path, method: :post, local: true, html: { class: 'cookie-consent-banner__form cookie-consent-banner__preferences-form', data: { cookie_consent_form: 'preferences' } } do
+        = hidden_field_tag :analytics_consent, cookies[analytics_consent_cookie_name].to_s == 'true' ? 'true' : 'false', id: 'analytics-consent-preferences', data: { cookie_consent_analytics_input: true }
+        %button.btn.btn-link.cookie-consent-banner__toggle{type: 'submit', data: { cookie_consent_submit: 'preferences' }}= t('cookies_modal.save_preferences_button')
