@@ -156,6 +156,10 @@ require 'log'
 $BIOMIXER_URL = ENV['BIOMIXER_URL']
 $BIOMIXER_APIKEY = ENV['BIOMIXER_APIKEY']
 
+# Optional URL for externally hosting the BioMixer replacement visualizer.
+# Leave unset to serve /biomixer-visualizer from this UI.
+$ONTOPANEL_VISUALIZER_URL = ENV['ONTOPANEL_VISUALIZER_URL']
+
 ##
 # Custom Ontology Details
 # Custom details can be added on a per ontology basis using a key/value pair as columns of the details table

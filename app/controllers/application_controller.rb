@@ -166,6 +166,8 @@ class ApplicationController < ActionController::Base
         proxy_url: $PROXY_URL,
         fairness_url: $FAIRNESS_URL,
         biomixer_url: $BIOMIXER_URL,
+        ontopanel_visualizer_url: helpers.ontopanel_visualizer_url,
+        biomixer_replacement_enabled: helpers.biomixer_replacement_enabled?(session[:user]),
         annotator_url: $ANNOTATOR_URL,
         ncbo_annotator_url: $NCBO_ANNOTATOR_URL,
         ncbo_apikey: $NCBO_API_KEY,

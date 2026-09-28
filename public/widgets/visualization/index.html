@@ -1,39 +1,108 @@
+<!doctype html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html, body, #vis_iframe { width: 100%; height: 100%; min-height: 520px; margin: 0; }
+    body { background: #f5f8f7; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .vis-error { padding: 1rem; color: #9f3d25; }
+    iframe { border: 0; width: 100%; height: 100%; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #071213; color: #edf8f6; }
+      .vis-error { color: #f08a6b; }
+    }
+  </style>
 </head>
 <body>
 <div id="vis_iframe">Loading...</div>
 <script>
-  // Method for getting parameters from the query string of a URL
-  (function($) {
-    $.QueryString = (function(a) {
-      if (a == "") return {};
-      var b = {};
-      for (var i = 0; i < a.length; ++i) {
-        var p=a[i].split('=');
-        if (p.length != 2) continue;
-        b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
-      }
-      return b;
-    })(window.location.search.substr(1).split('&'))
-  })(jQuery);
+(function() {
+  "use strict";
 
-  $.ajax({
-    url: "/site_config",
-    dataType: "json",
-    success: function(config){
-      var params = $.QueryString;
-      if (typeof params.apikey == 'undefined') {
-        document.write("Please provide an API Key by using the `apikey` query string parameter");
-        throw new Error("Please provide an API Key by using the `apikey` query string parameter");
-      } else {
-        var biomixer_url = config.biomixer_url + "/?mode=embed&embed_mode=paths_to_root&ontology_acronym=" + params.ontology + "&full_concept_id=" + encodeURIComponent(params.class) + "&userapikey=" + params.apikey + "&embed_mode=concept_neighbourhood&restURLPrefix="+ params.restURLPrefix;
-        $("#vis_iframe").html($("<iframe>").attr("src", biomixer_url).attr("frameborder", "0").attr("width", "100%").attr("height", "100%"));
-      }
+  var host = document.getElementById("vis_iframe");
+
+  function renderError(message) {
+    host.innerHTML = "";
+    var error = document.createElement("div");
+    error.className = "vis-error";
+    error.textContent = message;
+    host.appendChild(error);
+  }
+
+  function queryParams() {
+    var out = {};
+    var params = new URLSearchParams(window.location.search || "");
+    params.forEach(function(value, key) { out[key] = value; });
+    return out;
+  }
+
+  function flipperEnabled(value) {
+    return value === true || value === "true" || value === 1 || value === "1";
+  }
+
+  function buildVisualizerUrl(config, params) {
+    if (!params.apikey) {
+      throw new Error("Please provide an API Key with the apikey query string parameter.");
     }
-  });
+
+    var ontology = params.ontology || params.ontology_acronym || "";
+    var classId = params.class || params.class_id || params.conceptid || params.full_concept_id || "";
+    var restURLPrefix = params.restURLPrefix || config.rest_url || "";
+    var embedMode = params.embed_mode || "concept_neighbourhood";
+
+    if (!flipperEnabled(config.biomixer_replacement_enabled)) {
+      var biomixerBase = String(config.biomixer_url || "https://biomixer.bioontology.org").replace(/\/$/, "");
+      var legacyRestPrefix = String(restURLPrefix || "").replace(/^https?:\/\//, "");
+      var legacyQuery = new URLSearchParams({
+        mode: "embed",
+        embed_mode: embedMode,
+        ontology_acronym: ontology,
+        full_concept_id: classId,
+        userapikey: params.apikey,
+        restURLPrefix: legacyRestPrefix
+      });
+      return biomixerBase + "/?" + legacyQuery.toString();
+    }
+
+    var visualizerBase = String(config.ontopanel_visualizer_url || "/biomixer-visualizer").replace(/\/$/, "");
+    var query = new URLSearchParams({
+      mode: "embed",
+      embed_mode: embedMode,
+      ontology_acronym: ontology,
+      full_concept_id: classId,
+      userapikey: params.apikey,
+      restURLPrefix: restURLPrefix
+    });
+    return visualizerBase + "/?" + query.toString();
+  }
+
+  function renderIframe(src, replacementEnabled) {
+    host.innerHTML = "";
+    var iframe = document.createElement("iframe");
+    iframe.src = src;
+    iframe.title = replacementEnabled ? "OntoPanel ontology visualizer" : "BioMixer ontology visualizer";
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.frameBorder = "0";
+    iframe.referrerPolicy = "origin";
+    host.appendChild(iframe);
+  }
+
+  fetch("/site_config", { headers: { Accept: "application/json" }, credentials: "same-origin" })
+    .then(function(response) {
+      if (!response.ok) throw new Error("Portal configuration request failed: " + response.status);
+      return response.json();
+    })
+    .then(function(config) {
+      var params = queryParams();
+      var replacementEnabled = flipperEnabled(config.biomixer_replacement_enabled);
+      renderIframe(buildVisualizerUrl(config, params), replacementEnabled);
+    })
+    .catch(function(error) {
+      renderError(error.message || "Unable to load portal configuration.");
+    });
+})();
 </script>
 </body>
 </html>

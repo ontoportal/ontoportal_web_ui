@@ -1,47 +1,90 @@
 = render_in_modal do
-    - require 'cgi'
-    - user_api_key = (session[:user].try(:apikey) || $BIOMIXER_APIKEY).to_s
-    - rest_domain = $REST_URL.sub(/https?:\/\//, "")
-    - src_url = "#{$BIOMIXER_URL}/?mode=embed&embed_mode=paths_to_root&ontology_acronym=#{CGI.escape(@ontology.acronym)}&full_concept_id=#{CGI.escape(@concept.fullId)}&userapikey=#{user_api_key}&restURLPrefix=#{rest_domain}"
-    - original_src = src_url
+  - require 'cgi'
+  - replacement_enabled = biomixer_replacement_enabled?
+  - user_api_key = (session[:user].try(:apikey) || $BIOMIXER_APIKEY).to_s
+  - rest_url = (defined?($REST_URL) ? $REST_URL : LinkedData::Client.settings.rest_url).to_s.chomp('/')
+  - legacy_rest_domain = rest_url.sub(/https?:\/\//, '')
+  - legacy_visualizer_base = (defined?($BIOMIXER_URL) && $BIOMIXER_URL.present?) ? $BIOMIXER_URL : 'https://biomixer.bioontology.org'
+  - visualizer_base = replacement_enabled ? ontopanel_visualizer_url : legacy_visualizer_base
+  - rest_prefix = replacement_enabled ? rest_url : legacy_rest_domain
+  - visualizer_query = { mode: 'embed', embed_mode: 'paths_to_root', ontology_acronym: @ontology.acronym, full_concept_id: @concept.fullId, userapikey: user_api_key, restURLPrefix: rest_prefix }.map { |key, value| "#{key}=#{CGI.escape(value.to_s)}" }.join('&')
+  - src_url = "#{visualizer_base.to_s.sub(/\/$/, '')}/?#{visualizer_query}"
+  - original_src = src_url
 
-    :javascript
-        jQuery(document).data().bp.biomixer_fullscreen = {};
-        jQuery(document).data().bp.biomixer_fullscreen.enabled = false;
-        jQuery(document).data().bp.biomixer_fullscreen.bd_container_h = jQuery("#bd_content .cls-info-container").css("height");
-        jQuery(document).data().bp.biomixer_fullscreen.bd_contents_h = jQuery("#bd .bd_content .cls-info-container #contents").css("max-height");
-        jQuery(document).data().bp.biomixer_fullscreen.bio_container_h = jQuery("#biomixer_container").css("height");
-        jQuery(document).data().bp.biomixer_fullscreen.bd_container_w = jQuery("#bd_content .cls-info-container").css("width");
-        jQuery(document).data().bp.biomixer_fullscreen.bio_container_w = jQuery("#biomixer_container").css("width");
+  :javascript
+    (function($) {
+      if (!$) { return; }
+      var bpData = $(document).data().bp || ($(document).data().bp = {});
+      bpData.biomixer_fullscreen = {
+        enabled: false,
+        maximize: 'hide',
+        minimize: 'show',
+        bd_container_h: $("#bd_content .cls-info-container").css("height"),
+        bd_contents_h: $("#bd .bd_content .cls-info-container #contents").css("max-height"),
+        bio_container_h: $("#biomixer_container").css("height"),
+        bd_container_w: $("#bd_content .cls-info-container").css("width"),
+        bio_container_w: $("#biomixer_container").css("width")
+      };
 
-        jQuery(document).data().bp.biomixer_fullscreen = {
-            maximize: 'hide',
-            minimize: 'show'
-        };
-
-        jQuery(document).data().bp.biomixer_fullscreen.toggle = function(toggle) {
-            jQuery("#bd_content .sidebar")[toggle]();
-            jQuery("#bd_content .gutter")[toggle]();
-            jQuery("#bd_content .cls-info-container .tabs")[toggle]();
-            jQuery(document).data().bp.biomixer_fullscreen.heights(toggle === 'show');
+      bpData.biomixer_fullscreen.heights = function(original) {
+        var height;
+        if (original) {
+          $("#bd_content .cls-info-container").css("height", bpData.biomixer_fullscreen.bd_container_h);
+          $("#bd .bd_content .cls-info-container #contents").css("max-height", bpData.biomixer_fullscreen.bd_contents_h);
+          $("#biomixer_container").css("height", bpData.biomixer_fullscreen.bio_container_h);
+          $("#bd_content .cls-info-container").css("width", bpData.biomixer_fullscreen.bd_container_w);
+          $("#biomixer_container").css("padding", 0).css("width", bpData.biomixer_fullscreen.bio_container_w);
+          $("#bd_content").trigger('resize');
+        } else {
+          var container = $("#bd_content .cls-info-container");
+          var offset = container.length ? container.offset() : null;
+          var offsetTop = (offset && typeof offset.top === 'number') ? offset.top : null;
+          if (offsetTop !== null && offsetTop > 0) {
+            height = $(window).height() - offsetTop - 50;
+          } else {
+            height = $(window).height() - 50;
+          }
+          if (!height || height < 300) {
+            height = 500;
+          }
+          $("#bd_content .cls-info-container").css("width", "100%").css("height", height);
+          $("#bd .bd_content .cls-info-container #contents").css("max-height", height);
+          $("#biomixer_container").css("padding", 0).css("width", "100%").css("height", height);
         }
+      };
 
-        jQuery(document).data().bp.biomixer_fullscreen.heights = function(original) {
-            var height;
-            if (original) {
-            jQuery("#bd_content .cls-info-container").css("height", jQuery(document).data().bp.biomixer_fullscreen.bd_container_h);
-            jQuery("#bd .bd_content .cls-info-container #contents").css("max-height", jQuery(document).data().bp.biomixer_fullscreen.bd_contents_h);
-            jQuery("#biomixer_container").css("height", jQuery(document).data().bp.biomixer_fullscreen.bio_container_h);
-            jQuery("#bd_content .cls-info-container").css("width", jQuery(document).data().bp.biomixer_fullscreen.bd_container_w);
-            jQuery("#biomixer_container").css("padding", 0).css("width", jQuery(document).data().bp.biomixer_fullscreen.bio_container_w);
-            jQuery("#bd_content").trigger('resize');
-            } else {
-            height = jQuery(window).height() - jQuery("#bd_content .cls-info-container").offset().top - 50;
-            jQuery("#bd_content .cls-info-container").css("width", "100%").css("height", height);
-            jQuery("#bd .bd_content .cls-info-container #contents").css("max-height", height);
-            jQuery("#biomixer_container").css("padding", 0).css("width", "100%").css("height", height);
-            }
+      bpData.biomixer_fullscreen.toggle = function(toggle) {
+        $("#bd_content .sidebar")[toggle]();
+        $("#bd_content .gutter")[toggle]();
+        $("#bd_content .cls-info-container .tabs")[toggle]();
+        bpData.biomixer_fullscreen.heights(toggle === 'show');
+      };
+
+      if (window.biomixer_message_handler) {
+        window.removeEventListener('message', window.biomixer_message_handler);
+      }
+      window.biomixer_message_handler = function(e) {
+        var iframe = document.getElementById('biomixer_iframe');
+        if (!iframe || e.source !== iframe.contentWindow) { return; }
+        var src = iframe.getAttribute('data-src') || iframe.getAttribute('src');
+        var expectedOrigin;
+        try {
+          expectedOrigin = new URL(src, window.location.href).origin;
+        } catch (_) {
+          return;
         }
+        if (expectedOrigin !== 'null' && e.origin !== expectedOrigin) { return; }
+        if (e.data !== "biomixer_full_screen_request" && !(e.data && e.data.action === "ontopanel-fullscreen-toggle")) { return; }
+        if (bpData.biomixer_fullscreen.enabled) {
+          bpData.biomixer_fullscreen.toggle(bpData.biomixer_fullscreen.minimize);
+          bpData.biomixer_fullscreen.enabled = false;
+        } else {
+          bpData.biomixer_fullscreen.toggle(bpData.biomixer_fullscreen.maximize);
+          bpData.biomixer_fullscreen.enabled = true;
+        }
+      };
+      window.addEventListener('message', window.biomixer_message_handler);
+    })(window.jQuery);
 
-    #biomixer_container(style="padding-left: .5%; width: 99.5%; height: 900px;")
-        %iframe#biomixer_iframe(src=original_src data-src=src_url style="min-height: 700px;" height="100%" width="100%" frameborder="0")
+  #biomixer_container.ontopanel-visualizer-container(style="padding-left: .5%; width: 99.5%; height: 900px;")
+    %iframe#biomixer_iframe{ title: (replacement_enabled ? 'OntoPanel ontology visualizer' : 'BioMixer ontology visualizer'), src: original_src, data: { src: src_url }, style: 'min-height: 700px;', height: '100%', width: '100%', frameborder: '0', referrerpolicy: 'origin' }

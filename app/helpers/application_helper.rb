@@ -40,6 +40,19 @@ module ApplicationHelper
     Flipper.enabled?('Agents', user)
   end
 
+  def biomixer_replacement_enabled?(user = nil)
+    user ||= (current_user rescue nil)
+    Flipper.enabled?('biomixer_replacement', user)
+  end
+
+  def ontopanel_visualizer_url
+    if defined?($ONTOPANEL_VISUALIZER_URL) && $ONTOPANEL_VISUALIZER_URL.present?
+      $ONTOPANEL_VISUALIZER_URL
+    else
+      ENV['ONTOPANEL_VISUALIZER_URL'].presence || '/biomixer-visualizer'
+    end
+  end
+
   def sparql_enabled?
     user = current_user rescue nil
     Flipper.enabled?('SPARQL', user) && $SPARQL_ENDPOINT_URL
@@ -331,6 +344,8 @@ module ApplicationHelper
       proxy_url: $PROXY_URL,
       fairness_url: $FAIRNESS_URL,
       biomixer_url: $BIOMIXER_URL,
+      ontopanel_visualizer_url: ontopanel_visualizer_url,
+      biomixer_replacement_enabled: biomixer_replacement_enabled?,
       annotator_url: $ANNOTATOR_URL,
       ncbo_annotator_url: $NCBO_ANNOTATOR_URL,
       ncbo_apikey: $NCBO_API_KEY,
