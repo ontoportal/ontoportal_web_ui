@@ -9,7 +9,7 @@ module ApplicationHelper
   REST_URI = $REST_URL
   API_KEY = $API_KEY
 
-  include ModalHelper, MultiLanguagesHelper, UrlsHelper, ComponentsHelper
+  include AnalyticsHelper, ModalHelper, MultiLanguagesHelper, UrlsHelper, ComponentsHelper
 
 
   RESOLVE_NAMESPACE = {:omv => "http://omv.ontoware.org/2005/05/ontology#", :skos => "http://www.w3.org/2004/02/skos/core#", :owl => "http://www.w3.org/2002/07/owl#",

@@ -25,9 +25,11 @@
   <!-- CSS -->
   <%= stylesheet_link_tag "https://use.fontawesome.com/releases/v5.2.0/css/all.css", integrity: "sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ", crossorigin: "anonymous" %>
   <%= stylesheet_link_tag "application" %>
+  <%= stylesheet_link_tag "cookie_consent" if extended_cookie_consent_enabled? %>
 
   <!-- JavaScript -->
   <%= javascript_include_tag "vendor" %>
+  <%= javascript_include_tag "cookie_consent", defer: true if extended_cookie_consent_enabled? %>
 
   <script>
       jQuery(document).data({
@@ -53,7 +55,11 @@
 </head>
 <body class="<%= controller_name %> <%= action_name %>">
 <%= render partial: 'layouts/topnav' %>
-<%= turbo_frame_tag :cookies_modal, src: cookies_path if cookies[:cookies_accepted].nil? && !(Rails.env.development? || Rails.env.test?) %>
+<% if extended_cookie_consent_enabled? %>
+  <%= render partial: 'application/cookie_consent_banner' if show_cookie_consent_banner? && controller_name != 'cookie_consent' %>
+<% else %>
+  <%= turbo_frame_tag :cookies_modal, src: cookies_path if cookies[:cookies_accepted].nil? && !(Rails.env.development? || Rails.env.test?) %>
+<% end %>
 
 <div class="flex-grow-1">
 <%= render partial: 'layouts/notices' %>

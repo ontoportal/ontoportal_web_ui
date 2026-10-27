@@ -1,4 +1,13 @@
 shared:
+  analytics:
+    provider: null
+    require_consent: false
+    consent_cookie_domain: null
+    matomo:
+      url: null
+      site_id: null
+    google:
+      tag_id: null
   links:
     about: 'https://www.bioontology.org/about-us/'
     cite: 'https://www.bioontology.org/about-us/#cite-bioportal'
