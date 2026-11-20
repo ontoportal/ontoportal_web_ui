@@ -87,7 +87,15 @@ module ApplicationHelper
   end
 
   def omniauth_provider_info(strategy)
-    omniauth_providers_info.select {|k,v| v[:strategy].eql?(strategy.to_sym) || k.eql?(strategy)}
+    return {} if strategy.nil? || omniauth_providers_info.nil?
+
+    strategy_sym = strategy.to_sym
+    omniauth_providers_info.select do |k, v|
+      v[:strategy].eql?(strategy_sym) ||
+        k.eql?(strategy) ||
+        k.eql?(strategy_sym) ||
+        (v[:name] && v[:name].to_sym.eql?(strategy_sym))
+    end
   end
 
   def omniauth_token_provider(strategy)
